@@ -10,15 +10,17 @@
 
 import { test } from 'tap'
 import {
+  MEMBER_RESOURCE, uuid,
   resourceObject, listResources, createResource, getResource,
-  deleteResource, existsResource } from '../src/storage.js'
+  deleteResource, existsResource, initResources, createEntity,
+  getEntity } from '../src/storage.js'
 
 test('resource object', async (t) => {
   const resource = resourceObject({
     projectId: 'kernel-community',
     bucket: 'staging.kernel-community.appspot.com',
     resource: 'role',
-    uri: '/roles',
+    uri: 'roles',
     readRoles: ['root'],
     writeRoles: ['root'],
     metaRoles: ['root']
@@ -32,6 +34,7 @@ test('list resources', async (t) => {
     projectId: 'kernel-community',
     bucket: 'staging.kernel-community.appspot.com'
   })
+  console.log(resources)
   t.ok(resources, 'resources')
 })
 
@@ -41,6 +44,15 @@ test('create resource', async (t) => {
     bucket: 'staging.kernel-community.appspot.com',
     resource: 'role',
     uri: '/roles',
+    readRoles: ['root'],
+    writeRoles: ['root'],
+    metaRoles: ['root']
+  })
+  const resource1 = await createResource({
+    projectId: 'kernel-community',
+    bucket: 'staging.kernel-community.appspot.com',
+    resource: 'member',
+    uri: '/members',
     readRoles: ['root'],
     writeRoles: ['root'],
     metaRoles: ['root']
@@ -77,4 +89,33 @@ test('exists resource', async (t) => {
   })
   console.log(resource)
   t.ok(resource, 'resource')
+})
+
+test('init resources', async (t) => {
+  const resources = await initResources({
+    projectId: 'kernel-community',
+    bucket: 'staging.kernel-community.appspot.com'
+  })
+  console.log(resources)
+  t.ok(resources, 'resources')
+})
+
+test('createEntity', async (t) => {
+  const resource = MEMBER_RESOURCE
+  const entity = await createEntity({
+    projectId: 'kernel-community',
+    bucket: 'staging.kernel-community.appspot.com',
+  }, resource, uuid(), { foo: 'bar' } )
+  console.log(entity)
+  t.ok(entity, 'entity')
+})
+
+test('getEntity', async (t) => {
+  const resource = MEMBER_RESOURCE
+  const entity = await getEntity({
+    projectId: 'kernel-community',
+    bucket: 'staging.kernel-community.appspot.com',
+  }, resource, '1728489f-0656-4ba3-a66c-7b9828cce2ba')
+  console.log(entity)
+  t.ok(entity, 'entity')
 })
