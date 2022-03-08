@@ -66,15 +66,26 @@ const createResource = async ({ projectId, bucket, resource, uri, readRoles,
   writeRoles, metaRoles }) => {
     const client = getClient({ projectId })
     const file = client.bucket(bucket).file(resourceFile(resource))
-    const content = serialize(resourceObject({ resource, uri, readRoles,
-      writeRoles, metaRoles }))
-    return file.save(content).then(() => content)
+    const resource = resourceObject({ resource, uri, readRoles,
+      writeRoles, metaRoles })
+    const content = serialize(resource)
+    return file.save(content).then(() => resource)
 }
 
 const getResource = async ({ projectId, bucket, resource }) => {
     const client = getClient({ projectId })
     const file = client.bucket(bucket).file(resourceFile(resource))
     return file.download().then((data) => deserialize(data))
+}
+
+const updateResource = async ({ projectId, bucket, resource, uri, readRoles,
+  writeRoles, metaRoles }) => {
+    const client = getClient({ projectId })
+    const resource = await getResource({ projectId, bucket, resource })
+    Object.assign(resource, resourceObject({ readRoles, writeRoles, metaRoles }))
+    const file = client.bucket(bucket).file(resourceFile(resource))
+    const content = serialize(resource)
+    return file.save(content).then(() => resource)
 }
 
 const deleteResource = async ({ projectId, bucket, resource }) => {
@@ -95,7 +106,7 @@ const existsResource = async ({ projectId, bucket, resource }) => {
 const uuid = () => crypto.randomUUID()
 const now = () => Date.now()
 
-const entityUri = (uri, id) => `${uri}/${id}`
+const entityUri = (uri, id) => `${uri}${DELIMITER}${id}`
 const entityFile = (uri) => `${uri}.json`
 const entityObject = ({ id, owner, created, updated, kind, uri, data  }) => {
   return { id, owner, created, updated, kind, uri, data }
@@ -110,7 +121,7 @@ const createEntity = async ({ projectId, bucket }, { resource, uri }, owner, dat
   const client = getClient({ projectId })
   const file = client.bucket(bucket).file(entityFile(entity.uri))
   const content = serialize(entity)
-  return file.save(content).then(() => content)
+  return file.save(content).then(() => entity)
 }
 
 const getEntity = async ({ projectId, bucket }, { resource, uri }, id) => {
@@ -119,9 +130,54 @@ const getEntity = async ({ projectId, bucket }, { resource, uri }, id) => {
     return file.download().then((data) => deserialize(data))
 }
 
+//TODO: add pagination support
+const listEntities = async ({ projectId, bucket }, { resource, uri }) => {
+  const client = getClient({ projectId })
+  const [files] = await client.bucket(bucket).getFiles({
+    delimiter: DELIMITER, prefix: `${uri}${DELIMITER}`
+  })
+  const entities = files
+    .filter((e) => e.metadata.name.endsWith('.json'))
+    .map((e) => e.metadata.name.split('.')[0])
+  return entities 
+}
+
+const deleteEntity = async ({ projectId, bucket }, { resource, uri }, id) => {
+  const client = getClient({ projectId })
+  const file = client.bucket(bucket).file(entityFile(entityUri(uri, id)))
+  await file.delete()
+  return { resource }
+}
+
+const existsEntity = async ({ projectId, bucket }, { resource, uri }, id) => {
+  const client = getClient({ projectId })
+  const file = client.bucket(bucket).file(entityFile(entityUri(uri, id)))
+  return file.exists().then(([ bool ]) => bool)
+}
+
+const updateEntity = async ({ projectId, bucket }, { resource, uri }, id, data) => {
+  const client = getClient({ projectId })
+  const entity = await getEntity({ projectId, bucket }, { resource, uri }, id)
+  Object.assign(entity.data, data)
+  entity.updated = now()
+  const file = client.bucket(bucket).file(entityFile(entity.uri))
+  const content = serialize(entity)
+  return file.save(content).then(() => entity)
+}
+
+const updateEntityMeta = async ({ projectId, bucket }, { resource, uri }, id, { owner }) => {
+  const client = getClient({ projectId })
+  const entity = await getEntity({ projectId, bucket }, { resource, uri }, id)
+  Object.assign(entity, { owner })
+  const file = client.bucket(bucket).file(entityFile(entity.uri))
+  const content = serialize(entity)
+  return file.save(content).then(() => entity)
+}
+
 export {
   uuid, MEMBER_RESOURCE,
   resourceObject, listResources, createResource, getResource,
-  deleteResource, existsResource, initResources,
-  createEntity, getEntity
+  deleteResource, existsResource, initResources, updateResource,
+  createEntity, getEntity, listEntities, deleteEntity, existsEntity, updateEntity,
+  updateEntityMeta
 }
