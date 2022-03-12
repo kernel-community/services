@@ -11,11 +11,9 @@
 import fastify from 'fastify'
 import authService from './auth.js'
 
-const build = async ({ projectId, bucket }, opts={}) => {
+const build = async ({ seed = {} }, opts={}) => {
   const service = fastify(opts)
-  const client = await authService.build({ seed })
-  const resources = await resourceService.init(client)
-  const baseUri = '/resources'
+  const client = await authService.build()
 
   service.get('/healthz', async (req, rep) => {
     return { status: 'ok' }
@@ -32,7 +30,6 @@ const build = async ({ projectId, bucket }, opts={}) => {
   service.post('/auth/token', async (req, rep) =>
     client.accessToken(req.body)
   )
-
 
   return service
 }

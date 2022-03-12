@@ -14,10 +14,7 @@ import service from './service.js'
 //TODO: implement JWT middlewear
 
 const start = async () => {
-  const server = await service({
-    projectId: process.env.PROJECT_ID,
-    bucket: process.env.BUCKET
-  }, {
+  const server = await service({}, {
     logger: {
       level: 'debug',
       prettyPrint: true
