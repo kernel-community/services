@@ -13,15 +13,20 @@ import service from './service.js'
 
 //TODO: implement JWT middlewear
 
+const PORT = process.env.PORT || 3000
+
 const start = async () => {
-  const server = await service({}, {
+  const server = await service({
+    seed: process.env.SEED,
+    resourceHost: process.env.RESOURCE_HOST
+  }, {
     logger: {
       level: 'debug',
       prettyPrint: true
     }
-    })
+  })
   try {
-    await server.listen(3000)
+    await server.listen(PORT)
   } catch (err) {
     server.log.error(err)
     process.exit(1)

@@ -9,11 +9,16 @@
 'use strict'
 
 import fastify from 'fastify'
+import sensible from 'fastify-sensible'
 import authService from './auth.js'
+import entityService from './entity.js'
 
-const build = async ({ seed = {} }, opts={}) => {
+const build = async ({ seed, storageHost }, opts={}) => {
   const service = fastify(opts)
-  const client = await authService.build()
+  const entityClient = entityService.build.bind(null, { host: storageHost })
+  const client = await authService.build({ seed, entityClient })
+
+  service.register(sensible)
 
   service.get('/healthz', async (req, rep) => {
     return { status: 'ok' }
@@ -23,9 +28,13 @@ const build = async ({ seed = {} }, opts={}) => {
     client.publicKey()
   )
 
-  service.post('/auth/register', async (req, rep) =>
-    client.register(req.body)
-  )
+  service.post('/auth/register', async (req, rep) => {
+    try {
+      return client.register(req.body)
+    } catch (e) {
+      // TODO: define errors
+    }
+  })
 
   service.post('/auth/token', async (req, rep) =>
     client.accessToken(req.body)
