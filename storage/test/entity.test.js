@@ -31,13 +31,13 @@ test('entity tests', async (t) => {
   const resource = MEMBER_RESOURCE
 
   test('create', async (t) => {
-    const result = await entity.create(client, resource, { owner: entity.uuid() }, { foo: 'bar' } )
+    const result = await entity.create(client, resource, { steward: entity.uuid() }, { foo: 'bar' } )
     console.log(result)
     t.ok(result, 'result')
   })
 
   test('get', async (t) => {
-    const result = await entity.get(client, resource, '1728489f-0656-4ba3-a66c-7b9828cce2ba')
+    const result = await entity.get(client, resource, '3d18e10a-7c65-41f4-9dd9-dbd469c45671')
     console.log(result)
     t.ok(result, 'result')
   })
@@ -49,7 +49,7 @@ test('entity tests', async (t) => {
   })
 
   test('update', async (t) => {
-    const result = await entity.update(client, resource, '1728489f-0656-4ba3-a66c-7b9828cce2ba', {
+    const result = await entity.update(client, resource, '3d18e10a-7c65-41f4-9dd9-dbd469c45671', {
       foo: 'baz', bar: 'bazzz'
     })
     console.log(result)
@@ -59,8 +59,8 @@ test('entity tests', async (t) => {
   test('updateMeta', async (t) => {
     const resource = MEMBER_RESOURCE
     const result = await entity.updateMeta(client,
-      resource, '1728489f-0656-4ba3-a66c-7b9828cce2ba', {
-      owner: 'owner'
+      resource, '3d18e10a-7c65-41f4-9dd9-dbd469c45671', {
+      steward: 'steward'
     })
     console.log(result)
     t.ok(result, 'result')

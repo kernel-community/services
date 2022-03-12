@@ -18,14 +18,14 @@ const now = () => Date.now()
 
 const entityUri = (uri, id) => `${uri}${DELIMITER}${id}`
 const entityFile = (uri) => `${uri}.json`
-const entityObject = ({ id, owner, created, updated, kind, uri, data  }) => {
-  return { id, owner, created, updated, kind, uri, data }
+const entityObject = ({ id, steward, created, updated, kind, uri, data  }) => {
+  return { id, steward, created, updated, kind, uri, data }
 }
 
 const create = async (client, { resource, uri },
-  { owner, id = uuid(), created = now(), updated = now() }, data) => {
+  { steward, id = uuid(), created = now(), updated = now() }, data) => {
     const entity = entityObject({
-      id, owner, created, updated, kind: resource, uri: entityUri(uri, id), data
+      id, steward, created, updated, kind: resource, uri: entityUri(uri, id), data
     })
     return client.save(entityFile(entity.uri), entity)
 }
@@ -68,9 +68,9 @@ const update = async (client, { resource, uri }, id, data) => {
   return client.save(entityFile(entity.uri), entity)
 }
 
-const updateMeta = async (client, { resource, uri }, id, { owner }) => {
+const updateMeta = async (client, { resource, uri }, id, { steward }) => {
   const entity = await get(client, { resource, uri }, id)
-  Object.assign(entity, { owner })
+  Object.assign(entity, { steward })
   return client.save(entityFile(entity.uri), entity)
 }
 
