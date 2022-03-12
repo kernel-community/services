@@ -36,9 +36,10 @@ const get = async (client, { resource, uri }, id) => {
 
 //TODO: add pagination support
 const list = async (client, { resource, uri }) => {
-  return await client.listObjects({
+  const entities = await client.listObjects({
     query: {prefix: `${uri}${DELIMITER}`}
   })
+  return entities.map((e) => e.split(DELIMITER).slice(-1)[0])
 }
 
 //TODO: add pagination support
@@ -57,9 +58,8 @@ const remove = async (client, { resource, uri }, id) => {
   return { resource, uri, id }
 }
 
-const exists = async (client, { resource, uri }, id) => {
-  return client.exists(entityFile(entityUri(uri, id)))
-}
+const exists = async (client, { resource, uri }, id) =>
+  client.exists(entityFile(entityUri(uri, id)))
 
 const update = async (client, { resource, uri }, id, data) => {
   const entity = await get(client, { resource, uri }, id)
