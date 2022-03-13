@@ -9,21 +9,32 @@
 'use strict'
 
 import 'dotenv/config'
-import service from './service.js'
+import fastify from 'fastify'
+import sensible from 'fastify-sensible'
+
+import health from './routes/health.js'
+import rest from './routes/rest.js'
+import rpc from './routes/rpc.js'
 
 //TODO: implement JWT middlewear
 
 const start = async () => {
-  const server = await service({
-    projectId: process.env.PROJECT_ID,
-    bucket: process.env.BUCKET
-  }, {
+  const opts = {
     logger: {
       level: 'debug',
       prettyPrint: true
     }
-    })
+  }
+  const server = fastify(opts)
   try {
+    server.register(sensible)
+    await Promise.all([
+      health.register(server),
+      rpc.register(server, {
+        projectId: process.env.PROJECT_ID,
+        bucket: process.env.BUCKET
+      })
+    ])
     await server.listen(3000)
   } catch (err) {
     server.log.error(err)

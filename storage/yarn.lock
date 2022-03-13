@@ -2344,6 +2344,11 @@ snakeize@^0.1.0:
   resolved "https://registry.yarnpkg.com/snakeize/-/snakeize-0.1.0.tgz#10c088d8b58eb076b3229bb5a04e232ce126422d"
   integrity sha1-EMCI2LWOsHazIpu1oE4jLOEmQi0=
 
+snowflake-uuid@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/snowflake-uuid/-/snowflake-uuid-1.0.0.tgz#b656c89f7e9c9660a64d7a2977e627b1556f4a71"
+  integrity sha512-Y8Wj4ota0NgqXm2mhQ+lIWQQbUekkZYVlwXDGMmOpEhH4BfNVnCfDTqboeo0N+BFBN2FhRSaUWXLZBk4ngiImA==
+
 sonic-boom@^1.0.2:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-1.4.1.tgz#d35d6a74076624f12e6f917ade7b9d75e918f53e"

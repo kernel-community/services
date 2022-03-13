@@ -20,7 +20,7 @@ const deserialize = (obj) => JSON.parse(obj)
 const serializeObject = serialize
 const deserializeObject = deserialize
 
-const build = ({ projectId, bucket, delimiter = DELIMITER,
+const build = async ({ projectId, bucket, delimiter = DELIMITER,
   serialize = serializeObject, deserialize = deserializeObject }) => {
     const client = new Storage({ projectId }).bucket(bucket)
 
@@ -50,8 +50,6 @@ const build = ({ projectId, bucket, delimiter = DELIMITER,
     return { getFiles, getObjects, listObjects, file, save, download, remove, exists }
 }
 
-const storage = {
-  build
-}
+const storage = { build }
 
 export default storage
