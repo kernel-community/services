@@ -30,7 +30,7 @@ const start = async () => {
     server.register(sensible)
     await Promise.all([
       health.register(server),
-      rpc.register(server, {
+      rpc.register(server, '/rpc', {
         projectId: process.env.PROJECT_ID,
         bucket: process.env.BUCKET
       })

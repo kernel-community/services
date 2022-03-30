@@ -9,48 +9,73 @@
 'use strict'
 
 import crypto from 'crypto'
+import merge from 'deepmerge'
 import { Worker } from 'snowflake-uuid'
 
 // TODO: move to common
+const BASE = 'resources'
 const DELIMITER = '/'
 
-const build = async (client) => {
+const build = async (client, resourceService, { base = BASE } = {}) => {
+
+  // load known resources
+  const resources = await resourceService.resources()
 
   //TODO: worker opts
   const generator = new Worker()
   const uuid = () => generator.nextId().toString()
   const now = () => Date.now()
 
-  const entityUri = (uri, id) => `${uri}${DELIMITER}${id}`
+  const entityUri = (uri, id) => `${base}${DELIMITER}${uri}${DELIMITER}${id}`
   const entityFile = (uri) => `${uri}.json`
-  const entityObject = ({ id, steward, created, updated, kind, uri, data  }) => {
-    return { id, steward, created, updated, kind, uri, data }
+  const entityObject = ({ id, owner, created, updated, kind, uri, data  }) => {
+    return { id, owner, created, updated, kind, uri, data }
   }
 
-  const create = async (client, { resource, uri },
-    { steward, id = uuid(), created = now(), updated = now() }, data) => {
+  const create = async ({ iss, roles}, { resource }, data,
+    { owner = iss, id = uuid(), created = now(), updated = now() }) => {
+      const { uri } = resources[resource]
       const entity = entityObject({
-        id, steward, created, updated, kind: resource, uri: entityUri(uri, id), data
+        id, owner, created, updated, kind: resource, uri: entityUri(uri, id), data
       })
       return client.save(entityFile(entity.uri), entity)
   }
 
-  const get = async (client, { resource, uri }, id) => {
-    return client.download(entityFile(entityUri(uri, id)))
+  const intersection = (e, f) => e.filter((g) => f.includes(g))
+  const contains = (e, f) => intersection(e, f).length > 0
+
+  const get = async ({ iss, roles }, { resource }, id) => {
+    const { uri, readRoles } = resources[resource]
+    if (!contains(readRoles, roles) && !readRoles.includes('owner')) {
+      throw new Error(`${iss} cannot read ${resource}`)
+    }
+    const entity = await client.download(entityFile(entityUri(uri, id)))
+    if (readRoles.includes('owner') && entity.owner != iss && !contains(readRoles, roles)) {
+      throw new Error(`${iss} cannot read ${resource}`)
+    }
+    return entity
   }
 
   //TODO: add pagination support
-  const list = async (client, { resource, uri }) => {
+  const list = async ({ iss, roles }, { resource }) => {
+    const { uri, readRoles } = resources[resource]
+    if (!contains(readRoles, roles)) {
+      throw new Error(`${iss} cannot read ${resource}`)
+    }
     const entities = await client.listObjects({
-      query: {prefix: `${uri}${DELIMITER}`}
+      query: {prefix: `${base}${DELIMITER}${uri}${DELIMITER}`}
     })
     return entities.map((e) => e.split(DELIMITER).slice(-1)[0])
   }
 
   //TODO: add pagination support
-  const getAll = async (client, { resource, uri }) => {
+  const getAll = async ({ iss, roles }, { resource }) => {
+    const { uri, readRoles } = resources[resource]
+    if (!contains(readRoles, roles)) {
+      throw new Error(`${iss} cannot read ${resource}`)
+    }
     return await client.getObjects({
-      query: {prefix: `${uri}${DELIMITER}`},
+      query: {prefix: `${base}${DELIMITER}${uri}${DELIMITER}`},
       reducer: (acc, e) => {
         acc[e.id] = e
         return acc
@@ -58,24 +83,38 @@ const build = async (client) => {
     })
   }
 
-  const remove = async (client, { resource, uri }, id) => {
+  const remove = async (user, { resource }, id) => {
+    const { uri, writeRoles } = resources[resource]
+    if (!contains(writeRoles, roles)) {
+      throw new Error(`${iss} cannot read ${resource}`)
+    }
     await client.remove(entityFile(entityUri(uri, id)))
     return { resource, uri, id }
   }
 
-  const exists = async (client, { resource, uri }, id) =>
-    client.exists(entityFile(entityUri(uri, id)))
+  const exists = async ({ iss, roles }, { resource }, id) => {
+    const { uri, readRoles } = resources[resource]
+    if (!contains(readRoles, roles)) {
+      throw new Error(`${iss} cannot read ${resource}`)
+    }
+    return client.exists(entityFile(entityUri(uri, id)))
+  }
 
-  const update = async (client, { resource, uri }, id, data) => {
-    const entity = await get(client, { resource, uri }, id)
-    Object.assign(entity.data, data)
+  const update = async (user, { resource }, id, data) => {
+    const { uri } = resources[resource]
+    const entity = await get(user, { resource, uri }, id)
+    Object.assign(entity.data, merge(entity.data, data))
     entity.updated = now()
     return client.save(entityFile(entity.uri), entity)
   }
 
-  const updateMeta = async (client, { resource, uri }, id, { steward }) => {
-    const entity = await get(client, { resource, uri }, id)
-    Object.assign(entity, { steward })
+  const updateMeta = async ({ iss, roles }, { resource }, id, { owner }) => {
+    const { uri, metaRoles } = resources[resource]
+    if (!contains(metaRoles, roles)) {
+      throw new Error(`${iss} cannot read ${resource}`)
+    }
+    const entity = await get({ iss, roles }, { resource, uri }, id)
+    Object.assign(entity, merge(entity, { owner }))
     return client.save(entityFile(entity.uri), entity)
   }
 
@@ -85,7 +124,6 @@ const build = async (client) => {
 }
 
 const entity = {
-  //uuid, list, create, get, getAll, update, updateMeta, remove, exists
   build
 }
 

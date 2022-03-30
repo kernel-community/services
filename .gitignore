@@ -105,3 +105,6 @@ dist
 
 # vim
 *.swp
+
+# app engine
+app.yaml

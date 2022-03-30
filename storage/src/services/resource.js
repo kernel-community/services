@@ -8,31 +8,40 @@
 
 'use strict'
 
+const BASE = 'resources'
 const EXT = '.json'
 const DELIMITER = '/'
 const ROLE_RESOURCE = {
   resource: 'role',
   uri: 'roles',
-  readRoles: ['root'],
-  writeRoles: ['root'],
-  metaRoles: ['root']
+  readRoles: ['api', 'root'],
+  writeRoles: ['api', 'root'],
+  metaRoles: ['api', 'root']
 }
 const MEMBER_RESOURCE = {
   resource: 'member',
   uri: 'members',
-  readRoles: ['root'],
-  writeRoles: ['root'],
-  metaRoles: ['root']
+  readRoles: ['api', 'owner', 'root'],
+  writeRoles: ['api', 'owner', 'root'],
+  metaRoles: ['api', 'root']
+}
+const WALLET_RESOURCE = {
+  resource: 'wallet',
+  uri: 'wallets',
+  readRoles: ['api', 'owner', 'root'],
+  writeRoles: ['api', 'owner', 'root'],
+  metaRoles: ['api', 'root']
 }
 
-const build = async (client) => {
+const build = async (client, { base = BASE } = {}) => {
   const resourceObject = ({ resource, uri, readRoles, writeRoles, metaRoles }) => {
     return { resource, uri, readRoles, writeRoles, metaRoles }
   }
-  const resourceFile = (resource) => `${resource}${EXT}`
+  const resourceFile = (resource) => `${base}${DELIMITER}${resource}${EXT}`
 
-  const init = async (client) => {
+  const init = async (user) => {
     return await client.getObjects({
+      query: {prefix: `${base}${DELIMITER}`},
       reducer: (acc, e) => {
         acc[e.resource] = e
         return acc
@@ -40,11 +49,13 @@ const build = async (client) => {
     })
   }
 
-  const list = async (client) => {
-    return await client.listObjects()
+  const list = async (user) => {
+    return await client.listObjects({
+      query: {prefix: `${base}${DELIMITER}`}
+    })
   }
 
-  const create = async (client, { resource, uri, readRoles,
+  const create = async (user, { resource, uri, readRoles,
     writeRoles, metaRoles }) => 
       client.save(resourceFile(resource),
         resourceObject({
@@ -52,25 +63,26 @@ const build = async (client) => {
         })
       )
 
-  const get = async (client, resource) =>
+  const get = async (user, resource) =>
     client.download(resourceFile(resource))
 
-  const update = async (client, { resource, uri, readRoles,
+  const update = async (user, { resource, uri, readRoles,
     writeRoles, metaRoles }) => {
-      const resourceObj = await get(client, resource)
+      const resourceObj = await get(user, resource)
       Object.assign(resourceObj, resourceObject({ readRoles, writeRoles, metaRoles }))
-      return client.save(resourceFile(resource), resource)
+      await client.save(resourceFile(resource), resourceObj)
+      return resourceObj
   }
 
-  const remove = async (client, resource) => {
+  const remove = async (user, resource) => {
       await client.remove(resourceFile(resource))
       return { resource }
   }
 
-  const exists = async (client, resource) =>
+  const exists = async (user, resource) =>
     client.exists(resourceFile(resource))
 
-  const resources = await init(client)
+  const resources = await init({}, client)
   return {
     init,
     list,
