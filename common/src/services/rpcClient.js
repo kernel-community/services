@@ -17,7 +17,7 @@ const build = async ({ rpcEndpoint, jwtFn }) => {
   //console.log(jwtFn)
 
   const jsonRpc = ({ version = VERSION, id = uuid(), method, params }) => {
-    return { jsonRpc: version, id, method, params }
+    return { jsonrpc: version, id, method, params }
   }
 
   const method = (service, name) => `${service}.${name}` 

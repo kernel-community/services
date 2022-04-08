@@ -29,6 +29,7 @@ const Import = () => {
   const [password, setPassword] = useState('')
   const [mnemonic, setMnemonic] = useState('')
   const [address, setAddress] = useState('')
+  const [encryptedData, setEncryptedData] = useState('')
   const [progress, setProgress] = useState(0)
 
   const importWallet = async (e) => {
@@ -61,6 +62,13 @@ const Import = () => {
     }
   }
 
+  const readFile = (e) => {
+    const file = e.target.files[0]
+    const reader = new FileReader()
+    reader.addEventListener('load', event => setEncryptedData(event.target.result))
+    reader.readAsDataURL(file)
+  }
+
   return (
     <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
       <div className="btn-wrapper text-center">
@@ -75,18 +83,14 @@ const Import = () => {
         <div className="relative w-full mb-3">
           <label
             className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password"
           >
-            Seed Phrase
+            Encrypted Wallet
           </label>
-          <textarea
-            type="text"
-            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-            placeholder="Seed phrase"
-            style={{ transition: "all .15s ease" }}
-            onChange={(e) => setMnemonic(e.target.value)}
-            value={mnemonic}
-          />
+          <input
+            type="file"
+            accept=".json"
+            onChange={ (e) => readFile(e) }
+            />
         </div>
         <div className="relative w-full mb-3">
           <label
@@ -117,7 +121,7 @@ const Import = () => {
             placeholder="Password"
             style={{ transition: "all .15s ease" }}
             onChange={(e) => setPassword(e.target.value)}
-            value={password}
+            value={ password }
           />
         </div>
         <div className="text-center mt-6">

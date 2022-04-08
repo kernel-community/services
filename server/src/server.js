@@ -15,11 +15,20 @@ import sensible from 'fastify-sensible'
 import health from './routes/health.js'
 import rpcStorage from './../../storage/src/routes/rpc.js'
 import rpcAuth from './../../auth/src/routes/rpc.js'
+import secretBuilder from './services/secret.js'
 
 const PORT = process.env.PORT || 3001
 const HOST = process.env.HOST || 'localhost'
 const STORAGE_RPC_PATH = process.env.STORAGE_RPC_PATH || '/storage/rpc'
 const AUTH_RPC_PATH = process.env.AUTH_RPC_PATH || '/auth/rpc'
+const AUTH_SEED_SECRET_ID = process.env.AUTH_SEED_SECRET_ID || 'authSeed'
+
+const AUTH_SEED_SECRET_CRC32C = process.env.AUTH_SEED_SECRET_CRC32C 
+const AUTH_MEMBER_ID = process.env.AUTH_MEMBER_ID
+const PROJECT_ID = process.env.PROJECT_ID
+const BUCKET = process.env.BUCKET
+
+const production = () => process.env.NODE_ENV === 'production'
 
 const start = async () => {
   const opts = {
@@ -30,19 +39,30 @@ const start = async () => {
   const server = fastify(opts)
   try {
     server.register(sensible)
-    await Promise.all([
+    let seed = process.env.SEED || ''
+    if (production()) {
+      const secretService = await secretBuilder.build({ projectId: PROJECT_ID })
+      const secret = await secretService.access({
+        secretId: AUTH_SEED_SECRET_ID, crc32c: AUTH_SEED_SECRET_CRC32C
+      })
+      seed = secret.payload.data.toString()
+    }
+
+    const listenFns = await Promise.all([
       health.register(server),
       rpcStorage.register(server, STORAGE_RPC_PATH, {
-        projectId: process.env.PROJECT_ID,
-        bucket: process.env.BUCKET,
+        projectId: PROJECT_ID,
+        bucket: BUCKET,
         rpcEndpoint: `http://${HOST}:${PORT}${AUTH_RPC_PATH}`
       }),
       rpcAuth.register(server, AUTH_RPC_PATH, {
-        seed: process.env.SEED,
+        seed,
+        authMemberId: AUTH_MEMBER_ID,
         rpcEndpoint: `http://${HOST}:${PORT}${STORAGE_RPC_PATH}`
       })
     ])
     await server.listen(PORT, '0.0.0.0')
+    listenFns.forEach(({ listen }) => listen())
   } catch (err) {
     server.log.error(err)
     process.exit(1)

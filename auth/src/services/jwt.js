@@ -11,8 +11,10 @@
 import crypto from 'crypto'
 import { ethers } from 'ethers'
 
+const production = () => process.env.NODE_ENV === 'production'
+
 // 20min
-const TOKEN_TTL = 20 * 60 * 1000
+const TOKEN_TTL = production() ? 20 * 60 * 1000 : 60 * 60 * 1000
 const AUD = 'kernel.community'
 const HEADER = { alg: 'ES256K', typ: 'JWT' }
 const DOMAIN = {
@@ -35,7 +37,7 @@ const AUTH_JWT = {
     { name: 'iat', type: 'uint256' },
     { name: 'exp', type: 'uint256' },
     { name: 'nickname', type: 'string' },
-    { name: 'roles', type: 'string[]' }
+    { name: 'role', type: 'uint256' }
   ]
 }
 const JWK = {
@@ -91,8 +93,8 @@ const createJwt = (wallet, type, payload) =>
     .then((signature) => encode({ payload, signature }) )
 
 const authPayload = ({ iss, aud = AUD, iat = now(),
-  exp = tokenExp(), nickname, roles }) => {
-    return { iss, aud, iat, exp, nickname, roles }
+  exp = tokenExp(), nickname, role }) => {
+    return { iss, aud, iat, exp, nickname, role }
 }
 
 const clientPayload = ({ iss, aud = AUD, iat = now(),

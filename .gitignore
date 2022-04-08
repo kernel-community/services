@@ -105,6 +105,7 @@ dist
 
 # vim
 *.swp
+*.swo
 
 # app engine
 app.yaml

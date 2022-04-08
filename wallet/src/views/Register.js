@@ -21,7 +21,7 @@ const Register = () => {
     <div>
       <Navbar transparent />
         <main>
-          <section className="relative md:pt-32 pb-32 pt-12">
+          <section className="absolute md:pt-32 pb-32 w-full h-full">
             <div
               className="absolute top-0 w-full h-full bg-gray-900"
               style={{
@@ -30,8 +30,8 @@ const Register = () => {
                 backgroundRepeat: "no-repeat"
               }}
             ></div>
-            <div className="container mx-auto px-4 h-full">
-              <div className="flex content-center items-center justify-center h-full">
+            <div className="container mx-auto px-4 py-8 h-full overflow-y-auto">
+              <div className="flex content-center items-center justify-center">
                 <div className="w-full lg:w-4/12 px-4">
                   <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0">
                     <div className="rounded-t mb-0 px-6 py-6">

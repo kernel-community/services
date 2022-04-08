@@ -9,7 +9,7 @@
 'use strict'
 
 import crypto from 'crypto'
-import {Storage} from '@google-cloud/storage'
+import { Storage } from '@google-cloud/storage'
 
 const DOT = '.'
 const EXT = `${DOT}json`

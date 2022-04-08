@@ -13,13 +13,24 @@ import rpcBuilder from './../services/rpc.js'
 
 const VERSION = '2.0'
 
-const register = async (server, rpcPath, { seed, rpcEndpoint }) => {
+const ROLE_ALL = 1000
+const ROLE_CORE = 100
+const SERVICE_POLICY = {
+  authService: {
+    setup: ROLE_CORE,
+    publicKey: ROLE_ALL,
+    register: ROLE_ALL,
+    accessToken: ROLE_ALL
+  }
+}
+const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) => {
 
-  const authService = await authBuilder.build({ seed, rpcEndpoint })
+  const authService = await authBuilder.build({ seed, authMemberId, rpcEndpoint })
 
   const services = { authService }
   const rpcService = await rpcBuilder.build(services)
 
+  //TODO: limit origin domains
   server.options(`${rpcPath}`, async (request, reply) => {
     reply.header("Access-Control-Allow-Origin", "*")
     reply.header("Access-Control-Allow-Headers", "*")
@@ -31,8 +42,14 @@ const register = async (server, rpcPath, { seed, rpcEndpoint }) => {
     reply.header("Access-Control-Allow-Origin", "*")
     reply.header("Access-Control-Allow-Headers", "*")
     reply.header("Access-Control-Allow-Methods", "POST")
-    console.debug(request.body)
     const { jsonrpc, id, method, params } = request.body
+    if (!jsonrpc || !id || !method)  {
+      return reply.badRequest()
+    }
+    if (!method.length || method.indexOf('.') < 0) {
+      return reply.badRequest()
+    }
+    console.debug('rpc ', request.body, request.user)
     const [service, fn] = method.split('.') 
     try {
       const result = await rpcService.call(service, fn, params)
@@ -42,6 +59,8 @@ const register = async (server, rpcPath, { seed, rpcEndpoint }) => {
       return { jsonrpc, id, error }
     }
   })
+
+  return {listen: () => ''}
 }
 
 const rpc = { register }

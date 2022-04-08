@@ -1,7 +1,7 @@
 {
   "name": "wallet",
   "version": "0.1.0",
-  "homepage": "https://kernel-community.uc.r.appspot.com/wallet",
+  "homepage": "https://wallet.kernel.community",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.0",
@@ -19,7 +19,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3003 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

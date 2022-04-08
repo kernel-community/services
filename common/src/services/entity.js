@@ -13,7 +13,7 @@
 const uuid = () => crypto.randomUUID()
 const now = () => Date.now()
 
-const build = async ({ rpcClient }, { resource, uri }) => {
+const build = async ({ rpcClient }, { resource }) => {
 
   const serviceName = 'entityService'
   const method = rpcClient.method.bind(null, serviceName)
@@ -34,11 +34,13 @@ const build = async ({ rpcClient }, { resource, uri }) => {
 
   const remove = async (id) => call('remove', id) 
 
+  const patch = async (id, data) => call('patch', id, data) 
+
   const update = async (id, data) => call('update', id, data) 
 
   const updateMeta = async (id, data) => call('updateMeta', id, data) 
 
-  return { create, exists, get, getAll, list, remove, update, updateMeta }
+  return { create, exists, get, getAll, list, remove, patch, update, updateMeta }
 
 }
 

@@ -11,35 +11,62 @@
 const BASE = 'resources'
 const EXT = '.json'
 const DELIMITER = '/'
+
+// 
+const ROLE_ALL = 1000
+const ROLE_OWNER = 2000
+const ROLE_CORE = 100
+
 const ROLE_RESOURCE = {
   resource: 'role',
   uri: 'roles',
-  readRoles: ['api', 'root'],
-  writeRoles: ['api', 'root'],
-  metaRoles: ['api', 'root']
+  policy: {
+    create: ROLE_CORE,
+    get: ROLE_CORE,
+    list: ROLE_CORE,
+    getAll: ROLE_CORE,
+    remove: ROLE_CORE,
+    exists: ROLE_CORE,
+    patch: ROLE_CORE,
+    update: ROLE_CORE,
+    updateMeta: ROLE_CORE
+  }
 }
 const MEMBER_RESOURCE = {
   resource: 'member',
   uri: 'members',
-  readRoles: ['api', 'owner', 'root'],
-  writeRoles: ['api', 'owner', 'root'],
-  metaRoles: ['api', 'root']
+  policy: {
+    create: ROLE_CORE,
+    get: ROLE_CORE,
+    list: ROLE_CORE,
+    getAll: ROLE_CORE,
+    remove: ROLE_CORE,
+    exists: ROLE_CORE,
+    patch: ROLE_CORE,
+    update: ROLE_CORE,
+    updateMeta: ROLE_CORE
+  }
 }
 const WALLET_RESOURCE = {
   resource: 'wallet',
   uri: 'wallets',
-  readRoles: ['api', 'owner', 'root'],
-  writeRoles: ['api', 'owner', 'root'],
-  metaRoles: ['api', 'root']
+  policy: {
+    create: ROLE_CORE,
+    get: ROLE_CORE,
+    list: ROLE_CORE,
+    getAll: ROLE_CORE,
+    remove: ROLE_CORE,
+    exists: ROLE_CORE,
+    patch: ROLE_CORE,
+    update: ROLE_CORE,
+    updateMeta: ROLE_CORE
+  }
 }
 
 const build = async (client, { base = BASE } = {}) => {
-  const resourceObject = ({ resource, uri, readRoles, writeRoles, metaRoles }) => {
-    return { resource, uri, readRoles, writeRoles, metaRoles }
-  }
-  const resourceFile = (resource) => `${base}${DELIMITER}${resource}${EXT}`
+  const resourceFile = ({ resource }) => `${base}${DELIMITER}${resource}${EXT}`
 
-  const init = async (user) => {
+  const resources = async (user) => {
     return await client.getObjects({
       query: {prefix: `${base}${DELIMITER}`},
       reducer: (acc, e) => {
@@ -55,23 +82,22 @@ const build = async (client, { base = BASE } = {}) => {
     })
   }
 
-  const create = async (user, { resource, uri, readRoles,
-    writeRoles, metaRoles }) => 
-      client.save(resourceFile(resource),
-        resourceObject({
-          resource, uri, readRoles, writeRoles, metaRoles
-        })
-      )
+  const create = async (user, resource) => 
+      client.save(resourceFile(resource), resource)
 
   const get = async (user, resource) =>
     client.download(resourceFile(resource))
 
-  const update = async (user, { resource, uri, readRoles,
-    writeRoles, metaRoles }) => {
-      const resourceObj = await get(user, resource)
-      Object.assign(resourceObj, resourceObject({ readRoles, writeRoles, metaRoles }))
-      await client.save(resourceFile(resource), resourceObj)
-      return resourceObj
+  const patch = async (user, resource) => {
+    const resourceObj = await get(user, resource)
+    Object.assign(resourceObj, resource)
+    await client.save(resourceFile(resource), resourceObj)
+    return resourceObj
+  }
+
+  const update = async (user, resource) => {
+    await client.save(resourceFile(resource), resource)
+    return resource
   }
 
   const remove = async (user, resource) => {
@@ -82,16 +108,29 @@ const build = async (client, { base = BASE } = {}) => {
   const exists = async (user, resource) =>
     client.exists(resourceFile(resource))
 
-  const resources = await init({}, client)
+  const setup = async (user) => {
+    const resources = [ROLE_RESOURCE, MEMBER_RESOURCE, WALLET_RESOURCE]
+    await Promise.all(resources
+      .map(async (resource) => {
+        const backfill = !await exists(user, resource)
+        if (backfill) {
+          console.debug('creating', resource)
+          await create(user, resource)
+        }
+      })
+    )
+  }
+
   return {
-    init,
+    resources,
     list,
     create,
     get,
+    patch,
     update,
     remove,
     exists,
-    resources: async () => resources
+    setup
   }
 }
 

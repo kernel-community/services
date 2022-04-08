@@ -20,15 +20,20 @@ const SUCCESS_TO = '/assets'
 
 const authClient = async (jwtFn) =>
   rpcClient.build({ rpcEndpoint: endpoint, jwtFn })
+const serialize = (nickname, address, encryptedWallet) =>
+    JSON.stringify({ version: WALLET_STORE_VERSION, nickname, address, encryptedWallet })
+
 const storeWallet = (nickname, address, encryptedWallet) =>
-  localStorage.setItem('wallet',
-    JSON.stringify({ version: WALLET_STORE_VERSION, nickname, address, encryptedWallet }))
+  localStorage.setItem('wallet', serialize(nickname, address, encryptedWallet))
+
+const createUrl = (data) => URL.createObjectURL(new Blob([data], {type: 'application/json'}))
 
 const Create = () => {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [mnemonic, setMnemonic] = useState('')
   const [address, setAddress] = useState('')
+  const [encryptedData, setEncryptedData] = useState('')
   const [progress, setProgress] = useState(0)
 
   const createWallet = async (e) => {
@@ -51,6 +56,7 @@ const Create = () => {
       storeWallet(nickname, wallet.address, encryptedWallet)
       setMnemonic(wallet.mnemonic.phrase)
       setAddress(wallet.address)
+      setEncryptedData(serialize(nickname, wallet.address, encryptedWallet))
 
       // trigger gc
       wallet = null
@@ -61,6 +67,7 @@ const Create = () => {
       console.error(error)
     }
   }
+  useEffect(() => console.log(encryptedData), [encryptedData])
 
   return (
     <div className="rounded-t mb-0 px-6 py-6">
@@ -142,6 +149,18 @@ const Create = () => {
             style={{ transition: "all .15s ease" }}
             onChange={(e) => setMnemonic(e.target.value)}
             value={mnemonic} />
+        </div>
+        <div className="relative w-full mb-3">
+          <label className="block uppercase text-gray-700 text-xs font-bold mb-2">
+            Encrypted Wallet 
+          </label>
+          <a download={ `${address}-wallet.json` }
+            href={ createUrl(encryptedData) }>
+            <div
+              className="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center">
+              Download 
+            </div>
+          </a>
         </div>
         <div className="text-center mt-6">
           <Link

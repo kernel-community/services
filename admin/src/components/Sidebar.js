@@ -86,45 +86,35 @@ const Sidebar = () => {
               <li className="items-center">
                 <Link
                   className="text-pink-500 hover:text-pink-600 text-xs uppercase py-3 font-bold block"
-                  to="/assets/overview"
+                  to="/dashboard"
                 >
-                  <i className="fas fa-tv opacity-75 mr-2 text-sm"></i> Overview
+                  <i className="fas fa-tv opacity-75 mr-2 text-sm"></i> Dashboard
                 </Link>
               </li>
 
               <li className="items-center">
                 <Link
                   className="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-                  to="/assets/transactions"
+                  to="/resources"
                 >
-                  <i className="fas fa-newspaper text-blueGray-400 mr-2 text-sm"></i> Wallets
+                  <i className="fas fa-newspaper text-blueGray-400 mr-2 text-sm"></i> Resources 
                 </Link>
               </li>
 
               <li className="items-center">
                 <Link
                   className="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-                  to="/assets/nfts"
+                  to="/entities"
                 >
-                  <i className="fas fa-user-circle text-blueGray-400 mr-2 text-sm"></i> Members
+                  <i className="fas fa-user-circle text-blueGray-400 mr-2 text-sm"></i> Entities
                 </Link>
               </li>
-
-              <li className="items-center">
-                <Link
-                  className="text-blueGray-700 hover:text-blueGray-500 text-xs uppercase py-3 font-bold block"
-                  to="/assets/nfts"
-                >
-                  <i className="fas fa-user-circle text-blueGray-400 mr-2 text-sm"></i> Adventures
-                </Link>
-              </li>
-
             </ul>
             {/* Divider */}
             <hr className="my-4 md:min-w-full" />
             {/* Heading */}
             <h6 className="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
-              Manage 
+              Actions 
             </h6>
             {/* Navigation */}
             <ul className="md:flex-col md:min-w-full flex flex-col list-none md:mb-4">

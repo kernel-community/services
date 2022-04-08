@@ -9,7 +9,7 @@
 'use strict'
 
 const register = async (server) => {
-  server.get('/healthz', async (req, rep) => {
+  server.get('/health', async (req, rep) => {
     return { status: 'ok' }
   })
 }

@@ -16,9 +16,18 @@ import { Worker } from 'snowflake-uuid'
 const BASE = 'resources'
 const DELIMITER = '/'
 
+const ROLE_ALL = 1000
+const ROLE_OWNER = 2000
+const ROLE_CORE = 100
+
+const AccessDeniedError = ({ iss, policy }) => {
+  throw { name: 'AccessDenied', message: `Not able to take this action: ${iss}, ${JSON.stringify(policy)}`   }
+}
+
 const build = async (client, resourceService, { base = BASE } = {}) => {
 
   // load known resources
+  await resourceService.setup()
   const resources = await resourceService.resources()
 
   //TODO: worker opts
@@ -32,35 +41,34 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
     return { id, owner, created, updated, kind, uri, data }
   }
 
-  const create = async ({ iss, roles}, { resource }, data,
+  const create = async ({ iss, role }, { resource }, data,
     { owner = iss, id = uuid(), created = now(), updated = now() }) => {
-      const { uri } = resources[resource]
+      const { uri, policy } = resources[resource]
+      if (role >= policy.create) {
+        AccessDeniedError({ iss, policy })
+      }
+
       const entity = entityObject({
         id, owner, created, updated, kind: resource, uri: entityUri(uri, id), data
       })
       return client.save(entityFile(entity.uri), entity)
   }
 
-  const intersection = (e, f) => e.filter((g) => f.includes(g))
-  const contains = (e, f) => intersection(e, f).length > 0
 
-  const get = async ({ iss, roles }, { resource }, id) => {
-    const { uri, readRoles } = resources[resource]
-    if (!contains(readRoles, roles) && !readRoles.includes('owner')) {
-      throw new Error(`${iss} cannot read ${resource}`)
-    }
+  const get = async ({ iss, role }, { resource }, id) => {
+    const { uri, policy } = resources[resource]
     const entity = await client.download(entityFile(entityUri(uri, id)))
-    if (readRoles.includes('owner') && entity.owner != iss && !contains(readRoles, roles)) {
-      throw new Error(`${iss} cannot read ${resource}`)
+    if (role >= policy.get && entity.owner != iss) {
+      AccessDeniedError({ iss, policy })
     }
     return entity
   }
 
   //TODO: add pagination support
-  const list = async ({ iss, roles }, { resource }) => {
-    const { uri, readRoles } = resources[resource]
-    if (!contains(readRoles, roles)) {
-      throw new Error(`${iss} cannot read ${resource}`)
+  const list = async ({ iss, role }, { resource }) => {
+    const { uri, policy } = resources[resource]
+    if (role >= policy.list) {
+      AccessDeniedError({ iss, policy })
     }
     const entities = await client.listObjects({
       query: {prefix: `${base}${DELIMITER}${uri}${DELIMITER}`}
@@ -69,10 +77,10 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   }
 
   //TODO: add pagination support
-  const getAll = async ({ iss, roles }, { resource }) => {
-    const { uri, readRoles } = resources[resource]
-    if (!contains(readRoles, roles)) {
-      throw new Error(`${iss} cannot read ${resource}`)
+  const getAll = async ({ iss, role }, { resource }) => {
+    const { uri, policy } = resources[resource]
+    if (role >= policy.getAll) {
+      AccessDeniedError({ iss, policy })
     }
     return await client.getObjects({
       query: {prefix: `${base}${DELIMITER}${uri}${DELIMITER}`},
@@ -83,43 +91,57 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
     })
   }
 
-  const remove = async (user, { resource }, id) => {
-    const { uri, writeRoles } = resources[resource]
-    if (!contains(writeRoles, roles)) {
-      throw new Error(`${iss} cannot read ${resource}`)
+  const remove = async ({ iss, role }, { resource }, id) => {
+    const { uri, policy } = resources[resource]
+    if (role >= policy.remove) {
+      AccessDeniedError({ iss, policy })
     }
     await client.remove(entityFile(entityUri(uri, id)))
     return { resource, uri, id }
   }
 
-  const exists = async ({ iss, roles }, { resource }, id) => {
-    const { uri, readRoles } = resources[resource]
-    if (!contains(readRoles, roles)) {
-      throw new Error(`${iss} cannot read ${resource}`)
+  const exists = async ({ iss, role }, { resource }, id) => {
+    const { uri, policy } = resources[resource]
+    if (role >= policy.exists) {
+      AccessDeniedError(`${iss} cannot read ${resource}`)
     }
     return client.exists(entityFile(entityUri(uri, id)))
   }
 
-  const update = async (user, { resource }, id, data) => {
-    const { uri } = resources[resource]
-    const entity = await get(user, { resource, uri }, id)
+  const patch = async ({ iss, role }, { resource }, id, data) => {
+    const { uri, policy } = resources[resource]
+    const entity = await get({ iss, role }, { resource }, id)
+    if (role >= policy.update && entity.owner != iss) {
+      AccessDeniedError({ iss, policy })
+    }
     Object.assign(entity.data, merge(entity.data, data))
     entity.updated = now()
     return client.save(entityFile(entity.uri), entity)
   }
 
-  const updateMeta = async ({ iss, roles }, { resource }, id, { owner }) => {
-    const { uri, metaRoles } = resources[resource]
-    if (!contains(metaRoles, roles)) {
-      throw new Error(`${iss} cannot read ${resource}`)
+  const update = async ({ iss, role }, { resource }, id, data) => {
+    const { uri, policy } = resources[resource]
+    const entity = await get({ iss, role }, { resource }, id)
+    if (role >= policy.update && entity.owner != iss) {
+      AccessDeniedError({ iss, policy })
     }
-    const entity = await get({ iss, roles }, { resource, uri }, id)
+    Object.assign(entity, { data })
+    entity.updated = now()
+    return client.save(entityFile(entity.uri), entity)
+  }
+
+  const updateMeta = async ({ iss, role }, { resource }, id, { owner }) => {
+    const { uri, policy } = resources[resource]
+    const entity = await get({ iss, role }, { resource }, id)
+    if (role >= policy.updateMeta && entity.owner != iss) {
+      AccessDeniedError({ iss, policy })
+    }
     Object.assign(entity, merge(entity, { owner }))
     return client.save(entityFile(entity.uri), entity)
   }
 
   return {
-    uuid, list, create, get, getAll, update, updateMeta, remove, exists
+    uuid, list, create, get, getAll, patch, update, updateMeta, remove, exists
   }
 }
 
