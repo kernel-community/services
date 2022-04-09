@@ -80,7 +80,7 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+#dist
 
 # Gatsby files
 .cache/
@@ -108,4 +108,5 @@ dist
 *.swo
 
 # app engine
-app.yaml
+#app.yaml
+build/

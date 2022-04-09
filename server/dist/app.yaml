@@ -1,0 +1,18 @@
+# Copyright (c) Kernel
+
+runtime: nodejs16
+instance_class: F1
+
+env_variables:
+  AUTH_SEED_SECRET_ID: "authSeed"
+  AUTH_SEED_SECRET_CRC32C: "2243211319"
+  AUTH_ADDRESS: "0xB59fB3D5E187E4B68F4370c14755c13275b21b0c"
+  AUTH_MEMBER_ID: "166636318607015936"
+  PROJECT_ID: "kernel-community"
+  BUCKET: "kernel-community.appspot.com"
+
+handlers:
+- url: /.*
+  secure: always
+  redirect_http_response_code: 301
+  script: auto

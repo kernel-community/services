@@ -1,0 +1,8 @@
+# Copyright (c) Kernel
+
+.env
+/node_modules/
+/src/
+rollup.config.js
+postcss.config.js
+tailwind.config.js

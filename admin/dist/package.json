@@ -1,0 +1,17 @@
+{
+  "name": "KernelWallet",
+  "version": "0.0.1",
+  "description": "Kernel Wallet",
+  "main": "server.js",
+  "repository": "https://github.com/simonkernel/kernel-services",
+  "author": "simon",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}

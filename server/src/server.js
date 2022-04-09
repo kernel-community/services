@@ -12,9 +12,13 @@ import 'dotenv/config'
 import fastify from 'fastify'
 import sensible from 'fastify-sensible'
 
+//import rpcStorage from './../../storage/src/routes/rpc.js'
+//import rpcAuth from './../../auth/src/routes/rpc.js'
+import { rpc as rpcStorage } from '@kernel/storage'
+import rpcAuth from '@kernel/auth'
+
 import health from './routes/health.js'
-import rpcStorage from './../../storage/src/routes/rpc.js'
-import rpcAuth from './../../auth/src/routes/rpc.js'
+
 import secretBuilder from './services/secret.js'
 
 const PORT = process.env.PORT || 3001

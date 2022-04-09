@@ -17,12 +17,15 @@ export default {
     //format: 'iife',
     //dir: 'dist'
     //file: 'dist/bundle.esm.js'
-    file: 'dist/bundle.js'
+    file: 'dist/build/bundle.js'
     //plugins: [terser()]
   },
   plugins: [
     //nodeResolve({ preferBuiltins: true }),
     //commonjs({ sourceMap: false, ignoreDynamicRequires: true }),
+    commonjs(),
+    //nodeResolve({ modulesOnly: true }),
+    nodeResolve({ resolveOnly: [/@kernel\/.*$/]}),
     json(),
     dynamicImportVars()
   ]
