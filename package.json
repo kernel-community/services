@@ -1,0 +1,8 @@
+{
+  "name": "kernel",
+  "private": "true",
+  "version": "0.0.1",
+  "main": "index.js",
+  "workspaces": ["admin", "auth", "common", "wallet"],
+  "license": "MIT"
+}

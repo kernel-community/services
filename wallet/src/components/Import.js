@@ -10,8 +10,7 @@ import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import jwtService from 'common/src/services/jwt.js'
-import rpcClient from 'common/src/services/rpcClient.js'
+import { jwtService, rpcClient } from '@kernel/common'
 
 const endpoint = process.env.REACT_APP_AUTH_ENDPOINT
 

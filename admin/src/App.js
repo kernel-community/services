@@ -6,10 +6,10 @@
  *
  */
 
-import React, { createContext, useState, useEffect, Suspense, lazy } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import React, { Suspense, lazy } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ServicesProvider } from '@kernel/common'
 
-import { ServicesProvider } from './ServicesContext.js'
 import NotFound from './views/NotFound.js'
 import './App.css'
 

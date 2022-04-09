@@ -10,14 +10,8 @@ import { ethers } from 'ethers'
 import { useEffect, useReducer, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
-import { useServices } from './../ServicesContext.js'
+import { useServices, FooterSmall, Navbar } from '@kernel/common'
 
-import entityBuilder from 'common/src/services/entity.js'
-import jwtService from 'common/src/services/jwt.js'
-import rpcClientBuilder from 'common/src/services/rpcClient.js'
-
-import Navbar from './../components/Navbar.js'
-import FooterSmall from './../components/FooterSmall.js'
 import Sidebar from './../components/Sidebar.js'
 
 const ADMIN_ROLE = 100 
@@ -76,7 +70,6 @@ const create = (e) => {
 }
 
 const Resources = () => {
-
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE) 
 
   const navigate = useNavigate()
@@ -314,9 +307,7 @@ const Resources = () => {
             </div>
           </div>
         </div>
-        <div className="relative md:pt-32">
-          <FooterSmall absolute />
-        </div>
+        <FooterSmall absolute />
       </div>
     </>
   )

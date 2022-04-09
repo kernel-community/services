@@ -11,8 +11,7 @@ import { Link } from 'react-router-dom'
 
 import logo from './../logo.svg'
 
-import Navbar from './../components/Navbar.js'
-import Footer from './../components/Footer.js'
+import { Footer, Navbar } from '@kernel/common'
 
 import bgImage from './../assets/images/kernel.png'
 

@@ -44,7 +44,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   const create = async ({ iss, role }, { resource }, data,
     { owner = iss, id = uuid(), created = now(), updated = now() }) => {
       const { uri, policy } = resources[resource]
-      if (role >= policy.create) {
+      if (role > policy.create) {
         AccessDeniedError({ iss, policy })
       }
 
@@ -58,7 +58,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   const get = async ({ iss, role }, { resource }, id) => {
     const { uri, policy } = resources[resource]
     const entity = await client.download(entityFile(entityUri(uri, id)))
-    if (role >= policy.get && entity.owner != iss) {
+    if (role > policy.get && entity.owner != iss) {
       AccessDeniedError({ iss, policy })
     }
     return entity
@@ -67,7 +67,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   //TODO: add pagination support
   const list = async ({ iss, role }, { resource }) => {
     const { uri, policy } = resources[resource]
-    if (role >= policy.list) {
+    if (role > policy.list) {
       AccessDeniedError({ iss, policy })
     }
     const entities = await client.listObjects({
@@ -79,7 +79,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   //TODO: add pagination support
   const getAll = async ({ iss, role }, { resource }) => {
     const { uri, policy } = resources[resource]
-    if (role >= policy.getAll) {
+    if (role > policy.getAll) {
       AccessDeniedError({ iss, policy })
     }
     return await client.getObjects({
@@ -93,7 +93,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
 
   const remove = async ({ iss, role }, { resource }, id) => {
     const { uri, policy } = resources[resource]
-    if (role >= policy.remove) {
+    if (role > policy.remove) {
       AccessDeniedError({ iss, policy })
     }
     await client.remove(entityFile(entityUri(uri, id)))
@@ -102,7 +102,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
 
   const exists = async ({ iss, role }, { resource }, id) => {
     const { uri, policy } = resources[resource]
-    if (role >= policy.exists) {
+    if (role > policy.exists) {
       AccessDeniedError(`${iss} cannot read ${resource}`)
     }
     return client.exists(entityFile(entityUri(uri, id)))
@@ -111,7 +111,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   const patch = async ({ iss, role }, { resource }, id, data) => {
     const { uri, policy } = resources[resource]
     const entity = await get({ iss, role }, { resource }, id)
-    if (role >= policy.update && entity.owner != iss) {
+    if (role > policy.update && entity.owner != iss) {
       AccessDeniedError({ iss, policy })
     }
     Object.assign(entity.data, merge(entity.data, data))
@@ -122,7 +122,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   const update = async ({ iss, role }, { resource }, id, data) => {
     const { uri, policy } = resources[resource]
     const entity = await get({ iss, role }, { resource }, id)
-    if (role >= policy.update && entity.owner != iss) {
+    if (role > policy.update && entity.owner != iss) {
       AccessDeniedError({ iss, policy })
     }
     Object.assign(entity, { data })
@@ -133,7 +133,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   const updateMeta = async ({ iss, role }, { resource }, id, { owner }) => {
     const { uri, policy } = resources[resource]
     const entity = await get({ iss, role }, { resource }, id)
-    if (role >= policy.updateMeta && entity.owner != iss) {
+    if (role > policy.updateMeta && entity.owner != iss) {
       AccessDeniedError({ iss, policy })
     }
     Object.assign(entity, merge(entity, { owner }))

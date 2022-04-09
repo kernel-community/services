@@ -9,11 +9,9 @@
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 
-import Navbar from './../components/Navbar.js'
-import FooterSmall from './../components/FooterSmall.js'
+import { FooterSmall, Navbar } from '@kernel/common'
+
 import Sidebar from './../components/Sidebar.js'
-//import LineChart from './../components/LineChart.js'
-//import BarChart from './../components/BarChart.js'
 
 const WALLET_STORE_VERSION = '1'
 

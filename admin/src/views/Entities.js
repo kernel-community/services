@@ -10,10 +10,8 @@ import { ethers } from 'ethers'
 import { useEffect, useReducer, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
-import { useServices } from './../ServicesContext.js'
+import { useServices, FooterSmall, Navbar } from '@kernel/common'
 
-import Navbar from './../components/Navbar.js'
-import FooterSmall from './../components/FooterSmall.js'
 import Sidebar from './../components/Sidebar.js'
 
 const ADMIN_ROLE = 100 
@@ -350,9 +348,7 @@ const Entities = () => {
             </div>
           </div>
         </div>
-        <div className="relative md:pt-32">
-          <FooterSmall absolute />
-        </div>
+        <FooterSmall absolute />
       </div>
     </>
   )

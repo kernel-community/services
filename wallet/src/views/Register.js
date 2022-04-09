@@ -10,8 +10,7 @@ import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import { Outlet, Link } from 'react-router-dom'
 
-import Navbar from './../components/Navbar.js'
-import FooterSmall from './../components/FooterSmall.js'
+import { FooterSmall, Navbar } from '@kernel/common'
 
 import bgImage from './../assets/images/register_bg.png'
 

@@ -12,8 +12,6 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import NotFound from './views/NotFound.js'
 import logo from './logo.svg'
 import './App.css'
-//import Create from './components/Create.js'
-//import Import from './components/Import.js'
 
 const Wallet = lazy(() => import('./views/Wallet.js'))
 const Assets = lazy(() => import('./views/Assets.js'))

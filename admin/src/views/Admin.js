@@ -10,12 +10,7 @@ import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
-import jwtService from 'common/src/services/jwt.js'
-
-import { useServices } from './../ServicesContext.js'
-
-import Navbar from './../components/Navbar.js'
-import FooterSmall from './../components/FooterSmall.js'
+import { useServices, Navbar, FooterSmall } from '@kernel/common'
 
 import bgImage from './../assets/images/admin_bg.png'
 

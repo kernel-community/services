@@ -9,8 +9,7 @@
 import { ethers } from 'ethers'
 import { useContext, useEffect, useState } from 'react'
 
-import jwtService from 'common/src/services/jwt.js'
-import rpcClient from 'common/src/services/rpcClient.js'
+import { jwtService, rpcClient } from '@kernel/common'
 
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
 
