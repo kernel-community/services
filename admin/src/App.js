@@ -10,14 +10,13 @@ import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ServicesProvider } from '@kernel/common'
 
-import NotFound from './views/NotFound.js'
-import './App.css'
+import NotFound from 'views/NotFound.js'
+import 'App.css'
 
-const Admin = lazy(() => import('./views/Admin.js'))
-const Dashboard = lazy(() => import('./views/Dashboard.js'))
-const Resources = lazy(() => import('./views/Resources.js'))
-const Entities = lazy(() => import('./views/Entities.js'))
-const Debug = lazy(() => import('./views/Debug.js'))
+const Admin = lazy(() => import('views/Admin.js'))
+const Dashboard = lazy(() => import('views/Dashboard.js'))
+const Resources = lazy(() => import('views/Resources.js'))
+const Entities = lazy(() => import('views/Entities.js'))
 
 const App = () => {
   return (
@@ -26,7 +25,6 @@ const App = () => {
         <Suspense fallback={<NotFound />}>
           <Routes>
             <Route path='/' element={<Admin />} />
-            <Route path='/debug' element={<Debug />} />
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/resources' element={<Resources />} />
             <Route path='/entities' element={<Entities />} />

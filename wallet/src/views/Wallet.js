@@ -8,12 +8,10 @@
 
 import React from 'react'
 import { Link } from 'react-router-dom'
-
-import logo from './../logo.svg'
-
 import { Footer, Navbar } from '@kernel/common'
 
-import bgImage from './../assets/images/kernel.png'
+import logo from 'logo.svg'
+import bgImage from 'assets/images/kernel.png'
 
 export default function Wallet() {
   return (

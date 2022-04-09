@@ -8,10 +8,9 @@
 
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-
 import { FooterSmall, Navbar } from '@kernel/common'
 
-import Sidebar from './../components/Sidebar.js'
+import Sidebar from 'components/Sidebar.js'
 
 const WALLET_STORE_VERSION = '1'
 
@@ -212,6 +211,7 @@ const Assets = () => {
                         className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1"
                         type="button"
                         target="_blank"
+                        rel="noreferrer"
                         style={{ transition: "all .15s ease" }}
                         href={ `https://etherscan.io/address/${address}` }
                       >

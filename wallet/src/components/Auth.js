@@ -7,7 +7,7 @@
  */
 
 import { ethers } from 'ethers'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { jwtService, rpcClient } from '@kernel/common'
 
@@ -40,7 +40,6 @@ const Auth = () => {
   const [address, setAddress] = useState(storedAddress)
   const [progress, setProgress] = useState(0)
 
-  const [token, setToken] = useState(null)
   const [source, setSource] = useState(null)
   const [website, setWebsite] = useState('')
 
@@ -58,6 +57,8 @@ const Auth = () => {
         reply(source, origin, 'pong', {})
         break;
       case 'pong':
+        break;
+      default:
         break;
     }
   }
@@ -83,7 +84,6 @@ const Auth = () => {
       const client = await authClient(() => '')
 
       const authToken = await client.call({ method: 'authService.accessToken', params: [jwt] })
-      setToken(authToken)
       if (source) {
         reply(source, website, 'jwt', authToken)
       }

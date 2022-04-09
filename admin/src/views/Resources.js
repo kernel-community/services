@@ -6,13 +6,12 @@
  *
  */
 
-import { ethers } from 'ethers'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
 import { useServices, FooterSmall, Navbar } from '@kernel/common'
 
-import Sidebar from './../components/Sidebar.js'
+import Sidebar from 'components/Sidebar.js'
 
 const ADMIN_ROLE = 100 
 
@@ -89,7 +88,7 @@ const Resources = () => {
       const payload = await resourceService.resources()
       dispatch({ type: 'resources', payload })
     })()
-  }, [])
+  })
 
 
   return (

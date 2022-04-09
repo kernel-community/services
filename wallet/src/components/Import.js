@@ -7,7 +7,7 @@
  */
 
 import { ethers } from 'ethers'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { jwtService, rpcClient } from '@kernel/common'

@@ -6,20 +6,17 @@
  *
  */
 
-import { ethers } from 'ethers'
-import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-
+import { useNavigate } from 'react-router-dom'
 import { useServices, Navbar, FooterSmall } from '@kernel/common'
 
-import bgImage from './../assets/images/admin_bg.png'
+import bgImage from 'assets/images/admin_bg.png'
 
 const ADMIN_ROLE = 100 
 
 const Admin = () => {
 
   const navigate = useNavigate()
-  const { state, walletLogin } = useServices()
+  const { walletLogin } = useServices()
 
   const handleLogin = async () => {
     const user = await walletLogin()

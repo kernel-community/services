@@ -6,19 +6,18 @@
  *
  */
 
-import { ethers } from 'ethers'
-import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useServices, FooterSmall, Navbar } from '@kernel/common'
 
-import Sidebar from './../components/Sidebar.js'
+import Sidebar from 'components/Sidebar.js'
 
 const ADMIN_ROLE = 100 
 
 const Dashboard = () => {
 
   const navigate = useNavigate()
-  const { state, walletLogin, services, currentUser } = useServices()
+  const { currentUser } = useServices()
 
   const user = currentUser()
 
@@ -27,7 +26,7 @@ const Dashboard = () => {
     if (!user || user.role > ADMIN_ROLE) {
       return navigate('/')
     }
-  }, [])
+  })
 
   return (
     <>

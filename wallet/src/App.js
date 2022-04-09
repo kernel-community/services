@@ -6,19 +6,18 @@
  *
  */
 
-import React, { createContext, useState, useEffect, Suspense, lazy } from 'react'
+import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
-import NotFound from './views/NotFound.js'
-import logo from './logo.svg'
-import './App.css'
+import NotFound from 'views/NotFound.js'
+import 'App.css'
 
-const Wallet = lazy(() => import('./views/Wallet.js'))
-const Assets = lazy(() => import('./views/Assets.js'))
-const Register = lazy(() => import('./views/Register.js'))
-const Create = lazy(() => import('./components/Create.js'))
-const Import = lazy(() => import('./components/Import.js'))
-const Auth = lazy(() => import('./components/Auth.js'))
+const Wallet = lazy(() => import('views/Wallet.js'))
+const Assets = lazy(() => import('views/Assets.js'))
+const Register = lazy(() => import('views/Register.js'))
+const Create = lazy(() => import('components/Create.js'))
+const Import = lazy(() => import('components/Import.js'))
+const Auth = lazy(() => import('components/Auth.js'))
 
 const App = () => {
   return (

@@ -26,6 +26,9 @@
     "eject": "craco eject"
   },
   "eslintConfig": {
+		"rules": {
+      "no-throw-literal": 0
+    },
     "extends": [
       "react-app",
       "react-app/jest"
