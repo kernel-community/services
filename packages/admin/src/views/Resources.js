@@ -51,7 +51,6 @@ const change = (dispatch, e) => {
 }
 
 const EditComponent = ({ state, dispatch }) => {
-  console.log('render', state.resource)
   return <textarea rows="15" className="w-full" value={ value(state) } onChange={ change.bind(null, dispatch) } />
   //return <input type="text" className="w-full" value={ state.resource } onChange={ change } />
 }
@@ -88,7 +87,7 @@ const Resources = () => {
       const payload = await resourceService.resources()
       dispatch({ type: 'resources', payload })
     })()
-  })
+  }, [])
 
 
   return (

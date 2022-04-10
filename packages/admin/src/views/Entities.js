@@ -121,9 +121,8 @@ const Entity = ({ title, items, dispatch }) => {
               { Object.keys(items).map((e) => {
                   const item = items[e]
                   const s = JSON.stringify(item, null, 2)
-                  console.log(item.id)
                   return (
-                    <div key={ item.id }
+                    <div key={ item.id || 1 }
                       onDoubleClick={ (e) => { dispatch({ type: 'entity', payload: item }) } }>
                       <div className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                         <pre>
@@ -169,7 +168,7 @@ const Entities = () => {
         .map((e) => clients[e].getAll()
           .then((items) => dispatch({ type: 'items', payload: { entity: e, items } })))
     })()
-  })
+  }, [])
 
   return (
     <>

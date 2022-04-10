@@ -3,6 +3,6 @@
   "private": "true",
   "version": "0.0.1",
   "main": "index.js",
-  "workspaces": ["admin", "auth", "common", "storage", "server", "wallet"],
+  "workspaces": ["packages/*"],
   "license": "MIT"
 }
