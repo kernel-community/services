@@ -10,7 +10,8 @@
 
 import crypto from 'crypto'
 import merge from 'deepmerge'
-import { Worker } from 'snowflake-uuid'
+
+import snowflake from './snowflake.js'
 
 // TODO: move to common
 const BASE = 'resources'
@@ -31,7 +32,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   const resources = await resourceService.resources()
 
   //TODO: worker opts
-  const generator = new Worker()
+  const generator = await snowflake.build()
   const uuid = () => generator.nextId().toString()
   const now = () => Date.now()
 

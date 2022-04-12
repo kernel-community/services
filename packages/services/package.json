@@ -24,8 +24,7 @@
     "fastify": "^3.27.2",
     "fastify-cors": "^6.0.3",
     "fastify-rate-limit": "^5.7.2",
-    "fastify-sensible": "^3.1.2",
-    "snowflake-uuid": "^1.0.0"
+    "fastify-sensible": "^3.1.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^21.0.2",
