@@ -32,7 +32,7 @@ const AUTH_MEMBER_ID = process.env.AUTH_MEMBER_ID
 const PROJECT_ID = process.env.PROJECT_ID
 const BUCKET = process.env.BUCKET
 
-const production = () => process.env.NODE_ENV === 'production'
+const production = () => process.env.ENV === 'prod'
 
 const start = async () => {
   const opts = {

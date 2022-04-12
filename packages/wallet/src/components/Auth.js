@@ -13,7 +13,8 @@ import { jwtService, rpcClient } from '@kernel/common'
 
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
 
-const endpoint = process.env.REACT_APP_AUTH_ENDPOINT
+const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
+const endpoint = process.env[`REACT_APP_AUTH_ENDPOINT_${env}`]
 
 const authClient = async (jwtFn) =>
   rpcClient.build({ rpcEndpoint: endpoint, jwtFn })

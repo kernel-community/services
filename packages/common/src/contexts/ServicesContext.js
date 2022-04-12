@@ -13,14 +13,15 @@ import resourceBuilder from '../services/resource.js'
 import jwtService from '../services/jwt.js'
 import rpcClientBuilder from '../services/rpcClient.js'
 
-const AUTH_URL = process.env.REACT_APP_AUTH_URL
+const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
+const AUTH_URL = process.env[`REACT_APP_AUTH_URL_${env}`]
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
 const AUTH_TIMEOUT_MS = 1000 * 60
 const ADMIN_ROLE = 100 
 
 const INITIAL_STATE = {}
 
-const rpcEndpoint = process.env.REACT_APP_STORAGE_ENDPOINT
+const rpcEndpoint = process.env[`REACT_APP_STORAGE_ENDPOINT_${env}`]
 
 const ServicesContext = createContext()
 

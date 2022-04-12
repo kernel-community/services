@@ -12,11 +12,6 @@
   "dependencies": {
     "@google-cloud/storage": "^5.18.2",
     "deepmerge": "^4.2.2",
-    "dotenv": "^16.0.0",
-    "fastify": "^3.27.2",
-    "fastify-cors": "^6.0.3",
-    "fastify-rate-limit": "^5.7.2",
-    "fastify-sensible": "^3.1.2",
     "snowflake-uuid": "^1.0.0"
   },
   "devDependencies": {

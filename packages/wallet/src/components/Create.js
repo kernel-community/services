@@ -12,7 +12,8 @@ import { Link } from 'react-router-dom'
 
 import { jwtService, rpcClient } from '@kernel/common'
 
-const endpoint = process.env.REACT_APP_AUTH_ENDPOINT
+const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
+const endpoint = process.env[`REACT_APP_AUTH_ENDPOINT_${env}`]
 
 const WALLET_STORE_VERSION = '1'
 const SUCCESS_TO = '/assets'
