@@ -32,7 +32,7 @@ const AUTH_MEMBER_ID = process.env.AUTH_MEMBER_ID
 const PROJECT_ID = process.env.PROJECT_ID
 const BUCKET = process.env.BUCKET
 
-const production = () => process.env.ENV === 'prod'
+const local = () => process.env.ENV === 'DEV'
 
 const start = async () => {
   const opts = {
@@ -44,7 +44,7 @@ const start = async () => {
   try {
     server.register(sensible)
     let seed = process.env.SEED || ''
-    if (production()) {
+    if (!local()) {
       const secretService = await secretBuilder.build({ projectId: PROJECT_ID })
       const secret = await secretService.access({
         secretId: AUTH_SEED_SECRET_ID, crc32c: AUTH_SEED_SECRET_CRC32C
