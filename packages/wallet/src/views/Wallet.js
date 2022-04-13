@@ -471,11 +471,10 @@ export default function Wallet() {
                   <i className="fas fa-medal text-xl"></i>
                 </div>
                 <h6 className="text-xl mt-5 font-semibold text-white">
-                  Excelent Services
+                  Community
                 </h6>
                 <p className="mt-2 mb-4 text-gray-500">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  Trust is not only transactional.
                 </p>
               </div>
               <div className="w-full lg:w-3/12 px-4 text-center">
@@ -483,11 +482,10 @@ export default function Wallet() {
                   <i className="fas fa-poll text-xl"></i>
                 </div>
                 <h5 className="text-xl mt-5 font-semibold text-white">
-                  Grow your market
+                  Care
                 </h5>
                 <p className="mt-2 mb-4 text-gray-500">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  Shared truths create value.
                 </p>
               </div>
               <div className="w-full lg:w-3/12 px-4 text-center">
@@ -495,11 +493,10 @@ export default function Wallet() {
                   <i className="fas fa-lightbulb text-xl"></i>
                 </div>
                 <h5 className="text-xl mt-5 font-semibold text-white">
-                  Launch time
+                  Learn
                 </h5>
                 <p className="mt-2 mb-4 text-gray-500">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                  Listen to and tell better stories.
                 </p>
               </div>
             </div>
