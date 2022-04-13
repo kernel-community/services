@@ -50,17 +50,8 @@ const SignatureError = () => {}
 
 const now = () => Date.now()
 const tokenExp = (ttl = TOKEN_TTL) => now() + ttl
-//const randomSeed = (length = 32) => crypto.randomBytes(length)
-
-//const toBuffer = (hexData) => Buffer.from(ethers.utils.arrayify(hexData))
-//const toBase64Url = (buf) => buf.toString('base64url')
-//const fromBase64Url = (s) => Buffer.from(s, 'base64url')
-
-const encoder = new TextEncoder()
-const decoder = new TextDecoder('utf8')
 
 const toBuffer = (hexData) => new Uint8Array(ethers.utils.arrayify(hexData))
-//const toBase64Url = (buf) => btoa(encodeURIComponent(decoder.decode(buf))).replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "")
 const toBase64Url = (buf) => Base64.fromUint8Array(buf, true)
 const fromBase64Url = (s) => Base64.toUint8Array(s)
 

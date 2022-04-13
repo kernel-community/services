@@ -87,7 +87,7 @@ const Resources = () => {
       const payload = await resourceService.resources()
       dispatch({ type: 'resources', payload })
     })()
-  }, [])
+  }, [navigate, user, services])
 
 
   return (

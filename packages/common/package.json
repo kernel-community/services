@@ -5,6 +5,10 @@
   "main": "src/index.js",
   "module": "src/index.js",
   "license": "MIT",
+  "scripts": {
+    "build": "echo \"tbd\"",
+    "test": "echo \"tbd\""
+  },
   "dependencies": {
     "js-base64": "^3.7.2",
     "react": "^17.0.2",

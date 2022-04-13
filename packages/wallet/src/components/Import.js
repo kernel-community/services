@@ -7,12 +7,13 @@
  */
 
 import { ethers } from 'ethers'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { jwtService, rpcClient } from '@kernel/common'
 
-const endpoint = process.env.REACT_APP_AUTH_ENDPOINT
+const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
+const endpoint = process.env[`REACT_APP_AUTH_ENDPOINT_${env}`]
 
 const WALLET_STORE_VERSION = '1'
 const SUCCESS_TO = '/assets'
@@ -26,37 +27,48 @@ const storeWallet = (nickname, address, encryptedWallet) =>
 const Import = () => {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
-  const [mnemonic, setMnemonic] = useState('')
   const [address, setAddress] = useState('')
-  const [encryptedData, setEncryptedData] = useState('')
+  const [walletData, setWalletData] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const [progress, setProgress] = useState(0)
+
+  window.walletData = walletData
+
+  useEffect(() => {
+    if (!walletData) {
+      return
+    }
+    setNickname(walletData.nickname)
+    setAddress(walletData.address)
+  }, [walletData])
 
   const importWallet = async (e) => {
     e.preventDefault()
-    // TODO: support multiple wallets?
-    // TODO: visual feedback
-    if (!mnemonic.length || !nickname.length || !password.length) {
-      console.log('empty seed, nickname, or password')
+    setErrorMessage(null)
+    if (!walletData || !nickname.length || !password.length) {
+      console.log('empty wallet, nickname, or password')
+      setErrorMessage('empty wallet, nickname, or password')
       return false
     }
     try {
-      let wallet = ethers.Wallet.fromMnemonic(mnemonic)
-      const encryptedWallet = await wallet.encrypt(password, (i) => setProgress(Math.round(i * 100)))
+      const { encryptedWallet } = walletData
+      let wallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, password, (i) => setProgress(Math.round(i * 100)))
+
+      window.wallet = wallet
 
       const authJwt = jwtService.clientPayload({ iss: wallet.address, nickname })
       const jwt = await jwtService.createJwt(wallet, jwtService.CLIENT_JWT, authJwt)
       const client = await authClient(() => '')
 
       storeWallet(nickname, wallet.address, encryptedWallet)
-      setMnemonic(wallet.mnemonic.phrase)
-      setAddress(wallet.address)
 
       // trigger gc
       wallet = null
 
       //TODO: retry?
-      const authToken = await client.call({ method: 'authService.register', params: [jwt] })
+      await client.call({ method: 'authService.register', params: [jwt] })
     } catch (error) {
+      setErrorMessage(error.message)
       console.error(error)
     }
   }
@@ -64,8 +76,8 @@ const Import = () => {
   const readFile = (e) => {
     const file = e.target.files[0]
     const reader = new FileReader()
-    reader.addEventListener('load', event => setEncryptedData(event.target.result))
-    reader.readAsDataURL(file)
+    reader.addEventListener('load', event => setWalletData(JSON.parse(event.target.result)))
+    reader.readAsText(file)
   }
 
   return (
@@ -134,7 +146,7 @@ const Import = () => {
           <label
             className="block uppercase text-gray-700 text-xs font-bold mb-2"
             htmlFor="grid-password">
-            Encryption Progress 
+            Verification Progress
           </label>
           <div className="w-full bg-gray-200 h-1">
             <div className="bg-blue-600 h-1" style={{ width: `${progress}%` }}></div>
@@ -157,6 +169,12 @@ const Import = () => {
             to={ SUCCESS_TO } >
             Go to Wallet 
           </Link>
+        </div>
+        <div className="text-center mt-6">
+          { errorMessage &&
+            <p className="border-0 px-3 py-3 placeholder-gray-400 text-red-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full">
+              { errorMessage }
+            </p> }
         </div>
       </form>
       <div className="text-gray-500 text-center mb-3 font-bold">

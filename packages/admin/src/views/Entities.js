@@ -168,7 +168,7 @@ const Entities = () => {
         .map((e) => clients[e].getAll()
           .then((items) => dispatch({ type: 'items', payload: { entity: e, items } })))
     })()
-  }, [])
+  }, [navigate, services, user])
 
   return (
     <>

@@ -6,8 +6,6 @@
  *
  */
 
-import { ethers } from 'ethers'
-import { useEffect, useState } from 'react'
 import { Outlet, Link } from 'react-router-dom'
 import { FooterSmall, Navbar } from '@kernel/common'
 

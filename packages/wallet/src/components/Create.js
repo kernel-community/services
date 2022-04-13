@@ -7,7 +7,7 @@
  */
 
 import { ethers } from 'ethers'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { jwtService, rpcClient } from '@kernel/common'
@@ -34,15 +34,18 @@ const Create = () => {
   const [mnemonic, setMnemonic] = useState('')
   const [address, setAddress] = useState('')
   const [encryptedData, setEncryptedData] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
   const [progress, setProgress] = useState(0)
 
   const createWallet = async (e) => {
     e.preventDefault()
 
+    setErrorMessage(null)
     // TODO: support multiple wallets?
     // TODO: visual feedback
     if (!nickname.length || !password.length) {
       console.log('empty nickname or password')
+      setErrorMessage('empty nickname or password')
       return false
     }
     try {
@@ -62,12 +65,12 @@ const Create = () => {
       wallet = null
 
       //TODO: retry?
-      const authToken = await client.call({ method: 'authService.register', params: [jwt] })
+      await client.call({ method: 'authService.register', params: [jwt] })
     } catch (error) {
       console.error(error)
+      setErrorMessage(error.message)
     }
   }
-  useEffect(() => console.log(encryptedData), [encryptedData])
 
   return (
     <div className="rounded-t mb-0 px-6 py-6">
@@ -169,6 +172,12 @@ const Create = () => {
             to={ SUCCESS_TO } >
             Go to Wallet 
           </Link>
+        </div>
+        <div className="text-center mt-6">
+          { errorMessage &&
+            <p className="border-0 px-3 py-3 placeholder-gray-400 text-red-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full">
+              { errorMessage }
+            </p> }
         </div>
       </form>
   </div>

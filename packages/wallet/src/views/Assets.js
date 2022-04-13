@@ -26,9 +26,11 @@ const loadWallet = () => {
 
 const Assets = () => {
   const wallet = loadWallet()
-  const [address, setAddress] = useState(wallet.address)
-  const [nickname, setNickname] = useState(wallet.nickname)
+  const [address] = useState(wallet.address)
+  const [nickname] = useState(wallet.nickname)
+  /* eslint-disable no-unused-vars */
   const [signer, setSigner] = useState(null)
+  /* eslint-disable no-unused-vars */
   const [balance, setBalance] = useState(0)
 
   useEffect(() => {

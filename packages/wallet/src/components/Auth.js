@@ -36,9 +36,9 @@ const reply = (source, target, event, payload) => source.postMessage(message(eve
 const Auth = () => {
   const {nickname: storedNickname, address: storedAddress, encryptedWallet } = loadWallet()
 
-  const [nickname, setNickname] = useState(storedNickname)
+  const [nickname] = useState(storedNickname)
   const [password, setPassword] = useState('')
-  const [address, setAddress] = useState(storedAddress)
+  const [address] = useState(storedAddress)
   const [progress, setProgress] = useState(0)
 
   const [source, setSource] = useState(null)
@@ -47,7 +47,7 @@ const Auth = () => {
 
   const handleMessage = (messageEvent) => {
     console.log(messageEvent)
-    const { data: {type, event, payload}, source, origin } = messageEvent
+    const { data: { type, event }, source, origin } = messageEvent
     if (!type || type !== AUTH_MESSAGE_TYPE) {
       return
     }
@@ -144,7 +144,7 @@ const Auth = () => {
             className="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
             type="submit"
             style={{ transition: "all .15s ease" }}
-            value="OK" />
+            value="Sign" />
         </div>
         <div className="relative w-full mb-3">
           <label

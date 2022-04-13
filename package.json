@@ -4,5 +4,9 @@
   "version": "0.0.1",
   "main": "index.js",
   "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "CI=true yarn workspaces run build",
+    "test": "CI=true yarn workspaces run test"
+  },
   "license": "MIT"
 }

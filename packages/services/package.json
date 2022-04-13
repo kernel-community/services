@@ -11,7 +11,8 @@
   "scripts": {
     "start": "node dist/build/bundle.js",
     "dev": "node src/server.js",
-    "build": "npx rollup -c rollup.config.js"
+    "build": "npx rollup -c rollup.config.js",
+    "test": "echo \"tbd\""
   },
   "dependencies": {
     "@google-cloud/secret-manager": "^3.11.0",
