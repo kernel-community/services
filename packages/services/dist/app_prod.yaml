@@ -1,4 +1,6 @@
 # Copyright (c) Kernel
+runtime: nodejs16
+instance_class: F1
 
 env_variables:
   AUTH_SEED_SECRET_ID: "authSeed"
@@ -8,3 +10,9 @@ env_variables:
   BUCKET: "kernel-community.appspot.com"
   ENV: "PROD"
   PROJECT_ID: "kernel-community"
+
+handlers:
+- url: /.*
+  secure: always
+  redirect_http_response_code: 301
+  script: auto

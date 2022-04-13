@@ -1,5 +1,8 @@
 # Copyright (c) Kernel
 
+runtime: nodejs16
+instance_class: F1
+
 env_variables:
   AUTH_SEED_SECRET_ID: "authSeed"
   AUTH_SEED_SECRET_CRC32C: "2477986809"
@@ -8,3 +11,9 @@ env_variables:
   BUCKET: "kernel-services-staging.appspot.com"
   ENV: "STAGING"
   PROJECT_ID: "kernel-services-staging"
+
+handlers:
+- url: /.*
+  secure: always
+  redirect_http_response_code: 301
+  script: auto
