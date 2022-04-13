@@ -10,11 +10,11 @@
 
 const VERSION = '2.0'
 
-const uuid = () => crypto.randomUUID()
+// Not supported on Safari on iOS except newest version
+//const uuid = () => crypto.randomUUID()
+const uuid = () => Date.now()
 
 const build = async ({ rpcEndpoint, jwtFn }) => {
-
-  //console.log(jwtFn)
 
   const jsonRpc = ({ version = VERSION, id = uuid(), method, params }) => {
     return { jsonrpc: version, id, method, params }
