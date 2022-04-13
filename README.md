@@ -1,6 +1,6 @@
 # Kernel Services
 
-[![Build](https://github.com/simonkernel/kernel-services/actions/workflows/test.yml/badge.svg)](https://github.com/simonkernel/kernel-services/actions/workflows/test.yml)
+[![Staging CI](https://github.com/simonkernel/kernel-services/actions/workflows/staging.yml/badge.svg)](https://github.com/simonkernel/kernel-services/actions/workflows/staging.yml)
 
 Kernel is an educational community that learns together how to create with care.
 
