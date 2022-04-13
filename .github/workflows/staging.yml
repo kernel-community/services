@@ -16,6 +16,7 @@ jobs:
       id-token: 'write'
 
     runs-on: ubuntu-latest
+    environment: staging
     env:
       REACT_APP_DEPLOY_TARGET: "STAGING"
 
