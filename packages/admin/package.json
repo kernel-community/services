@@ -21,7 +21,7 @@
     "start": "craco start",
     "build": "BUILD_PATH='./dist/build' craco build",
     "test": "craco test",
-    "deploy:staging": "gcloud app deploy dist/app.yaml --project kernel-admin-prod",
+    "deploy:staging": "gcloud app deploy dist/app.yaml --project kernel-admin-staging",
     "eject": "craco eject"
   },
   "eslintConfig": {
