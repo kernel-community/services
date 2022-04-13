@@ -12,7 +12,7 @@
     "start": "node dist/build/bundle.js",
     "dev": "node src/server.js",
     "build": "npx rollup -c rollup.config.js",
-    "deploy:staging": "gcloud app deploy packages/services/dist/app_staging.yaml --project kernel-services-staging",
+    "deploy:staging": "gcloud app deploy dist/app_staging.yaml --project kernel-services-staging",
     "test": "echo \"tbd\""
   },
   "dependencies": {

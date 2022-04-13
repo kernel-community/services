@@ -20,7 +20,7 @@
   "scripts": {
     "start": "PORT=3003 craco start",
     "build": "BUILD_PATH='./dist/build' craco build",
-    "deploy:staging": "gcloud app deploy packages/wallet/dist/app.yaml --project kernel-wallet-staging",
+    "deploy:staging": "gcloud app deploy dist/app.yaml --project kernel-wallet-staging",
     "test": "craco test",
     "eject": "craco eject"
   },

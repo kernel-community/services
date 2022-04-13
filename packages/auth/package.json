@@ -11,6 +11,7 @@
   "type": "module",
   "scripts": {
     "build": "echo \"tbd\"",
+    "deploy:staging": "echo \"tbd\"",
     "test": "echo \"tbd\""
   },
   "dependencies": {
