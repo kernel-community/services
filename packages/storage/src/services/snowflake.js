@@ -8,7 +8,8 @@
 
 'use strict'
 
-const GENESIS = 1609459200000
+// an experience around Devcon IV in Prague
+const GENESIS = 1541272500000
 
 const build = async ({
 	epoch = BigInt(GENESIS),
