@@ -1,8 +1,11 @@
 # Kernel Services
 
+[![Build](https://github.com/simonkernel/kernel-services/actions/workflows/test.yml/badge.svg)](https://github.com/simonkernel/kernel-services/actions/workflows/test.yml)
+
 Kernel is an educational community that learns together how to create with care.
 
 The purpose of Kernel Services is to serve the Kernel community and make its infrastructure available for any other community of care.
+
 
 ## Overview
 
