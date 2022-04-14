@@ -11,7 +11,7 @@ import { Footer, Navbar } from '@kernel/common'
 
 import bgImage from 'assets/images/kernel.png'
 
-export default function Wallet() {
+const Wallet = () => {
   return (
     <div>
       <Navbar transparent />
@@ -576,5 +576,7 @@ export default function Wallet() {
       </main>
       <Footer />
     </div>
-  );
+  )
 }
+
+export default Wallet

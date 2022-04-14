@@ -6,15 +6,16 @@
   "dependencies": {
     "@craco/craco": "^6.4.3",
     "@fortawesome/fontawesome-free": "^6.1.0",
+    "@kernel/common": "^0.0.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
-    "@kernel/common": "^0.0.1",
     "ethers": "^5.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
+    "sass": "^1.50.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -25,7 +26,7 @@
     "eject": "craco eject"
   },
   "eslintConfig": {
-		"rules": {
+    "rules": {
       "no-throw-literal": 0
     },
     "extends": [
