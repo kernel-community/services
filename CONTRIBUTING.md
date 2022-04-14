@@ -22,7 +22,9 @@ _Yarn_: Make sure that Yarn 1 is [installed](https://classic.yarnpkg.com/en/docs
 
 ### Setup
 
-Fork the repo to your GitHub account.
+Fork the repo to your GitHub account, check it out locally and run
+
+`yarn install`
 
 ### Branch organization
 
