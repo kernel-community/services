@@ -18,8 +18,6 @@ import Footer from './components/Footer.js'
 import FooterSmall from './components/FooterSmall.js'
 import Navbar from './components/Navbar.js'
 
-import './index.scss';
-
 export {
   jwtService, rpcClient,
   ServicesProvider, useServices,
