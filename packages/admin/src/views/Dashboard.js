@@ -10,9 +10,8 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useServices, FooterSmall, Navbar } from '@kernel/common'
 
+import AppConfig from 'App.config'
 import Sidebar from 'components/Sidebar.js'
-
-const ADMIN_ROLE = 100 
 
 const Dashboard = () => {
 
@@ -23,7 +22,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     //TODO: expired token
-    if (!user || user.role > ADMIN_ROLE) {
+    if (!user || user.role > AppConfig.adminRole) {
       return navigate('/')
     }
   })
@@ -32,7 +31,7 @@ const Dashboard = () => {
     <>
       <Sidebar /> 
       <div className="absoulte h-full w-full md:ml-64">
-        <Navbar />
+        <Navbar title={ AppConfig.appTitle } />
         {/* Header */}
         <div className="relative bg-amber-200 md:pt-32 pb-32 pt-12">
           <div className="px-4 md:px-10 mx-auto w-full">

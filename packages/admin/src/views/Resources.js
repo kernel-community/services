@@ -11,9 +11,8 @@ import { useNavigate, Link } from 'react-router-dom'
 
 import { useServices, FooterSmall, Navbar } from '@kernel/common'
 
+import AppConfig from 'App.config'
 import Sidebar from 'components/Sidebar.js'
-
-const ADMIN_ROLE = 100 
 
 const INITIAL_STATE = {resources: {}, resource: {}}
 
@@ -77,7 +76,7 @@ const Resources = () => {
 
   useEffect(() => {
     //TODO: expired token
-    if (!user || user.role > ADMIN_ROLE) {
+    if (!user || user.role > AppConfig.adminRole) {
       return navigate('/')
     }
 
@@ -94,7 +93,7 @@ const Resources = () => {
     <>
       <Sidebar /> 
       <div className="relative md:ml-64 bg-blueGray-100">
-        <Navbar />
+        <Navbar title={ AppConfig.appTitle } />
         {/* Header */}
         <div className="relative bg-amber-200 md:pt-32 pb-32 pt-12">
           <div className="px-4 md:px-10 mx-auto w-full">
