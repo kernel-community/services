@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "workspaces": ["packages/*"],
+  "nohoist": ["**/micromark-extension-mdxjs"],
   "scripts": {
     "build": "CI=true yarn workspaces run build",
     "test": "CI=true yarn workspaces run test",
