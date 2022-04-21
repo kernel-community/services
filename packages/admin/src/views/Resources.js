@@ -56,14 +56,16 @@ const EditComponent = ({ state, dispatch }) => {
 
 const update = async (state, e) => {
   e.preventDefault()
-  const { resource, service } = state 
+  const { resource, service } = state
   const updated = await service.update(resource)
   console.log(updated)
 }
 
-const create = (e) => {
+const create = async (state, e) => {
   e.preventDefault()
-
+  const { resource, service } = state
+  const created = await service.create(resource)
+  console.log(created)
 }
 
 const Resources = () => {
@@ -288,12 +290,12 @@ const Resources = () => {
                     <form>
                       <EditComponent state={ state } dispatch={ dispatch } />
                       <button
-                        onClick={ (e) => update(e) }
+                        onClick={ (e) => update(state, e) }
                         className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1">
                         Update
                       </button>
                       <button
-                        onClick={ (e) => create(e) }
+                        onClick={ (e) => create(state, e) }
                         className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1">
                         Create
                       </button>
