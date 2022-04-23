@@ -8,10 +8,12 @@
 
 import { Link } from 'react-router-dom'
 
+import AppConfig from "App.config"
+
 const NavBar = ({ project = '' }) => (
   <nav className="flex mx-auto py-4 px-4 justify-between">
     <button className="basis-1/3 text-sm uppercase">
-      <Link to="/">Kernel Projects</Link>
+      <Link to="/">{ AppConfig.appTitle }</Link>
     </button>
     <button className="block lg:hidden">
       <i className="fas fa-bars"></i>

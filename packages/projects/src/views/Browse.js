@@ -30,6 +30,19 @@ const reducer = (state, action) => {
   }
 }
 
+// Credits: https://stackoverflow.com/a/68121710
+const timeScalars = [1000, 60, 60, 24, 7, 52];
+const timeUnits = ['ms', 'secs', 'min(s)', 'hr(s)', 'day(s)', 'week(s)', 'year(s)'];
+
+const humanize = (ms, dp = 0) => {
+  let timeScalarIndex = 0, scaledTime = ms;
+
+  while (scaledTime > timeScalars[timeScalarIndex]) {
+        scaledTime /= timeScalars[timeScalarIndex++];
+      }
+
+  return `${scaledTime.toFixed(dp)} ${timeUnits[timeScalarIndex]}`;
+}
 
 const Page = () => {
 
@@ -65,10 +78,13 @@ const Page = () => {
           <div className="block">
             <ul>
               { state && state.items && Object.keys(state.items).map((e) => {
+                const meta = state.items[e]
                 const project = state.items[e].data
+                const updated = Date.now() - meta.updated
                 return (
                   <li key={ e } className="text-gray-700">
                     <Link to={`/view/${project.url}`}>{ project.title }</Link>
+                    <small> { humanize(updated) } ago</small>
                   </li>
                 )
                 })
@@ -83,4 +99,3 @@ const Page = () => {
 }
 
 export default Page
-
