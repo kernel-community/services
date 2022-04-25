@@ -8,11 +8,7 @@
 
 'use strict'
 
-const uuid = () => crypto.randomUUID()
-const now = () => Date.now()
-
 const build = async ({ rpcClient }) => {
-
   const serviceName = 'resourceService'
   const method = rpcClient.method.bind(null, serviceName)
   const call = (methodName, ...args) => rpcClient.call({
@@ -20,21 +16,21 @@ const build = async ({ rpcClient }) => {
     params: args
   })
 
-  const resources = async () => call('resources') 
+  const resources = async () => call('resources')
 
-  const list = async () => call('list') 
+  const list = async () => call('list')
 
   const create = async (resource) => call('create', resource)
 
   const get = async (resource) => call('get', resource)
 
-  const patch = async (resource) => call('patch', resource) 
+  const patch = async (resource) => call('patch', resource)
 
-  const update = async (resource) => call('update', resource) 
+  const update = async (resource) => call('update', resource)
 
-  const remove = async (resource) => call('remove', resource) 
+  const remove = async (resource) => call('remove', resource)
 
-  const exists = async (resource) => call('exists', resource) 
+  const exists = async (resource) => call('exists', resource)
 
   return {
     resources,
@@ -46,7 +42,6 @@ const build = async ({ rpcClient }) => {
     remove,
     exists
   }
-
 }
 
 const resourceService = {

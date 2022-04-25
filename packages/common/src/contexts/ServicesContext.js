@@ -17,7 +17,6 @@ const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
 const AUTH_URL = process.env[`REACT_APP_AUTH_URL_${env}`]
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
 const AUTH_TIMEOUT_MS = 1000 * 60
-const ADMIN_ROLE = 100 
 
 const INITIAL_STATE = {}
 
@@ -25,7 +24,7 @@ const rpcEndpoint = process.env[`REACT_APP_STORAGE_ENDPOINT_${env}`]
 
 const ServicesContext = createContext()
 
-//TODO: support spread operator
+// TODO: support spread operator
 const actions = {
   jwt: (state, jwt) => Object.assign(state, { jwt }),
   pong: (state, { source, origin, event }) => Object.assign(state, { source, origin, event }),
@@ -34,19 +33,19 @@ const actions = {
 
 const reducer = (state, action) => {
   try {
-    //console.log(action.type, action.payload, actions[action.type], state)
+    // console.log(action.type, action.payload, actions[action.type], state)
     return actions[action.type](state, action.payload)
   } catch (error) {
     console.log(error)
-    throw {name: 'UnknownActionError', message: `Unhandled action: ${action.type}`}
+    throw new Error('UnknownActionError', { cause: `Unhandled action: ${action.type}` })
   }
 }
 
-const message = (event, payload) => { return {type: AUTH_MESSAGE_TYPE, event, payload} }
+const message = (event, payload) => { return { type: AUTH_MESSAGE_TYPE, event, payload } }
 const reply = (source, target, event, payload) => source.postMessage(message(event, payload), target)
 
 const services = async (state) => {
-  //TODO: handle refreshing
+  // TODO: handle refreshing
   const jwtFn = () => state.jwt
   const rpcClient = await rpcClientBuilder.build({ rpcEndpoint, jwtFn })
 
@@ -58,33 +57,33 @@ const services = async (state) => {
 }
 
 const handleMessage = (dispatch, messageEvent) => {
-  const { data: {type, event, payload}, source, origin } = messageEvent
+  const { data: { type, event, payload }, source, origin } = messageEvent
   if (!type || type !== AUTH_MESSAGE_TYPE) {
     return
   }
   switch (event) {
     case 'ping':
       reply(source, origin, 'pong', {})
-      break;
+      break
     case 'pong':
       console.log(event)
       dispatch({ type: 'pong', payload: { source, origin, event } })
-      break;
+      break
     case 'jwt':
       dispatch({ type: 'jwt', payload })
-      break;
+      break
   }
 }
 
 const walletLogin = async (state, dispatch) => {
-  //TODO: check exp
+  // TODO: check exp
   if (state.user) {
     return state.user
   }
   const auth = window.open(AUTH_URL, '_blank')
   window.addEventListener('message', handleMessage.bind(null, dispatch))
   try {
-    const pong = await new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       const ts = Date.now()
       const sync = () => {
         console.log(state)
@@ -93,14 +92,14 @@ const walletLogin = async (state, dispatch) => {
         }
         if ((Date.now() - ts) > AUTH_TIMEOUT_MS) {
           console.log('sync timeout', Date.now(), ts)
-          return reject('timeout')
+          return reject(new Error('timeout'))
         }
         reply(auth, AUTH_URL, 'ping', {})
         setTimeout(sync, 300)
       }
       setTimeout(sync, 300)
     })
-    const authToken = await new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       const ts = Date.now()
       const sync = () => {
         if (state.jwt) {
@@ -108,15 +107,15 @@ const walletLogin = async (state, dispatch) => {
         }
         if ((Date.now() - ts) > AUTH_TIMEOUT_MS) {
           console.log('auth timeout', Date.now(), ts)
-          return reject('timeout')
+          return reject(new Error('timeout'))
         }
         setTimeout(sync, 100)
       }
       setTimeout(sync, 100)
     })
     auth.close()
-    //TODO: check signature
-    const {header, payload: user, signature} = jwtService.decode(state.jwt)
+    // TODO: check signature
+    const { payload: user } = jwtService.decode(state.jwt)
     dispatch({ type: 'user', payload: user })
     return user
   } catch (error) {
@@ -127,9 +126,10 @@ const walletLogin = async (state, dispatch) => {
 const currentUser = (state) => state.user
 
 const ServicesProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE) 
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
   const value = {
-    state, dispatch,
+    state,
+    dispatch,
     currentUser: currentUser.bind(null, state),
     services: services.bind(null, state),
     walletLogin: walletLogin.bind(null, state, dispatch)
@@ -140,12 +140,11 @@ const ServicesProvider = ({ children }) => {
 const useServices = () => {
   const context = useContext(ServicesContext)
   if (!context) {
-    throw {
-      name: 'ServicesContextError',
-      message: 'useServices must be used within a ServicesProvider'
-    }
+    throw new Error(
+      'ServicesContextError',
+      { cause: 'useServices must be used within a ServicesProvider' })
   }
   return context
 }
 
-export {ServicesProvider, useServices}
+export { ServicesProvider, useServices }

@@ -22,13 +22,22 @@
     "start": "craco start",
     "build": "BUILD_PATH='./dist/build' craco build",
     "test": "craco test",
+    "lint": "npx standard",
+    "format": "npx standard --fix",
     "deploy:staging": "gcloud app deploy dist/app.yaml --project kernel-admin-staging",
     "eject": "craco eject"
   },
+  "standard": {
+    "ignore": [
+      "dist/*"
+    ],
+    "env": [
+      "jest",
+      "es6",
+      "browser"
+    ]
+  },
   "eslintConfig": {
-    "rules": {
-      "no-throw-literal": 0
-    },
     "extends": [
       "react-app",
       "react-app/jest"
@@ -49,6 +58,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.4",
     "postcss": "^8.4.12",
+    "standard": "^17.0.0",
     "tailwindcss": "^3.0.23"
   }
 }

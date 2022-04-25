@@ -65,10 +65,10 @@ const decode = (jwt) => {
     .slice(0, 2)
     .map((e) => JSON.parse(e.toString()))
     .reduce((acc, e) => {
-      acc[Object.keys(e)[0]] = Object.values(e)[0];
-      return acc;
+      acc[Object.keys(e)[0]] = Object.values(e)[0]
+      return acc
     }, {})
-  return Object.assign(obj, { signature: parts[2] }) 
+  return Object.assign(obj, { signature: parts[2] })
 }
 
 const defaultProvider = () => new ethers.providers.CloudflareProvider()
@@ -76,30 +76,48 @@ const walletFromSeed = (seed, provider) =>
   ethers.Wallet.fromMnemonic(ethers.utils.entropyToMnemonic(seed))
 
 const verify = (type, payload, address, signature) =>
-  ethers.utils.verifyTypedData(DOMAIN, type, payload, signature) == address 
+  ethers.utils.verifyTypedData(DOMAIN, type, payload, signature) === address
 
-const sign = (type, payload) => wallet._signTypedData(domain, type, payload)
+const sign = (wallet, domain, type, payload) => wallet._signTypedData(domain, type, payload)
 
 const createJwt = (wallet, type, payload) =>
   wallet._signTypedData(DOMAIN, type, payload)
-    .then((signature) => encode({ payload, signature }) )
+    .then((signature) => encode({ payload, signature }))
 
-const authPayload = ({ iss, aud = AUD, iat = now(),
-  exp = tokenExp(), nickname, roles }) => {
-    return { iss, aud, iat, exp, nickname, roles }
+const authPayload = ({
+  iss, aud = AUD, iat = now(),
+  exp = tokenExp(), nickname, roles
+}) => {
+  return { iss, aud, iat, exp, nickname, roles }
 }
 
-const clientPayload = ({ iss, aud = AUD, iat = now(),
-  exp = tokenExp(), nickname }) => {
-    return { iss, aud, iat, exp, nickname }
+const clientPayload = ({
+  iss, aud = AUD, iat = now(),
+  exp = tokenExp(), nickname
+}) => {
+  return { iss, aud, iat, exp, nickname }
 }
 
 const jwt = {
-  HEADER, DOMAIN, CLIENT_JWT, AUTH_JWT, JWK,
+  HEADER,
+  DOMAIN,
+  CLIENT_JWT,
+  AUTH_JWT,
+  JWK,
   SignatureError,
-  defaultProvider, walletFromSeed,
-  toBuffer, toBase64Url, fromBase64Url, jwtify, encode, decode,
-  verify, sign, createJwt, authPayload, clientPayload
+  defaultProvider,
+  walletFromSeed,
+  toBuffer,
+  toBase64Url,
+  fromBase64Url,
+  jwtify,
+  encode,
+  decode,
+  verify,
+  sign,
+  createJwt,
+  authPayload,
+  clientPayload
 }
 
 export default jwt

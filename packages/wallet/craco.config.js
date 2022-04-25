@@ -1,6 +1,6 @@
-const path = require("path")
-const { getLoader, loaderByName } = require("@craco/craco")
-const absolutePath = path.join(__dirname, "../common")
+const path = require('path')
+const { getLoader, loaderByName } = require('@craco/craco')
+const absolutePath = path.join(__dirname, '../common')
 module.exports = {
   webpack: {
     alias: {},
@@ -8,7 +8,7 @@ module.exports = {
     configure: (webpackConfig, { env, paths }) => {
       const { isFound, match } = getLoader(
         webpackConfig,
-        loaderByName("babel-loader")
+        loaderByName('babel-loader')
       )
       if (isFound) {
         const include = Array.isArray(match.loader.include)

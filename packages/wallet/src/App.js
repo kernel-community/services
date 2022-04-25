@@ -25,13 +25,13 @@ const App = () => {
       <Suspense fallback={<NotFound />}>
         <Routes>
           <Route path='/' element={<Wallet />} />
-          <Route path='/assets' element={<Navigate to='/assets/overview' replace={true} />} />
-					<Route path='/assets/overview' element={<Assets />} />
+          <Route path='/assets' element={<Navigate to='/assets/overview' replace />} />
+          <Route path='/assets/overview' element={<Assets />} />
 
-          <Route path='/assets/transactions' element={<Navigate to='/assets/overview' replace={true} />} />
-          <Route path='/assets/nfts' element={<Navigate to='/assets/overview' replace={true} />} />
-          <Route path='/assets/tokens' element={<Navigate to='/assets/overview' replace={true} />} />
-          <Route path='/assets/contracts' element={<Navigate to='/assets/overview' replace={true} />} />
+          <Route path='/assets/transactions' element={<Navigate to='/assets/overview' replace />} />
+          <Route path='/assets/nfts' element={<Navigate to='/assets/overview' replace />} />
+          <Route path='/assets/tokens' element={<Navigate to='/assets/overview' replace />} />
+          <Route path='/assets/contracts' element={<Navigate to='/assets/overview' replace />} />
 
           <Route path='/register' element={<Register />}>
             <Route path='create' element={<Create />} />

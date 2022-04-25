@@ -7,8 +7,8 @@
  */
 
 import { useEffect, useState, Fragment } from 'react'
-import { useNavigate, useParams } from "react-router-dom"
-import { useServices } from "@kernel/common"
+import { useNavigate, useParams } from 'react-router-dom'
+import { useServices } from '@kernel/common'
 
 import * as runtime from 'react/jsx-runtime.js'
 import { evaluate } from '@mdx-js/mdx'
@@ -19,7 +19,7 @@ import emoji from 'remark-emoji'
 import { MDXProvider, useMDXComponents } from '@mdx-js/react'
 import { CodePen, Gist, Figma } from 'mdx-embed'
 
-import AppConfig from "App.config"
+import AppConfig from 'App.config'
 import NavBar from 'components/NavBar'
 
 /* eslint-disable */
@@ -37,7 +37,6 @@ const components = {
 /* eslint-enable */
 
 const Page = () => {
-
   const navigate = useNavigate()
   const { project } = useParams()
 
@@ -48,7 +47,6 @@ const Page = () => {
     if (!user || user.role > AppConfig.minRole) {
       return navigate('/')
     }
-
   }, [navigate, user])
 
   useEffect(() => {
@@ -73,8 +71,8 @@ const Page = () => {
         const code = await evaluate(markdown, {
           jsx: runtime.jsx,
           jsxs: runtime.jsxs,
-          Fragment: Fragment,
-          useMDXComponents: useMDXComponents,
+          Fragment,
+          useMDXComponents,
           outputFormat: 'function-body',
           remarkPlugins: [remarkGfm, remarkBreaks, emoji]
         })
@@ -87,12 +85,12 @@ const Page = () => {
   }, [markdown])
 
   return (
-    <div className="md:container md:mx-auto">
-      <NavBar project={ project } />
-      <div className="flex md:flex-row flex-wrap py-4 justify-center justify-between">
-        <div className="md:basis-1/2 grow px-8 rounded-md border-gray-800 shadow-lg min-h-screen">
-          <MDXProvider components={ components }>
-            { markdownError ? markdownError : <Content /> }
+    <div className='md:container md:mx-auto'>
+      <NavBar project={project} />
+      <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
+        <div className='md:basis-1/2 grow px-8 rounded-md border-gray-800 shadow-lg min-h-screen'>
+          <MDXProvider components={components}>
+            {markdownError || <Content />}
           </MDXProvider>
         </div>
       </div>
@@ -101,4 +99,3 @@ const Page = () => {
 }
 
 export default Page
-

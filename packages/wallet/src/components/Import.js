@@ -65,7 +65,7 @@ const Import = () => {
       // trigger gc
       wallet = null
 
-      //TODO: retry?
+      // TODO: retry?
       await client.call({ method: 'authService.register', params: [jwt] })
     } catch (error) {
       setErrorMessage(error.message)
@@ -81,105 +81,108 @@ const Import = () => {
   }
 
   return (
-    <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-      <div className="btn-wrapper text-center">
-      </div>
-      <hr className="mt-6 border-b-1 border-gray-400" />
-      <div className="text-center mb-3">
-        <h6 className="text-gray-600 text-sm font-bold">
+    <div className='flex-auto px-4 lg:px-10 py-10 pt-0'>
+      <div className='btn-wrapper text-center' />
+      <hr className='mt-6 border-b-1 border-gray-400' />
+      <div className='text-center mb-3'>
+        <h6 className='text-gray-600 text-sm font-bold'>
           Import a Wallet
         </h6>
       </div>
       <form onSubmit={importWallet}>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
           >
             Encrypted Wallet
           </label>
           <input
-            type="file"
-            accept=".json"
-            onChange={ (e) => readFile(e) }
-            />
-        </div>
-        <div className="relative w-full mb-3">
-          <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password"
-          >
-            Nickname 
-          </label>
-          <input
-            type="text"
-            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-            placeholder="Nickname"
-            style={{ transition: "all .15s ease" }}
-            onChange={(e) => setNickname(e.target.value)}
-            value={ nickname }
+            type='file'
+            accept='.json'
+            onChange={(e) => readFile(e)}
           />
         </div>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password"
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
+          >
+            Nickname
+          </label>
+          <input
+            type='text'
+            className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
+            placeholder='Nickname'
+            style={{ transition: 'all .15s ease' }}
+            onChange={(e) => setNickname(e.target.value)}
+            value={nickname}
+          />
+        </div>
+        <div className='relative w-full mb-3'>
+          <label
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
           >
             Password
           </label>
           <input
-            type="password"
-            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-            placeholder="Password"
-            style={{ transition: "all .15s ease" }}
+            type='password'
+            className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
+            placeholder='Password'
+            style={{ transition: 'all .15s ease' }}
             onChange={(e) => setPassword(e.target.value)}
-            value={ password }
+            value={password}
           />
         </div>
-        <div className="text-center mt-6">
+        <div className='text-center mt-6'>
           <input
-            className="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
-            type="submit"
-            style={{ transition: "all .15s ease" }}
-            value="OK" />
+            className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
+            type='submit'
+            style={{ transition: 'all .15s ease' }}
+            value='OK'
+          />
         </div>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password">
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
+          >
             Verification Progress
           </label>
-          <div className="w-full bg-gray-200 h-1">
-            <div className="bg-blue-600 h-1" style={{ width: `${progress}%` }}></div>
+          <div className='w-full bg-gray-200 h-1'>
+            <div className='bg-blue-600 h-1' style={{ width: `${progress}%` }} />
           </div>
         </div>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password">
-            Wallet Address 
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
+          >
+            Wallet Address
           </label>
-          <p className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full">
-            { address }
+          <p className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
+            {address}
           </p>
         </div>
-        <div className="text-center mt-6">
+        <div className='text-center mt-6'>
           <Link
-            className="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
-            style={{ transition: "all .15s ease" }}
-            to={ SUCCESS_TO } >
-            Go to Wallet 
+            className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
+            style={{ transition: 'all .15s ease' }}
+            to={SUCCESS_TO}
+          >
+            Go to Wallet
           </Link>
         </div>
-        <div className="text-center mt-6">
-          { errorMessage &&
-            <p className="border-0 px-3 py-3 placeholder-gray-400 text-red-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full">
-              { errorMessage }
-            </p> }
+        <div className='text-center mt-6'>
+          {errorMessage &&
+            <p className='border-0 px-3 py-3 placeholder-gray-400 text-red-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
+              {errorMessage}
+            </p>}
         </div>
       </form>
-      <div className="text-gray-500 text-center mb-3 font-bold">
-      </div>
-    </div>)
+      <div className='text-gray-500 text-center mb-3 font-bold' />
+    </div>
+  )
 }
 
 export default Import

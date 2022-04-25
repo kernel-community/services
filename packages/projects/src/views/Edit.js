@@ -7,8 +7,8 @@
  */
 
 import { useEffect, useReducer, useState, Fragment } from 'react'
-import { useNavigate, useParams } from "react-router-dom"
-import { useServices } from "@kernel/common"
+import { useNavigate, useParams } from 'react-router-dom'
+import { useServices } from '@kernel/common'
 
 import * as runtime from 'react/jsx-runtime.js'
 import { evaluate } from '@mdx-js/mdx'
@@ -19,10 +19,10 @@ import emoji from 'remark-emoji'
 import { MDXProvider, useMDXComponents } from '@mdx-js/react'
 import { CodePen, Gist, Figma } from 'mdx-embed'
 
-import AppConfig from "App.config"
+import AppConfig from 'App.config'
 import NavBar from 'components/NavBar'
 
-const INITIAL_STATE = {url: '', title: '', markdown: ''}
+const INITIAL_STATE = { url: '', title: '', markdown: '' }
 
 const actions = {
   url: (state, url) => Object.assign({}, state, { url }),
@@ -37,7 +37,7 @@ const reducer = (state, action) => {
     return actions[action.type](state, action.payload)
   } catch (error) {
     console.log(error)
-    throw {name: 'UnknownActionError', message: `Unhandled action: ${action.type}`}
+    throw new Error('UnknownActionError', { cause: `Unhandled action: ${action.type}` })
   }
 }
 
@@ -75,16 +75,15 @@ const value = (state, type) => {
 
 const update = async (state, dispatch, e) => {
   e.preventDefault()
-  const { projects, title, url, markdown } = state 
+  const { projects, title, url, markdown } = state
   const data = { title, url, markdown }
   const updated = await projects.update(url, data)
-  //dispatch({ type: 'created', payload: updated })
+  // dispatch({ type: 'created', payload: updated })
   console.log(updated)
 }
 
 const Page = () => {
-
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE) 
+  const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
   const navigate = useNavigate()
   const { project } = useParams()
 
@@ -95,7 +94,6 @@ const Page = () => {
     if (!user || user.role > AppConfig.minRole) {
       return navigate('/')
     }
-
   }, [navigate, user])
 
   useEffect(() => {
@@ -125,8 +123,8 @@ const Page = () => {
         const code = await evaluate(markdown, {
           jsx: runtime.jsx,
           jsxs: runtime.jsxs,
-          Fragment: Fragment,
-          useMDXComponents: useMDXComponents,
+          Fragment,
+          useMDXComponents,
           outputFormat: 'function-body',
           remarkPlugins: [remarkGfm, remarkBreaks, emoji]
         })
@@ -140,50 +138,57 @@ const Page = () => {
   }, [markdown])
 
   return (
-    <div className="md:container md:mx-auto">
+    <div className='md:container md:mx-auto'>
       <NavBar />
-      <div className="flex md:flex-row flex-wrap py-4 justify-center justify-between">
-        <div className="md:basis-1/2 px-8">
-         <form className="grid grid-cols-1 gap-6"> 
-          <label className="block">
-            <span className="text-gray-700">Title</span>
-            <input type="text" className={ formClass }
-              value={ value(state, 'title') } onChange= { change.bind(null, dispatch, 'title') } />
-          </label>
-          <label className="block">
-            <span className="text-gray-700">URL</span>
-            <input type="text" className={ formClass } disabled="true"
-              value={ value(state, 'url') } onChange= { change.bind(null, dispatch, 'url') } />
-          </label>
-          <label className="block">
-            <span className="text-gray-700">Template</span>
-            <select className={ formClass } >
-              <option>Adventure</option>
-            </select>
-          </label>
-          <label className="block">
-            <span className="text-gray-700">Markdown</span>
-            <textarea rows="10" className={ formClass } value={ markdown }
-              onChange={ (e) => setMarkdown(e.target.value) } />
-          </label>
-          <label className="block">
-            <button 
-              onClick= { update.bind(null, state, dispatch) }
-              className="w-full py-2 px-3 bg-indigo-500 text-white text-sm font-semibold rounded-md shadow focus:outline-none">
-              Update 
-            </button>
-          </label>
-          { markdownError &&
-          <label className="block">
-            <span className="text-gray-700">Error</span>
-            <div className={ formClass }>
-              { markdownError.message }
-            </div>
-          </label> }
-         </form> 
+      <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
+        <div className='md:basis-1/2 px-8'>
+          <form className='grid grid-cols-1 gap-6'>
+            <label className='block'>
+              <span className='text-gray-700'>Title</span>
+              <input
+                type='text' className={formClass}
+                value={value(state, 'title')} onChange={change.bind(null, dispatch, 'title')}
+              />
+            </label>
+            <label className='block'>
+              <span className='text-gray-700'>URL</span>
+              <input
+                type='text' className={formClass} disabled='true'
+                value={value(state, 'url')} onChange={change.bind(null, dispatch, 'url')}
+              />
+            </label>
+            <label className='block'>
+              <span className='text-gray-700'>Template</span>
+              <select className={formClass}>
+                <option>Adventure</option>
+              </select>
+            </label>
+            <label className='block'>
+              <span className='text-gray-700'>Markdown</span>
+              <textarea
+                rows='10' className={formClass} value={markdown}
+                onChange={(e) => setMarkdown(e.target.value)}
+              />
+            </label>
+            <label className='block'>
+              <button
+                onClick={update.bind(null, state, dispatch)}
+                className='w-full py-2 px-3 bg-indigo-500 text-white text-sm font-semibold rounded-md shadow focus:outline-none'
+              >
+                Update
+              </button>
+            </label>
+            {markdownError &&
+              <label className='block'>
+                <span className='text-gray-700'>Error</span>
+                <div className={formClass}>
+                  {markdownError.message}
+                </div>
+              </label>}
+          </form>
         </div>
-        <div className="md:basis-1/2 grow px-8 rounded-md border-gray-800 shadow-lg">
-          <MDXProvider components={ components }>
+        <div className='md:basis-1/2 grow px-8 rounded-md border-gray-800 shadow-lg'>
+          <MDXProvider components={components}>
             <Content />
           </MDXProvider>
         </div>
@@ -193,4 +198,3 @@ const Page = () => {
 }
 
 export default Page
-

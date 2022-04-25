@@ -21,12 +21,12 @@ const SUCCESS_TO = '/assets'
 const authClient = async (jwtFn) =>
   rpcClient.build({ rpcEndpoint: endpoint, jwtFn })
 const serialize = (nickname, address, encryptedWallet) =>
-    JSON.stringify({ version: WALLET_STORE_VERSION, nickname, address, encryptedWallet })
+  JSON.stringify({ version: WALLET_STORE_VERSION, nickname, address, encryptedWallet })
 
 const storeWallet = (nickname, address, encryptedWallet) =>
   localStorage.setItem('wallet', serialize(nickname, address, encryptedWallet))
 
-const createUrl = (data) => URL.createObjectURL(new Blob([data], {type: 'application/json'}))
+const createUrl = (data) => URL.createObjectURL(new Blob([data], { type: 'application/json' }))
 
 const Create = () => {
   const [nickname, setNickname] = useState('')
@@ -64,7 +64,7 @@ const Create = () => {
       // trigger gc
       wallet = null
 
-      //TODO: retry?
+      // TODO: retry?
       await client.call({ method: 'authService.register', params: [jwt] })
     } catch (error) {
       console.error(error)
@@ -73,114 +73,126 @@ const Create = () => {
   }
 
   return (
-    <div className="rounded-t mb-0 px-6 py-6">
-      <div className="btn-wrapper text-center">
-      </div>
-      <hr className="mt-6 border-b-1 border-gray-400" />
-      <div className="text-center mb-3">
-        <h6 className="text-gray-600 text-sm font-bold">
+    <div className='rounded-t mb-0 px-6 py-6'>
+      <div className='btn-wrapper text-center' />
+      <hr className='mt-6 border-b-1 border-gray-400' />
+      <div className='text-center mb-3'>
+        <h6 className='text-gray-600 text-sm font-bold'>
           Create a Wallet
         </h6>
       </div>
       <form onSubmit={createWallet}>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password" >
-            Nickname 
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
+          >
+            Nickname
           </label>
           <input
-            type="text"
-            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-            placeholder="Nickname"
-            style={{ transition: "all .15s ease" }}
+            type='text'
+            className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
+            placeholder='Nickname'
+            style={{ transition: 'all .15s ease' }}
             onChange={(e) => setNickname(e.target.value)}
-            value={ nickname } />
+            value={nickname}
+          />
         </div>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password" >
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
+          >
             Password
           </label>
           <input
-            type="password"
-            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-            placeholder="Password"
-            style={{ transition: "all .15s ease" }}
+            type='password'
+            className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
+            placeholder='Password'
+            style={{ transition: 'all .15s ease' }}
             onChange={(e) => setPassword(e.target.value)}
-            value={password} />
+            value={password}
+          />
         </div>
-        <div className="text-center mt-6">
+        <div className='text-center mt-6'>
           <input
-            className="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
-            type="submit"
-            style={{ transition: "all .15s ease" }}
-            value="OK" />
+            className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
+            type='submit'
+            style={{ transition: 'all .15s ease' }}
+            value='OK'
+          />
         </div>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password">
-            Encryption Progress 
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
+          >
+            Encryption Progress
           </label>
-          <div className="w-full bg-gray-200 h-1">
-            <div className="bg-blue-600 h-1" style={{ width: `${progress}%` }}></div>
+          <div className='w-full bg-gray-200 h-1'>
+            <div className='bg-blue-600 h-1' style={{ width: `${progress}%` }} />
           </div>
         </div>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password">
-            Wallet Address 
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
+          >
+            Wallet Address
           </label>
-          <p className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full">
-            { address }
+          <p className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
+            {address}
           </p>
         </div>
-        <div className="relative w-full mb-3">
+        <div className='relative w-full mb-3'>
           <label
-            className="block uppercase text-gray-700 text-xs font-bold mb-2"
-            htmlFor="grid-password">
+            className='block uppercase text-gray-700 text-xs font-bold mb-2'
+            htmlFor='grid-password'
+          >
             Seed Phrase
           </label>
           <textarea
-            type="text"
-            className="border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-            placeholder="Seed phrase"
-            readOnly={true}
-            style={{ transition: "all .15s ease" }}
+            type='text'
+            className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
+            placeholder='Seed phrase'
+            readOnly
+            style={{ transition: 'all .15s ease' }}
             onChange={(e) => setMnemonic(e.target.value)}
-            value={mnemonic} />
+            value={mnemonic}
+          />
         </div>
-        <div className="relative w-full mb-3">
-          <label className="block uppercase text-gray-700 text-xs font-bold mb-2">
-            Encrypted Wallet 
+        <div className='relative w-full mb-3'>
+          <label className='block uppercase text-gray-700 text-xs font-bold mb-2'>
+            Encrypted Wallet
           </label>
-          <a download={ `${address}-wallet.json` }
-            href={ createUrl(encryptedData) }>
+          <a
+            download={`${address}-wallet.json`}
+            href={createUrl(encryptedData)}
+          >
             <div
-              className="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center">
-              Download 
+              className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center'
+            >
+              Download
             </div>
           </a>
         </div>
-        <div className="text-center mt-6">
+        <div className='text-center mt-6'>
           <Link
-            className="bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full"
-            style={{ transition: "all .15s ease" }}
-            to={ SUCCESS_TO } >
-            Go to Wallet 
+            className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
+            style={{ transition: 'all .15s ease' }}
+            to={SUCCESS_TO}
+          >
+            Go to Wallet
           </Link>
         </div>
-        <div className="text-center mt-6">
-          { errorMessage &&
-            <p className="border-0 px-3 py-3 placeholder-gray-400 text-red-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full">
-              { errorMessage }
-            </p> }
+        <div className='text-center mt-6'>
+          {errorMessage &&
+            <p className='border-0 px-3 py-3 placeholder-gray-400 text-red-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
+              {errorMessage}
+            </p>}
         </div>
       </form>
-  </div>
+    </div>
   )
 }
 

@@ -11,36 +11,36 @@
 const VERSION = '2.0'
 
 // Not supported on Safari on iOS except newest version
-//const uuid = () => crypto.randomUUID()
+// const uuid = () => crypto.randomUUID()
 const uuid = () => Date.now()
 
 const build = async ({ rpcEndpoint, jwtFn }) => {
-
   const jsonRpc = ({ version = VERSION, id = uuid(), method, params }) => {
     return { jsonrpc: version, id, method, params }
   }
 
-  const method = (service, name) => `${service}.${name}` 
+  const method = (service, name) => `${service}.${name}`
 
   const request = async (url, data) => {
     const jwt = await jwtFn.call()
-    let opts = {
+    const opts = {
       method: 'POST',
-      //TODO: add authentication
+      // TODO: add authentication
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${jwt}`
+        Authorization: `Bearer ${jwt}`
       },
       body: JSON.stringify(data)
     }
     console.log(opts)
     return fetch(url, opts)
-      .then((e) => e.ok ?
-        e.json() : { error: { code: e.status, message: e.statusText } })
+      .then((e) => e.ok
+        ? e.json()
+        : { error: { code: e.status, message: e.statusText } })
   }
 
   const call = async ({ method, params }) => {
-    const data = jsonRpc({ method, params }) 
+    const data = jsonRpc({ method, params })
     const { result, error } = await request(rpcEndpoint, data)
     if (error) {
       throw new Error(`${error.message} ${error.code}`)

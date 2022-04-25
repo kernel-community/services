@@ -11,14 +11,28 @@
   "type": "module",
   "scripts": {
     "build": "echo \"tbd\"",
-    "deploy:staging": "echo \"tbd\"",
-    "test": "echo \"tbd\""
+    "lint": "echo \"tbd\"",
+    "format": "npx standard --fix",
+    "test": "echo \"tbd\"",
+    "deploy:staging": "echo \"tbd\""
+  },
+  "standard": {
+    "ignore": [
+      "dist/*",
+      "repl.js"
+    ],
+    "env": [
+      "jest",
+      "es6",
+      "browser"
+    ]
   },
   "dependencies": {
     "@google-cloud/storage": "^5.18.2",
     "deepmerge": "^4.2.2"
   },
   "devDependencies": {
+    "standard": "^17.0.0",
     "tap": "^16.0.0"
   }
 }

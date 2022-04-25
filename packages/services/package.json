@@ -12,8 +12,21 @@
     "start": "node dist/build/bundle.js",
     "dev": "node src/server.js",
     "build": "npx rollup -c rollup.config.js",
-    "deploy:staging": "gcloud app deploy dist/app_staging.yaml --project kernel-services-staging",
-    "test": "echo \"tbd\""
+    "lint": "echo \"tbd\"",
+    "format": "npx standard --fix",
+    "test": "echo \"tbd\"",
+    "deploy:staging": "gcloud app deploy dist/app_staging.yaml --project kernel-services-staging"
+  },
+  "standard": {
+    "ignore": [
+      "dist/*",
+      "repl.js"
+    ],
+    "env": [
+      "jest",
+      "es6",
+      "browser"
+    ]
   },
   "dependencies": {
     "@google-cloud/secret-manager": "^3.11.0",
@@ -36,6 +49,7 @@
     "pino-pretty": "^7.5.3",
     "rollup": "^2.70.1",
     "rollup-plugin-terser": "^7.0.2",
+    "standard": "^17.0.0",
     "tap": "^16.0.0"
   }
 }

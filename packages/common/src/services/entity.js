@@ -8,13 +8,7 @@
 
 'use strict'
 
-//import crypto from 'crypto'
-
-const uuid = () => crypto.randomUUID()
-const now = () => Date.now()
-
 const build = async ({ rpcClient }, { resource }) => {
-
   const serviceName = 'entityService'
   const method = rpcClient.method.bind(null, serviceName)
   const call = (methodName, ...args) => rpcClient.call({
@@ -26,22 +20,21 @@ const build = async ({ rpcClient }, { resource }) => {
 
   const get = async (id) => call('get', id)
 
-  const exists = async (id) => call('exists', id) 
+  const exists = async (id) => call('exists', id)
 
-  //TODO: add pagination support
-  const getAll = async () => call('getAll') 
-  const list = async () => call('list') 
+  // TODO: add pagination support
+  const getAll = async () => call('getAll')
+  const list = async () => call('list')
 
-  const remove = async (id) => call('remove', id) 
+  const remove = async (id) => call('remove', id)
 
-  const patch = async (id, data) => call('patch', id, data) 
+  const patch = async (id, data) => call('patch', id, data)
 
-  const update = async (id, data) => call('update', id, data) 
+  const update = async (id, data) => call('update', id, data)
 
-  const updateMeta = async (id, data) => call('updateMeta', id, data) 
+  const updateMeta = async (id, data) => call('updateMeta', id, data)
 
   return { create, exists, get, getAll, list, remove, patch, update, updateMeta }
-
 }
 
 const entityService = {
