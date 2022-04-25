@@ -9,15 +9,15 @@
 import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
-import NotFound from 'views/NotFound.js'
+import NotFound from 'views/NotFound.jsx'
 import 'App.css'
 
-const Wallet = lazy(() => import('views/Wallet.js'))
-const Assets = lazy(() => import('views/Assets.js'))
-const Register = lazy(() => import('views/Register.js'))
-const Create = lazy(() => import('components/Create.js'))
-const Import = lazy(() => import('components/Import.js'))
-const Auth = lazy(() => import('components/Auth.js'))
+const Wallet = lazy(() => import('views/Wallet.jsx'))
+const Assets = lazy(() => import('views/Assets.jsx'))
+const Register = lazy(() => import('views/Register.jsx'))
+const Create = lazy(() => import('components/Create.jsx'))
+const Import = lazy(() => import('components/Import.jsx'))
+const Auth = lazy(() => import('components/Auth.jsx'))
 
 const App = () => {
   return (
