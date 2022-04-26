@@ -51,6 +51,7 @@ const SERVICE_POLICY = {
     list: ROLE_ALL,
     create: ROLE_ALL,
     get: ROLE_ALL,
+    getAll: ROLE_ALL,
     patch: ROLE_ALL,
     update: ROLE_ALL,
     updateMeta: ROLE_ALL,
