@@ -143,7 +143,7 @@ const Page = () => {
                 <label className='label cursor-pointer justify-center'>
                   <input
                     type='checkbox' className='checkbox checkbox-primary'
-                    value={value(state, 'consent')} onChange={change.bind(null, dispatch, 'consent')}
+                    checked={value(state, 'consent')} onChange={change.bind(null, dispatch, 'consent')}
                   />
                   <span className='label-text'>Make my information available to others</span>
                 </label>
