@@ -108,12 +108,13 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     const { header, payload: { iss, nickname }, signature } = decodeJwt(jwt)
 
     let member
-    const { data: { member_id } } = await wallets.get(iss)
-    if (!member_id) {
+    const exists = await wallets.exists(iss)
+    if (!exists) {
       member = await members.create({ wallet: iss, role: NEW_ROLE })
       const { id: member_id, data: { role } } = member
       await wallets.create({ member_id, nickname }, { id: iss, owner: member_id })
     } else {
+      const { data: { member_id } } = await wallets.get(iss)
       member = await members.get(member_id)
     }
 
