@@ -53,6 +53,7 @@ const SERVICE_POLICY = {
     get: ROLE_ALL,
     patch: ROLE_ALL,
     update: ROLE_ALL,
+    updateMeta: ROLE_ALL,
     remove: ROLE_ALL,
     exists: ROLE_ALL,
     setup: ROLE_ALL
@@ -132,7 +133,7 @@ const register = async (server, rpcPath, { projectId, bucket, rpcEndpoint }) => 
     }
     const [service, fn] = method.split('.') 
     // rpc level auth
-    const policy = SERVICE_POLICY[service][fn]
+    const policy = SERVICE_POLICY[service][fn] || 0
     console.debug('service policy', policy)
     if (user.role > policy) {
       return reply.unauthorized()

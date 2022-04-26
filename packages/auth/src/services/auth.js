@@ -121,8 +121,8 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
       await members.updateMeta(member.id, { owner: member.id })
     }
 
-    const { data: { role } } = member 
-    const authPayload = jwtService.authPayload({ iss: member_id, nickname, role })
+    const { id, data: { role } } = member
+    const authPayload = jwtService.authPayload({ iss: id, nickname, role })
     return jwtService.createJwt(wallet, jwtService.AUTH_JWT, authPayload)
   }
 
