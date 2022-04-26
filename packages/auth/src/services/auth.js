@@ -111,11 +111,14 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     const exists = await wallets.exists(iss)
     if (!exists) {
       member = await members.create({ wallet: iss, role: NEW_ROLE })
+      await members.updateMeta(member.id, { owner: member.id })
       const { id: member_id, data: { role } } = member
       await wallets.create({ member_id, nickname }, { id: iss, owner: member_id })
     } else {
       const { data: { member_id } } = await wallets.get(iss)
       member = await members.get(member_id)
+      // TODO: quick fix to migrate legacy member entities
+      await members.updateMeta(member.id, { owner: member.id })
     }
 
     const { data: { role } } = member 
