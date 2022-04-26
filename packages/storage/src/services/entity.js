@@ -42,6 +42,14 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
     return { id, owner, created, updated, kind, uri, data }
   }
 
+  const exists = async ({ iss, role }, { resource }, id) => {
+    const { uri, policy } = resources[resource]
+    if (role > policy.exists) {
+      AccessDeniedError(`${iss} cannot read ${resource}`)
+    }
+    return client.exists(entityFile(entityUri(uri, id)))
+  }
+
   const create = async ({ iss, role }, { resource }, data,
     { owner = iss, id = uuid(), created = now(), updated = now() }) => {
       const { uri, policy } = resources[resource]
@@ -49,6 +57,11 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
         AccessDeniedError({ iss, policy })
       }
 
+      const exists = await client.exists(entityFile(entityUri(uri, id)))
+      if (exists) {
+        // TODO: are we leaking too much information here?
+        throw { name: 'AlreadyExists', message: `${id} in ${resource} already exists.` }
+      }
       const entity = entityObject({
         id, owner, created, updated, kind: resource, uri: entityUri(uri, id), data
       })
@@ -99,14 +112,6 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
     }
     await client.remove(entityFile(entityUri(uri, id)))
     return { resource, uri, id }
-  }
-
-  const exists = async ({ iss, role }, { resource }, id) => {
-    const { uri, policy } = resources[resource]
-    if (role > policy.exists) {
-      AccessDeniedError(`${iss} cannot read ${resource}`)
-    }
-    return client.exists(entityFile(entityUri(uri, id)))
   }
 
   const patch = async ({ iss, role }, { resource }, id, data) => {
