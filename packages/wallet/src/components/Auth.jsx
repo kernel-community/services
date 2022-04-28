@@ -8,7 +8,7 @@
 
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-
+import { useNavigate } from 'react-router-dom'
 import { jwtService, rpcClient } from '@kernel/common'
 
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
@@ -34,18 +34,30 @@ const message = (event, payload) => { return { type: AUTH_MESSAGE_TYPE, event, p
 const reply = (source, target, event, payload) => source.postMessage(message(event, payload), target)
 
 const Auth = () => {
-  const { nickname: storedNickname, address: storedAddress, encryptedWallet } = loadWallet()
+  const navigate = useNavigate()
 
-  const [nickname] = useState(storedNickname)
+  const [encryptedWallet, setEncryptedWallet] = useState()
+  const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
-  const [address] = useState(storedAddress)
+  const [address, setAddress] = useState('')
   const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    try {
+      const { nickname: storedNickname, address: storedAddress, encryptedWallet: storedWallet } = loadWallet()
+      setNickname(storedNickname)
+      setAddress(storedAddress)
+      setEncryptedWallet(storedWallet)
+    } catch (error) {
+      console.log(error)
+      return navigate('/register')
+    }
+  }, [navigate, nickname, address, encryptedWallet])
 
   const [source, setSource] = useState(null)
   const [website, setWebsite] = useState('')
 
   const handleMessage = (messageEvent) => {
-    console.log(messageEvent)
     const { data: { type, event }, source, origin } = messageEvent
     if (!type || type !== AUTH_MESSAGE_TYPE) {
       return
