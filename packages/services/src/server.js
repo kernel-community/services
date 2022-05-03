@@ -16,6 +16,7 @@ import sensible from 'fastify-sensible'
 //import rpcAuth from './../../auth/src/routes/rpc.js'
 import { rpc as rpcStorage } from '@kernel/storage'
 import rpcAuth from '@kernel/auth'
+import rpcTask from '@kernel/task'
 
 import health from './routes/health.js'
 
@@ -23,14 +24,20 @@ import secretBuilder from './services/secret.js'
 
 const PORT = process.env.PORT || 3001
 const HOST = process.env.HOST || 'localhost'
+
 const STORAGE_RPC_PATH = process.env.STORAGE_RPC_PATH || '/storage/rpc'
 const AUTH_RPC_PATH = process.env.AUTH_RPC_PATH || '/auth/rpc'
 const AUTH_SEED_SECRET_ID = process.env.AUTH_SEED_SECRET_ID || 'authSeed'
+
+const TASK_RPC_PATH = process.env.TASK_RPC_PATH || '/task/rpc'
+const TASKS_PATH = process.env.TASKS_PATH || '/tasks'
 
 const AUTH_SEED_SECRET_CRC32C = process.env.AUTH_SEED_SECRET_CRC32C 
 const AUTH_MEMBER_ID = process.env.AUTH_MEMBER_ID
 const PROJECT_ID = process.env.PROJECT_ID
 const BUCKET = process.env.BUCKET
+const TASK_SERVICE_SECRET_ID = process.env.TASK_SERVICE_SECRET_ID
+const TASK_SERVICE_SECRET_CRC32C = process.env.TASK_SERVICE_SECRET_CRC32C
 
 const local = () => process.env.ENV === 'DEV'
 
@@ -43,13 +50,23 @@ const start = async () => {
   const server = fastify(opts)
   try {
     server.register(sensible)
+    // Cloud Tasks sends this content type
+    // https://github.com/googleapis/nodejs-tasks/blob/main/samples/server.js#L26
+    server.addContentTypeParser('application/octet-stream', { parseAs: 'buffer' }, async (request, body) => {
+      return JSON.parse(Buffer.from(body, 'base64'))
+    })
     let seed = process.env.SEED || ''
+    let serviceAccount
     if (!local()) {
       const secretService = await secretBuilder.build({ projectId: PROJECT_ID })
-      const secret = await secretService.access({
+      const authSecret = await secretService.access({
         secretId: AUTH_SEED_SECRET_ID, crc32c: AUTH_SEED_SECRET_CRC32C
       })
-      seed = secret.payload.data.toString()
+      seed = authSecret.payload.data.toString()
+      const taskSecret = await secretService.access({
+        secretId: TASK_SERVICE_SECRET_ID, crc32c: TASK_SERVICE_SECRET_CRC32C
+      })
+      serviceAccount = JSON.parse(taskSecret.payload.data.toString())
     }
 
     const listenFns = await Promise.all([
@@ -61,6 +78,13 @@ const start = async () => {
       }),
       rpcAuth.register(server, AUTH_RPC_PATH, {
         seed,
+        authMemberId: AUTH_MEMBER_ID,
+        rpcEndpoint: `http://${HOST}:${PORT}${STORAGE_RPC_PATH}`
+      }),
+      rpcTask.register(server, TASK_RPC_PATH, TASKS_PATH, {
+        projectId: PROJECT_ID,
+        seed,
+        serviceAccount,
         authMemberId: AUTH_MEMBER_ID,
         rpcEndpoint: `http://${HOST}:${PORT}${STORAGE_RPC_PATH}`
       })

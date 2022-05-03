@@ -12,6 +12,10 @@ env_variables:
   PROJECT_ID: "kernel-community"
 
 handlers:
+- url: /tasks
+  login: admin
+  script: auto
+
 - url: /.*
   secure: always
   redirect_http_response_code: 301
