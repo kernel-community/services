@@ -1,0 +1,28 @@
+{
+  "appTitle": "Kernel Convo",
+  "minRole": 1000,
+  "navbar": {
+    "links": [
+      {
+        "url": "https://kernel.community/en/learn/",
+        "iconName": "far fa-file-alt",
+        "title": "Learn"
+      },
+      {
+        "url": "https://twitter.com/kernel0x",
+        "iconName": "fab fa-twitter",
+        "title": "Tweet"
+      },
+      {
+        "url": "https://www.youtube.com/channel/UC2kUaSgR0L-uzGkNsOxSxzw",
+        "iconName": "fab fa-youtube",
+        "title": "Watch"
+      },
+      {
+        "url": "https://github.com/kernel-community/",
+        "iconName": "fab fa-github",
+        "title": "Contribute"
+      }
+    ]
+  }
+}
