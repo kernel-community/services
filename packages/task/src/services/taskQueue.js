@@ -44,33 +44,37 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
   // entities
   // const members = await entityClient({ resource: 'member' })
   const projects = await entityClient({ resource: 'project' })
+  const profiles = await entityClient({ resource: 'profiles' })
 
   // google services
   const googleServices = await google.build({ projectId, serviceAccount })
 
+  // TODO: move
   const generateEmail = (to, subject, message) => {
-    const email = `To: ${to}
-    Subject: ${subject}
-    MIME-Version: 1.0
-    Content-Type: text/plain; charset="UTF-8"
-    Content-Transfer-Encoding: base64
-    ${message}`;
-    return base64url(Buffer.from(email).toString('base64url'))
-  }
-
-  const repl = async ({ iss, role }, s) => {
-    try {
-      console.log(eval(s))
-    } catch (error) {
-      console.log(error)
-    }
-    return s
+    const email = [
+      `To: ${to}`,
+      `Subject: ${subject}`,
+      `MIME-Version: 1.0`,
+      `Content-Type: text/plain; charset="UTF-8"`,
+      `Content-Transfer-Encoding: base64`,
+      ``,
+      `${message}`
+    ].join('\n')
+    return Buffer.from(email).toString('base64url')
   }
 
   const sendEmail = async ({ iss, role }, { to, subject, message }) => {
     const raw = generateEmail(to, subject, message)
     const result = await googleServices.sendEmail(raw)
     return result
+  }
+
+  const rsvpCalendarEvent = async ({ iss, role }, { calendarId, eventId }) => {
+    const { email } = await profiles.get(iss)
+    const patchedEvent = await googleServices.patchCalendarEvent(calendarId, eventId, {
+      attendees: [{ email, responseStatus: 'accepted' }]
+    })
+    return patchedEvent
   }
 
   const echo = async ({ iss, role }, s) => {
@@ -84,7 +88,7 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
     return updated
   }
 
-  return { repl, sendEmail, echo, followProject }
+  return { sendEmail, rsvpCalendarEvent, followProject }
 }
 
 const taskQueue = { build }

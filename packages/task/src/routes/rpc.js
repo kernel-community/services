@@ -33,9 +33,8 @@ const SERVICE_POLICY = {
     enqueueTask: ROLE_ALL
   },
   taskQueueService: {
-    echo: ROLE_ALL,
-    repl: ROLE_ALL,
-    sendEmail: ROLE_ALL,
+    sendEmail: ROLE_CORE,
+    rsvpCalendarEvent: ROLE_ALL,
     followProject: ROLE_ALL
   }
 }

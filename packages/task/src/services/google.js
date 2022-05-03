@@ -23,8 +23,35 @@ const build = async ({ projectId, serviceAccount, scopes = DEFAULT_SCOPES, subje
   const calendar = google.calendar({version: 'v3', auth})
   const gmail = google.gmail({version: 'v1', auth})
 
-  const listCalendar = () => {
+  const createCalendarEvent = (calendarId, requestBody) => {
+    return calendar.events.insert({
+      calendarId,
+      requestBody
+    })
+  }
 
+  const listCalendarEvents = (calendarId) => {
+    return calendar.events.list({
+      calendarId,
+      singleEvents: true,
+      orderBy: 'updated',
+      maxResults: 100
+    })
+  }
+
+  const getCalendarEvent = (calendarId, eventId) => {
+    return calendar.events.get({
+      calendarId,
+      eventId
+    })
+  }
+
+  const patchCalendarEvent = (calendarId, eventId, requestBody) => {
+    return calendar.events.patch({
+      calendarId,
+      eventId,
+      requestBody
+    })
   }
 
   const sendEmail = (raw) => {
@@ -34,7 +61,7 @@ const build = async ({ projectId, serviceAccount, scopes = DEFAULT_SCOPES, subje
     })
   }
 
-  return { sendEmail, listCalendar }
+  return { sendEmail, createCalendarEvent, getCalendarEvent, listCalendarEvents, patchCalendarEvent }
 }
 
 const service = { build }
