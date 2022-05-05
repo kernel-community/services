@@ -25,7 +25,6 @@ const build = async ({ rpcClient }) => {
   return { sendEmail, emailMember, emailMembers, followProject }
 }
 
-
 const taskService = {
   build
 }

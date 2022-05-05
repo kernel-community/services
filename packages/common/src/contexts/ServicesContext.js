@@ -54,7 +54,7 @@ const services = async (state) => {
   const entityFactory = entityBuilder.build.bind(null, { rpcClient: rpcClientStorage })
 
   const rpcClientTask = await rpcClientBuilder.build({ rpcEndpoint: rpcEndpointTask, jwtFn })
-  const taskService = await taskBuilder.build({ rpcClient: rpcClientTask }) 
+  const taskService = await taskBuilder.build({ rpcClient: rpcClientTask })
 
   return { rpcClientStorage, resourceService, entityFactory, rpcClientTask, taskService }
 }
