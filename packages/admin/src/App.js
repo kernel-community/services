@@ -10,13 +10,14 @@ import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ServicesProvider } from '@kernel/common'
 
-import NotFound from 'views/NotFound.js'
+import NotFound from 'views/NotFound'
 import 'App.css'
 
-const Admin = lazy(() => import('views/Admin.js'))
-const Dashboard = lazy(() => import('views/Dashboard.js'))
-const Resources = lazy(() => import('views/Resources.js'))
-const Entities = lazy(() => import('views/Entities.js'))
+const Admin = lazy(() => import('views/Admin'))
+const Dashboard = lazy(() => import('views/Dashboard'))
+const Resources = lazy(() => import('views/Resources'))
+const Entities = lazy(() => import('views/Entities'))
+const Email = lazy(() => import('views/Email'))
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/resources' element={<Resources />} />
             <Route path='/entities' element={<Entities />} />
+            <Route path='/email' element={<Email />} />
           </Routes>
         </Suspense>
       </ServicesProvider>

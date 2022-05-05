@@ -12,6 +12,7 @@ import entityBuilder from '../services/entity.js'
 import resourceBuilder from '../services/resource.js'
 import jwtService from '../services/jwt.js'
 import rpcClientBuilder from '../services/rpcClient.js'
+import taskBuilder from '../services/task.js'
 
 const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
 const AUTH_URL = process.env[`REACT_APP_AUTH_URL_${env}`]
@@ -20,7 +21,8 @@ const AUTH_TIMEOUT_MS = 1000 * 60
 
 const INITIAL_STATE = {}
 
-const rpcEndpoint = process.env[`REACT_APP_STORAGE_ENDPOINT_${env}`]
+const rpcEndpointStorage = process.env[`REACT_APP_STORAGE_ENDPOINT_${env}`]
+const rpcEndpointTask = process.env[`REACT_APP_TASK_ENDPOINT_${env}`]
 
 const ServicesContext = createContext()
 
@@ -47,13 +49,14 @@ const reply = (source, target, event, payload) => source.postMessage(message(eve
 const services = async (state) => {
   // TODO: handle refreshing
   const jwtFn = () => state.jwt
-  const rpcClient = await rpcClientBuilder.build({ rpcEndpoint, jwtFn })
+  const rpcClientStorage = await rpcClientBuilder.build({ rpcEndpoint: rpcEndpointStorage, jwtFn })
+  const resourceService = await resourceBuilder.build({ rpcClient: rpcClientStorage })
+  const entityFactory = entityBuilder.build.bind(null, { rpcClient: rpcClientStorage })
 
-  const resourceService = await resourceBuilder.build({ rpcClient })
+  const rpcClientTask = await rpcClientBuilder.build({ rpcEndpoint: rpcEndpointTask, jwtFn })
+  const taskService = await taskBuilder.build({ rpcClient: rpcClientTask }) 
 
-  const entityFactory = entityBuilder.build.bind(null, { rpcClient })
-
-  return { rpcClient, resourceService, entityFactory }
+  return { rpcClientStorage, resourceService, entityFactory, rpcClientTask, taskService }
 }
 
 const handleMessage = (dispatch, messageEvent) => {

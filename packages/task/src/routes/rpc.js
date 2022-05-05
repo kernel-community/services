@@ -34,10 +34,13 @@ const SERVICE_POLICY = {
   },
   taskQueueService: {
     sendEmail: ROLE_CORE,
+    emailMember: ROLE_CORE,
+    emailMembers: ROLE_CORE,
     rsvpCalendarEvent: ROLE_ALL,
     followProject: ROLE_ALL
   }
 }
+
 const register = async (server, rpcPath, tasksPath, { seed, serviceAccount, authMemberId, rpcEndpoint, projectId }) => {
 
   const taskService = await taskBuilder.build({ projectId, relativeUri: tasksPath })
@@ -118,7 +121,15 @@ const register = async (server, rpcPath, tasksPath, { seed, serviceAccount, auth
   // this gets called from cloud tasksPath
   server.post(`${tasksPath}`, async (request, reply) => {
     console.debug('task call: ', request.body)
-    //const {task: [fn, ...params], user} = JSON.parse(Buffer.from(request.body, 'base64'))
+    // task specific headers
+    // TODO: abort if retry count limit reached
+    const headers = request.headers
+    const taskname =  headers['x-appengine-taskname']
+    const queuename =  headers['x-appengine-queuename']
+    const taskRetryCount =  headers['x-appengine-taskretrycount']
+    const taskExecutionCount =  headers['x-appengine-taskexecutioncount']
+    const taskEta =  headers['x-appengine-tasketa']
+    const taskTimeout =  headers['x-appengine-timeout-ms']
     const {task: [fn, ...params], user} = request.body
 
     if (!fn || !user) {

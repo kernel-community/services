@@ -42,9 +42,9 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
   const entityClient = entityBuilder.build.bind(null, { rpcClient })
 
   // entities
-  // const members = await entityClient({ resource: 'member' })
+  const members = await entityClient({ resource: 'member' })
   const projects = await entityClient({ resource: 'project' })
-  const profiles = await entityClient({ resource: 'profiles' })
+  const profiles = await entityClient({ resource: 'profile' })
 
   // google services
   const googleServices = await google.build({ projectId, serviceAccount })
@@ -69,6 +69,42 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
     return result
   }
 
+  const emailMember = async ({ iss, role }, { id, subject, template }) => {
+    const { data: {profileId} } = await members.get(id)
+    if (!profileId) {
+      return `no profile for member ${id}`
+    }
+    const profile = await profiles.get(profileId)
+    const { consent, email, name, pronouns, city } = profile.data
+    if (consent) {
+      // TODO: find better solution 
+      const populatedSubject = eval('`' + subject + '`')
+      const populatedMessage = eval('`' + template + '`')
+      const raw = generateEmail(email, populatedSubject, populatedMessage)
+      const result = await googleServices.sendEmail(raw)
+      return result
+    }
+    return `not allowed to email member ${id}`
+  }
+
+  const emailMembers = async ({ iss, role }, { subject, template }) => {
+    let i = 0
+    const allProfiles = await profiles.getAll()
+    for (const profile of allProfiles) {
+      const { consent, email, name, pronouns, city } = profile.data
+      if (consent) {
+        i++
+        // TODO: find better solution
+        const populatedSubject = eval('`' + subject + '`')
+        const populatedMessage = eval('`' + template + '`')
+        const raw = generateEmail(email, populatedSubject, populatedMessage)
+        await googleServices.sendEmail(raw)
+      }
+    }
+    return `emailed ${i} members`
+  }
+
+
   const rsvpCalendarEvent = async ({ iss, role }, { calendarId, eventId }) => {
     const { email } = await profiles.get(iss)
     const patchedEvent = await googleServices.patchCalendarEvent(calendarId, eventId, {
@@ -77,18 +113,13 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
     return patchedEvent
   }
 
-  const echo = async ({ iss, role }, s) => {
-    console.log(s)
-    return s
-  }
-
   const followProject = async ({ iss, role }, id) => {
     const updated = await projects.patch(id, { followerIds: [iss] })
     // TODO: should we have a tasks resource and record a return value?
     return updated
   }
 
-  return { sendEmail, rsvpCalendarEvent, followProject }
+  return { sendEmail, emailMember, emailMembers, rsvpCalendarEvent, followProject }
 }
 
 const taskQueue = { build }

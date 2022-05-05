@@ -55,7 +55,7 @@ const build = async ({ projectId, location = DEFAULT_LOCATION, taskQueue = DEFAU
         }
       })
 
-  const enqueueTask = async (user, params) => {
+  const enqueueTask = async (user, ...params) => {
     const request = {task: params, user}
     const payload = Buffer.from(JSON.stringify(request)).toString('base64')
     return createTask({ payload })

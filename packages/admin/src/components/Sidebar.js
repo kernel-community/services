@@ -121,9 +121,9 @@ const Sidebar = () => {
               <li className='inline-flex'>
                 <Link
                   className='text-blueGray-700 hover:text-blueGray-500  text-sm block mb-4 no-underline font-semibold'
-                  to='/'
+                  to='/email'
                 >
-                  <i className='fas fa-heart mr-2 text-blueGray-400 text-base' /> Applications
+                  <i className='fas fa-heart mr-2 text-blueGray-400 text-base' /> Send Email
                 </Link>
               </li>
               <li className='inline-flex'>
