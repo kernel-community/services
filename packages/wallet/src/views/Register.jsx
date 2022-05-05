@@ -7,7 +7,7 @@
  */
 
 import { Outlet, Link } from 'react-router-dom'
-import { FooterSmall, Navbar } from '@kernel/common'
+import { Footer, Navbar } from '@kernel/common'
 
 import bgImage from 'assets/images/register_bg.png'
 
@@ -58,7 +58,7 @@ const Register = () => {
               </div>
             </div>
           </div>
-          <FooterSmall absolute />
+          <Footer absolute />
         </section>
       </main>
     </div>

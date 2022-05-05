@@ -7,9 +7,9 @@
 ```
 packages/common/src/
 ├── components
-│   ├── Footer.js
-│   ├── FooterSmall.js
-│   └── Navbar.js
+│   ├── Footer.jsx
+│   ├── Navbar.jsx
+│   └── NavbarLink.jsx
 ├── contexts
 │   └── ServicesContext.js
 ├── index.js

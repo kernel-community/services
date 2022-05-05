@@ -8,7 +8,7 @@
 
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useServices, FooterSmall, Navbar } from '@kernel/common'
+import { useServices, Footer, Navbar } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import Sidebar from 'components/Sidebar.js'
@@ -39,7 +39,7 @@ const Dashboard = () => {
           <div className='flex flex-wrap' />
           <div className='flex flex-wrap mt-4' />
         </div>
-        <FooterSmall absolute />
+        <Footer absolute />
       </div>
     </>
   )

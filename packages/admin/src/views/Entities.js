@@ -9,7 +9,7 @@
 import { useEffect, useReducer } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
-import { useServices, FooterSmall, Navbar } from '@kernel/common'
+import { useServices, Footer, Navbar } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import Sidebar from 'components/Sidebar.js'
@@ -348,7 +348,7 @@ const Entities = () => {
             </div>
           </div>
         </div>
-        <FooterSmall absolute />
+        <Footer absolute />
       </div>
     </>
   )

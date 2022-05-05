@@ -18,20 +18,21 @@ const defaults = {
 
 export default function Navbar (props) {
   const [navbarOpen, setNavbarOpen] = React.useState(false)
-  const { title, menuLinks, additionalMenuItems } = props
+  const { title, logoUrl, menuLinks, additionalMenuItems } = props
   const homeUrl = props.homeUrl || defaults.homeUrl
   const backgroundColor = props.backgroundColor || defaults.backgroundColor
   const textColor = props.textColor || defaults.textColor
 
   return (
-    <nav className={`relative ${backgroundColor} flex flex-wrap items-center justify-between px-2 py-4`}>
-      <div className='container px-4 mx-auto flex flex-wrap items-center justify-between'>
+    <nav className={`relative ${backgroundColor} flex flex-wrap items-center px-2 py-4`}>
+      <div className='container px-4 mx-auto flex flex-wrap items-center'>
         <div className='w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start'>
           <button
             className={`${textColor} text-sm font-bold leading-relaxed inline-block mr-4 py-2
               whitespace-nowrap uppercase`}
           >
-            {title && <Link to={homeUrl}>{title}</Link>}
+            {logoUrl && <span><img src={logoUrl} className='inline-block max-h-8 mr-3' /></span>}
+            {title && <span className='inline-block align-middle'><Link to={homeUrl}>{title}</Link></span>}
           </button>
           {menuLinks &&
             <button
@@ -46,15 +47,14 @@ export default function Navbar (props) {
         {menuLinks &&
           <div
             className={
-              `lg:flex flex-grow items-center ${backgroundColor} lg:bg-transparent
-              ${navbarOpen ? ' block rounded' : ' hidden'}`
+              `lg:flex flex-grow lg:flex-grow-0 lg:ml-auto ${backgroundColor} ${navbarOpen ? ' block rounded' : ' hidden'}`
             }
             id='example-navbar-warning'
           >
-            <ul className='flex flex-col lg:flex-row list-none ml-3 mt-3'>
-              {menuLinks?.map(menuLink => {
+            <ul className='flex flex-col lg:flex-row list-none ml-3 mt-3 lg:mt-0'>
+              {menuLinks?.map((menuLink, idx) => {
                 return (
-                  <li key={menuLink.url} className='flex items-center'>
+                  <li key={idx} className='flex items-center'>
                     <NavbarLink link={menuLink} textColor={textColor} />
                   </li>
                 )

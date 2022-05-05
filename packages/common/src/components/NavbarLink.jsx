@@ -14,7 +14,7 @@ export default function NavbarLink (props) {
 
   return (
     <a
-      className={`${textColor} px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold`}
+      className={`${textColor} px-3 py-4 lg:px-6 lg:py-2 flex items-center text-sm lowercase font-bold`}
       href={url}
     >
       {iconName &&

@@ -1,5 +1,6 @@
 {
   "appTitle": "Kernel Portal",
+  "logoUrl": "/icon-192x192.png",
   "navbar": {
     "links": []
   }

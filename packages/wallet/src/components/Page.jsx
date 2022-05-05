@@ -6,26 +6,26 @@
  *
  */
 
-import { FooterSmall, Navbar } from '@kernel/common'
+import { Footer, Navbar } from '@kernel/common'
 
-import Sidebar from 'components/Sidebar'
 import AppConfig from 'App.config'
 
 const Page = ({ children }) => {
   return (
-    <>
-      <Sidebar />
-      <div className='relative md:ml-64 bg-blueGray-100'>
-        <Navbar
-          title={AppConfig.appTitle}
-          backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
-        />
+    <div className='flex flex-col h-screen justify-between'>
+      <Navbar
+        title={AppConfig.appTitle}
+        logoUrl={AppConfig.logoUrl}
+        menuLinks={AppConfig.navbar?.links}
+        backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
+      />
+      <div className='mb-auto'>
         {children}
-        <div className='relative md:pt-32 pb-32 pt-12'>
-          <FooterSmall absolute />
-        </div>
       </div>
-    </>
+      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'>
+        built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
+      </Footer>
+    </div>
   )
 }
 

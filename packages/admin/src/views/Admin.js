@@ -7,7 +7,7 @@
  */
 
 import { useNavigate, Link } from 'react-router-dom'
-import { useServices, Navbar, FooterSmall } from '@kernel/common'
+import { useServices, Navbar, Footer } from '@kernel/common'
 import AppConfig from 'App.config'
 
 import bgImage from 'assets/images/admin_bg.png'
@@ -75,7 +75,7 @@ const Admin = () => {
               </div>
             </div>
           </div>
-          <FooterSmall absolute />
+          <Footer absolute />
         </section>
       </main>
     </div>
