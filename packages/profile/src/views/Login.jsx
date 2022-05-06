@@ -6,29 +6,15 @@
  *
  */
 
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useServices, Navbar, Footer } from '@kernel/common'
 import AppConfig from 'App.config'
 
 import bgImage from 'assets/images/admin_bg.png'
 
-const additionalNavItems = [
-  (
-    <button
-      key='btn-nav'
-      className={`bg-kernel-green-mid text-kernel-dark text-xs font-bold uppercase
-      px-4 py-2 rounded outline-none focus:outline-none ml-3 mt-3 mb-4`}
-      type='button'
-    >
-      <i className='fas fa-user-plus' /> <Link to='/register'>Register</Link>
-    </button>
-  )
-]
-
 const Login = () => {
   const navigate = useNavigate()
   const { walletLogin } = useServices()
-  const navbarConfig = AppConfig.navbar
 
   const handleLogin = async () => {
     const user = await walletLogin()
@@ -41,8 +27,9 @@ const Login = () => {
   return (
     <div>
       <Navbar
-        title={AppConfig.appTitle} menuLinks={navbarConfig.links}
-        additionalMenuItems={additionalNavItems}
+        title={AppConfig.appTitle}
+        logoUrl={AppConfig.logoUrl}
+        menuLinks={AppConfig.navbar?.links}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
       <main>
@@ -62,7 +49,7 @@ const Login = () => {
                   <div className='rounded-t mb-0 px-6 py-6'>
                     <div className='text-center'>
                       <button
-                        className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
+                        className='bg-kernel-dark text-kernel-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
                         onClick={handleLogin}
                         type='button'
                       >

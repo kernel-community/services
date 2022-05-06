@@ -34,7 +34,7 @@ export default function Navbar (props) {
             {logoUrl && <span><img src={logoUrl} className='inline-block max-h-8 mr-3' /></span>}
             {title && <span className='inline-block align-middle'><Link to={homeUrl}>{title}</Link></span>}
           </button>
-          {menuLinks &&
+          {(menuLinks.length > 0) &&
             <button
               className={`cursor-pointer text-xl leading-none px-3 py-1 border border-solid
               border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none`}
