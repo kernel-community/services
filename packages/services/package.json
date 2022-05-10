@@ -33,7 +33,6 @@
     "@google-cloud/storage": "^5.18.2",
     "@google-cloud/tasks": "^2.5.0",
     "googleapis": "^100.0.0",
-    "google-auth-library": "^8.0.2",
     "@kernel/auth": "^0.0.1",
     "@kernel/storage": "^0.0.1",
     "@kernel/task": "^0.0.1",

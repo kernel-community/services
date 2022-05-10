@@ -8,7 +8,6 @@
 
 'use strict'
 
-import { Impersonated } from 'google-auth-library'
 import { google } from 'googleapis'
 
 const DEFAULT_SCOPES = [

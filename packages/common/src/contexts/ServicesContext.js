@@ -24,6 +24,7 @@ const INITIAL_STATE = {}
 
 const rpcEndpointStorage = process.env[`REACT_APP_STORAGE_ENDPOINT_${env}`]
 const rpcEndpointTask = process.env[`REACT_APP_TASK_ENDPOINT_${env}`]
+const rpcEndpointQuery = process.env[`REACT_APP_QUERY_ENDPOINT_${env}`]
 
 const ServicesContext = createContext()
 
@@ -57,7 +58,7 @@ const services = async (state) => {
   const rpcClientTask = await rpcClientBuilder.build({ rpcEndpoint: rpcEndpointTask, jwtFn })
   const taskService = await taskBuilder.build({ rpcClient: rpcClientTask })
 
-  const rpcClientQuery = await rpcClientBuilder.build({ rpcEndpoint: rpcEndpointTask, jwtFn })
+  const rpcClientQuery = await rpcClientBuilder.build({ rpcEndpoint: rpcEndpointQuery, jwtFn })
   const queryService = await queryBuilder.build({ rpcClient: rpcClientQuery })
 
   return { rpcClientStorage, resourceService, entityFactory, rpcClientTask, taskService, queryService }

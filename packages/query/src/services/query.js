@@ -19,6 +19,12 @@ const API_NICKNAME = 'apiServer'
 
 const now = () => Date.now()
 
+// TODO: move to some common lib
+const filter = (e, f) => Object.entries(e).reduce((acc, [k, v]) => ({
+  ...acc,
+  ...(f(k, v) ? { [k]: v } : {})
+}), {})
+
 const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoint }) => {
 
   // TODO: move to separate service
@@ -41,15 +47,22 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
   const entityClient = entityBuilder.build.bind(null, { rpcClient })
 
   // entities
-  //const members = await entityClient({ resource: 'member' })
+  const members = await entityClient({ resource: 'member' })
   const projects = await entityClient({ resource: 'project' })
   const profiles = await entityClient({ resource: 'profile' })
 
-  //TODO: order by geo or other fields
   const recommend = async ({ iss, role }, opts = {}) => {
-    const [allProfiles, allProjects] = Promise.all([profiles.getAll(), projects.getAll()])
+    const member = await members.get(iss)
+    if (!member.data.profileId) {
+      throw { name: 'NoProfile', message: `Missing profile: ${iss}`   }
+    }
+    const profile = await profiles.get(member.data.profileId)
+    if (!profile.data.consent) {
+      throw { name: 'NoConsent', message: `Missing consent: ${iss}`   }
+    }
+    const [allProfiles, allProjects] = await Promise.all([profiles.getAll(), projects.getAll()])
     return {
-      profiles: allProfiles.filter((e) => e.consent),
+      profiles: filter(allProfiles, (_, e) => e.data.consent),
       projects: allProjects
     }
   }
