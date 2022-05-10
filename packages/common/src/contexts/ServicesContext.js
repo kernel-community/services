@@ -13,7 +13,7 @@ import resourceBuilder from '../services/resource.js'
 import jwtService from '../services/jwt.js'
 import rpcClientBuilder from '../services/rpcClient.js'
 import taskBuilder from '../services/task.js'
-import queryBuilder from '../services/task.js'
+import queryBuilder from '../services/query.js'
 
 const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
 const AUTH_URL = process.env[`REACT_APP_AUTH_URL_${env}`]
@@ -59,7 +59,6 @@ const services = async (state) => {
 
   const rpcClientQuery = await rpcClientBuilder.build({ rpcEndpoint: rpcEndpointTask, jwtFn })
   const queryService = await queryBuilder.build({ rpcClient: rpcClientQuery })
-
 
   return { rpcClientStorage, resourceService, entityFactory, rpcClientTask, taskService, queryService }
 }

@@ -13,7 +13,7 @@ const build = async ({ rpcClient }) => {
   const method = rpcClient.method.bind(null, serviceName)
   const call = (methodName, ...args) => rpcClient.call({
     method: method(methodName),
-    params: [{ resource }].concat(args)
+    params: args
   })
 
   const recommend = async (opts = {}) => call('recommend', opts)
