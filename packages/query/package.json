@@ -1,0 +1,39 @@
+{
+  "name": "@kernel/query",
+  "version": "0.0.1",
+  "description": "Kernel Query Service",
+  "private": true,
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "repository": "https://github.com/simonkernel/kernel-services",
+  "author": "simon",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "echo \"tbd\"",
+    "lint": "echo \"tbd\"",
+    "format": "npx standard --fix",
+    "test": "echo \"tbd\"",
+    "deploy:staging": "echo \"tbd\""
+  },
+  "standard": {
+    "ignore": [
+      "dist/*",
+      "repl.js"
+    ],
+    "env": [
+      "jest",
+      "es6",
+      "browser"
+    ]
+  },
+  "dependencies": {
+    "ethers": "^5.6.0",
+    "node-fetch": "^3.2.3"
+  },
+  "devDependencies": {
+    "pino-pretty": "^7.5.3",
+    "standard": "^17.0.0",
+    "tap": "^16.0.0"
+  }
+}

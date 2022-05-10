@@ -17,6 +17,7 @@ import sensible from 'fastify-sensible'
 import { rpc as rpcStorage } from '@kernel/storage'
 import rpcAuth from '@kernel/auth'
 import rpcTask from '@kernel/task'
+import rpcQuery from '@kernel/query'
 
 import health from './routes/health.js'
 
@@ -31,6 +32,8 @@ const AUTH_SEED_SECRET_ID = process.env.AUTH_SEED_SECRET_ID || 'authSeed'
 
 const TASK_RPC_PATH = process.env.TASK_RPC_PATH || '/task/rpc'
 const TASKS_PATH = process.env.TASKS_PATH || '/tasks'
+
+const QUERY_RPC_PATH = process.env.QUERY_RPC_PATH || '/query/rpc'
 
 const AUTH_SEED_SECRET_CRC32C = process.env.AUTH_SEED_SECRET_CRC32C 
 const AUTH_MEMBER_ID = process.env.AUTH_MEMBER_ID
@@ -82,6 +85,13 @@ const start = async () => {
         rpcEndpoint: `http://${HOST}:${PORT}${STORAGE_RPC_PATH}`
       }),
       rpcTask.register(server, TASK_RPC_PATH, TASKS_PATH, {
+        projectId: PROJECT_ID,
+        seed,
+        serviceAccount,
+        authMemberId: AUTH_MEMBER_ID,
+        rpcEndpoint: `http://${HOST}:${PORT}${STORAGE_RPC_PATH}`
+      }),
+      rpcQuery.register(server, QUERY_RPC_PATH, {
         projectId: PROJECT_ID,
         seed,
         serviceAccount,
