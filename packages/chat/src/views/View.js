@@ -104,7 +104,7 @@ const Textarea = ({ state, dispatch }) => {
   if (state.loading) {
     return (
       <textarea
-        className='w-full' rows='5' readonly={state.loading ? 'true' : 'false'}
+        className='w-full' rows='5' readOnly={state.loading ? true : false}
         value={value(state, 'content')} onChange={change.bind(null, dispatch, 'content')}
       />
     )
@@ -157,10 +157,8 @@ const Page = () => {
           const id = setTimeout(refresh, refreshMs)
           dispatch({ type: 'refresh', payload: id })
         }
-        if (!state.refresh) {
-          const id = setTimeout(refresh, REFRESH_INTERVAL)
-          dispatch({ type: 'refresh', payload: id })
-        }
+        const id = setTimeout(refresh, REFRESH_INTERVAL)
+        dispatch({ type: 'refresh', payload: id })
       } catch (error) {
         console.log(error)
         dispatch({ type: 'error', payload: readable(error.message) })
