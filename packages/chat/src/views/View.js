@@ -104,7 +104,7 @@ const Textarea = ({ state, dispatch }) => {
   if (state.loading) {
     return (
       <textarea
-        className='w-full' rows='5' readOnly={state.loading ? true : false}
+        className='w-full' rows='5' readOnly={!!state.loading}
         value={value(state, 'content')} onChange={change.bind(null, dispatch, 'content')}
       />
     )
