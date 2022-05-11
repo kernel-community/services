@@ -139,8 +139,6 @@ const Page = () => {
         const { entityFactory } = await services()
         const channels = await entityFactory({ resource: 'channel' })
         const messages = await entityFactory({ resource: 'message' })
-        global.messages = messages
-        global.state = state
         dispatch({ type: 'services', payload: { channels, messages } })
         const [allChannels, allMessages] = await Promise.all([channels.getAll(), messages.getAll()])
         dispatch({ type: 'channels', payload: allChannels })
