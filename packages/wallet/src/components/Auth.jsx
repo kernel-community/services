@@ -12,18 +12,28 @@ import { useNavigate } from 'react-router-dom'
 import { jwtService, rpcClient } from '@kernel/common'
 
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
+const SESSION_TTL = {
+  short: 20 * 60 * 1000, // 20min
+  medium: 2 * 60 * 60 * 1000, // 2h
+  long: 24 * 60 * 60 * 1000 // 1day
+}
 
 const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
 const endpoint = process.env[`REACT_APP_AUTH_ENDPOINT_${env}`]
+
+const now = () => Date.now()
+const tokenExp = (ttl) => now() + ttl
 
 const authClient = async (jwtFn) =>
   rpcClient.build({ rpcEndpoint: endpoint, jwtFn })
 
 const WALLET_STORE_VERSION = '1'
 
-const getItem = (k) => JSON.parse(localStorage.getItem(k))
+const storeItem = (k, v) => localStorage.setItem(k, v)
+const getItem = (k) => localStorage.getItem(k)
+const getObject = (k) => JSON.parse(getItem(k))
 const loadWallet = () => {
-  const wallet = getItem('wallet')
+  const wallet = getObject('wallet')
   if (wallet.version !== WALLET_STORE_VERSION) {
     throw new Error('unsupported wallet')
   }
@@ -40,6 +50,9 @@ const Auth = () => {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [address, setAddress] = useState('')
+  const [session, setSession] = useState(SESSION_TTL.short)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [persist, setPersist] = useState(false)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -79,27 +92,56 @@ const Auth = () => {
     window.addEventListener('message', handleMessage)
   }, [])
 
+  useEffect(() => {
+    // pass token from local storage
+    try {
+      const authToken = getItem('jwt')
+      const { payload: { exp } } = jwtService.decode(authToken)
+      console.log('jwt exp', exp)
+      if (exp > (now() - SESSION_TTL.short)) {
+        const sync = () => {
+          if (source && website) {
+            return reply(source, website, 'jwt', authToken)
+          }
+          console.log('waiting for source')
+          setTimeout(sync, 100)
+        }
+        setTimeout(sync, 100)
+      }
+    } catch (error) {
+      console.log(error)
+      setErrorMessage(error.message)
+      // localStorage.removeItem('jwt')
+    }
+  }, [source, website])
+
   const createToken = async (e) => {
     e.preventDefault()
-    // const encryptedWallet = getItem('wallet')
+    setErrorMessage(null)
 
-    // TODO: visual feedback
     if (!nickname.length || !password.length || !encryptedWallet.length) {
+      setErrorMessage('Nickname, wallet or password cannot be empty.')
       console.log('empty nickname, wallet or password')
       return false
     }
     try {
       const wallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, password, (i) => setProgress(Math.round(i * 100)))
 
-      const authJwt = jwtService.clientPayload({ iss: wallet.address, nickname })
+      const exp = tokenExp(session)
+      const authJwt = jwtService.clientPayload({ iss: wallet.address, nickname, exp })
       const jwt = await jwtService.createJwt(wallet, jwtService.CLIENT_JWT, authJwt)
       const client = await authClient(() => '')
 
       const authToken = await client.call({ method: 'authService.accessToken', params: [jwt] })
+      if (persist) {
+        storeItem('jwt', authToken)
+      }
       if (source) {
         reply(source, website, 'jwt', authToken)
       }
     } catch (error) {
+      setProgress(0)
+      setErrorMessage(error.message)
       console.error(error)
     }
   }
@@ -118,7 +160,6 @@ const Auth = () => {
         <div className='relative w-full mb-3'>
           <label
             className='block uppercase text-gray-700 text-xs font-bold mb-2'
-            htmlFor='grid-password'
           >
             Nickname
           </label>
@@ -129,7 +170,6 @@ const Auth = () => {
         <div className='relative w-full mb-3'>
           <label
             className='block uppercase text-gray-700 text-xs font-bold mb-2'
-            htmlFor='grid-password'
           >
             Address
           </label>
@@ -138,10 +178,31 @@ const Auth = () => {
           </p>
         </div>
         <div className='relative w-full mb-3'>
-          <label
-            className='block uppercase text-gray-700 text-xs font-bold mb-2'
-            htmlFor='grid-password'
-          >
+          <label className='block uppercase text-gray-700 text-xs font-bold mb-2'>
+            Session Timeout
+          </label>
+          <div>
+            <select
+              value={session} onChange={(e) => setSession(e.target.value)}
+              className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
+            >
+              <option value={SESSION_TTL.short}>Short (20min)</option>
+              <option value={SESSION_TTL.medium}>Medium (2h)</option>
+              <option value={SESSION_TTL.long}>Long (1d)</option>
+            </select>
+          </div>
+        </div>
+        <div className='relative w-full mb-3'>
+          <label className='block uppercase text-gray-700 text-xs font-bold mb-2'>
+            Remember Session
+          </label>
+          <div className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
+            <input className='px-4' id='persist' type='checkbox' value={persist} onChange={(e) => setPersist(e.target.value)} />
+            <label className='px-4' htmlFor='persist'>This device is secure</label>
+          </div>
+        </div>
+        <div className='relative w-full mb-3'>
+          <label className='block uppercase text-gray-700 text-xs font-bold mb-2'>
             Password
           </label>
           <input
@@ -157,6 +218,7 @@ const Auth = () => {
           <input
             className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
             type='submit'
+            disabled={progress > 0}
             style={{ transition: 'all .15s ease' }}
             value='Sign'
           />
@@ -164,13 +226,18 @@ const Auth = () => {
         <div className='relative w-full mb-3'>
           <label
             className='block uppercase text-gray-700 text-xs font-bold mb-2'
-            htmlFor='grid-password'
           >
             Decrypting Wallet Progress
           </label>
           <div className='w-full bg-gray-200 h-1'>
             <div className='bg-blue-600 h-1' style={{ width: `${progress}%` }} />
           </div>
+        </div>
+        <div className='text-center mt-6'>
+          {errorMessage &&
+            <p className='border-0 px-3 py-3 placeholder-gray-400 text-red-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
+              {errorMessage}
+            </p>}
         </div>
       </form>
     </div>

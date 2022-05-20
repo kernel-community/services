@@ -15,6 +15,7 @@ import jwtService from './jwt.js'
 import entityBuilder from './entity.js'
 import rpcClientBuilder from './rpcClient.js'
 
+const MAX_TOKEN_TTL = 24 * 60 * 60 * 1000 // 1 day
 const KERNEL_AUD = 'kernel.community'
 
 const API_ROLE = 50
@@ -83,7 +84,7 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     if (!aud.startsWith(KERNEL_AUD) || aud.length != KERNEL_AUD.length) {
       throw new Error('jwt scope')
     }
-    if (iat >= exp || now() >= exp) {
+    if (iat >= exp || now() >= exp || exp > (now() + MAX_TOKEN_TTL)) {
       throw new Error('jwt time')
     }
     return { header, payload, signature }
@@ -105,7 +106,7 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
   }
 
   const accessToken = async (jwt) => {
-    const { header, payload: { iss, nickname }, signature } = decodeJwt(jwt)
+    const { header, payload: { iss, exp, nickname }, signature } = decodeJwt(jwt)
 
     let member
     const exists = await wallets.exists(iss)
@@ -122,7 +123,7 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     }
 
     const { id, data: { role } } = member
-    const authPayload = jwtService.authPayload({ iss: id, nickname, role })
+    const authPayload = jwtService.authPayload({ iss: id, exp, nickname, role })
     return jwtService.createJwt(wallet, jwtService.AUTH_JWT, authPayload)
   }
 
