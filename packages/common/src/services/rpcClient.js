@@ -43,7 +43,7 @@ const build = async ({ rpcEndpoint, jwtFn }) => {
     const data = jsonRpc({ method, params })
     const { result, error } = await request(rpcEndpoint, data)
     if (error) {
-      throw new Error(`${error.message} ${error.code}`)
+      throw new Error(`${error.message}`)
     }
     return result
   }

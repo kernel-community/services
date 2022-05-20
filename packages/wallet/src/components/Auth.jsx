@@ -96,22 +96,18 @@ const Auth = () => {
     // pass token from local storage
     try {
       const authToken = getItem('jwt')
-      const { payload: { exp } } = jwtService.decode(authToken)
+      const { payload: { exp } } = authToken ? jwtService.decode(authToken) : { payload: { exp: 0 } }
       console.log('jwt exp', exp)
-      if (exp > (now() - SESSION_TTL.short)) {
-        const sync = () => {
-          if (source && website) {
-            return reply(source, website, 'jwt', authToken)
-          }
-          console.log('waiting for source')
-          setTimeout(sync, 100)
-        }
-        setTimeout(sync, 100)
+      if (exp < (now() + SESSION_TTL.short)) {
+        return localStorage.removeItem('jwt')
+      }
+      if (source && website) {
+        return reply(source, website, 'jwt', authToken)
       }
     } catch (error) {
       console.log(error)
       setErrorMessage(error.message)
-      // localStorage.removeItem('jwt')
+      localStorage.removeItem('jwt')
     }
   }, [source, website])
 
@@ -127,7 +123,9 @@ const Auth = () => {
     try {
       const wallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, password, (i) => setProgress(Math.round(i * 100)))
 
+      console.log(session)
       const exp = tokenExp(session)
+      console.log(exp, session)
       const authJwt = jwtService.clientPayload({ iss: wallet.address, nickname, exp })
       const jwt = await jwtService.createJwt(wallet, jwtService.CLIENT_JWT, authJwt)
       const client = await authClient(() => '')
@@ -183,7 +181,7 @@ const Auth = () => {
           </label>
           <div>
             <select
-              value={session} onChange={(e) => setSession(e.target.value)}
+              value={session} onChange={(e) => setSession(parseInt(e.target.value))}
               className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
             >
               <option value={SESSION_TTL.short}>Short (20min)</option>
@@ -194,7 +192,7 @@ const Auth = () => {
         </div>
         <div className='relative w-full mb-3'>
           <label className='block uppercase text-gray-700 text-xs font-bold mb-2'>
-            Remember Session
+            Auto Authorize future requests
           </label>
           <div className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
             <input className='px-4' id='persist' type='checkbox' value={persist} onChange={(e) => setPersist(e.target.value)} />
