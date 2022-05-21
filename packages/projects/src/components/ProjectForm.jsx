@@ -7,7 +7,8 @@
  */
 
 import { useEffect, useReducer, useState, Fragment } from 'react'
-import { useServices } from '@kernel/common'
+import { Link } from 'react-router-dom'
+import { useServices, Alert } from '@kernel/common'
 
 import * as runtime from 'react/jsx-runtime.js'
 import { evaluate } from '@mdx-js/mdx'
@@ -19,14 +20,19 @@ import { MDXProvider, useMDXComponents } from '@mdx-js/react'
 
 import { components } from 'constants.js'
 
-const INITIAL_STATE = { url: '', title: '', markdown: '' }
-
-const actions = {
-  url: (state, url) => Object.assign({}, state, { url }),
-  title: (state, title) => Object.assign({}, state, { title }),
-  markdown: (state, markdown) => Object.assign({}, state, { markdown }),
-  projects: (state, projects) => Object.assign({}, state, { projects })
+const INITIAL_STATE = {
+  url: '',
+  title: '',
+  markdown: '',
+  projects: null,
+  formStatus: 'clean',
+  errorMessage: null
 }
+
+const actions = {}
+Object.keys(INITIAL_STATE).forEach(key => {
+  actions[key] = (state, value) => Object.assign({}, state, { [key]: value })
+})
 
 const reducer = (state, action) => {
   try {
@@ -56,22 +62,46 @@ const value = (state, type) => {
   return state[type]
 }
 
-const create = async (state, dispatch, e) => {
+const save = async (state, dispatch, mode, e) => {
   e.preventDefault()
+  dispatch({ type: 'formStatus', payload: 'submitting' })
+  dispatch({ type: 'errorMessage', payload: null })
+
   const { projects, title, url, markdown } = state
   const data = { title, url, markdown }
-  const created = await projects.create(data, { id: url })
-  // dispatch({ type: 'created', payload: updated })
-  console.log(created)
+  
+  try {
+    let saved
+    if (mode === 'create') {
+      saved = await projects.create(data, { id: url })
+    } else if (mode === 'edit') {
+      saved = await projects.update(url, data)
+    }
+    dispatch({ type: 'formStatus', payload: 'success' })
+    console.log(saved)
+  } catch (error) {
+    dispatch({ type: 'formStatus', payload: 'error' })
+    dispatch({ type: 'errorMessage', payload: error.message })
+    console.log(error)
+  }
 }
 
-const update = async (state, dispatch, e) => {
-  e.preventDefault()
-  const { projects, title, url, markdown } = state
-  const data = { title, url, markdown }
-  const updated = await projects.update(url, data)
-  // dispatch({ type: 'created', payload: updated })
-  console.log(updated)
+const ProjectFormAlert = ({ formStatus, errorMessage, projectHandle }) => {
+  switch (formStatus) {
+    case 'submitting':
+      return <Alert type='transparent'>Saving your changes...</Alert>
+    case 'success':
+      return (
+        <Alert type='success'>
+          Your changes have been saved!{' '}
+          <Link to={`/view/${projectHandle}`}>View your adventure.</Link>
+        </Alert>
+      )
+    case 'error':
+      return <Alert type='danger'>Something went wrong. {errorMessage}</Alert>
+    default:
+      return null
+  }
 }
 
 const ProjectForm = ({ mode, projectHandle }) => {
@@ -123,10 +153,8 @@ const ProjectForm = ({ mode, projectHandle }) => {
     })()
   }, [markdown])
 
-  const apiMethod = { create, edit: update }[mode]
-
   return (
-    <div className='grid grid-cols-2 mb-24'>
+    <div className='grid grid-cols-2 mb-24 px-8'>
       <div className='px-8'>
         <form className='grid grid-cols-1 gap-6'>
           <label className='block'>
@@ -156,27 +184,32 @@ const ProjectForm = ({ mode, projectHandle }) => {
               onChange={(e) => setMarkdown(e.target.value)}
             />
           </label>
-          <label className='block'>
-            <button
-              onClick={apiMethod.bind(null, state, dispatch)}
-              className='w-full py-2 px-3 bg-indigo-500 text-white text-sm font-semibold rounded-md shadow focus:outline-none'
-            >
-              {mode === 'create' ? 'Create' : 'Save'}
-            </button>
-          </label>
-          {markdownError &&
-            <label className='block'>
-              <span className='text-gray-700'>Error</span>
-              <div className={formClass}>
-                {markdownError.message}
-              </div>
-            </label>}
+          <button
+            disabled={state.formStatus === 'submitting'}
+            onClick={save.bind(null, state, dispatch, mode)}
+            className={`mt-2 px-6 py-4 ${state.formStatus === 'submitting' ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
+          >
+            Save
+          </button>
         </form>
       </div>
+
       <div className='px-8 rounded-md border-gray-800 shadow-lg'>
         <MDXProvider components={components}>
           <Content />
         </MDXProvider>
+      </div>
+
+      <div className='my-4 px-8'>
+        <ProjectFormAlert formStatus={state.formStatus} errorMessage={state.errorMessage}
+          projectHandle={mode === 'create' ? value(state, 'url') : projectHandle} />
+        {markdownError &&
+          <label className='my-8 block'>
+            <span className='text-gray-700'>Error</span>
+            <div className={formClass}>
+              {markdownError.message}
+            </div>
+          </label>}
       </div>
     </div>
   )
