@@ -32,7 +32,10 @@ export default function Navbar (props) {
               whitespace-nowrap uppercase`}
           >
             {logoUrl && <span><img src={logoUrl} className='inline-block max-h-8 mr-3' /></span>}
-            {title && <span className='inline-block align-middle'><Link to={homeUrl}>{title}</Link></span>}
+            {title &&
+              <span className='inline-block align-middle'>
+                <Link to={homeUrl} className={textColor}>{title}</Link>
+              </span>}
           </button>
           {(menuLinks?.length > 0) &&
             <button
