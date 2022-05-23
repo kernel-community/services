@@ -41,7 +41,7 @@ Look at `packages/admin` and copy the necessary config files. Consider contribut
 
 ### Running the server locally
 
-The `storage` service currently needs to connect to a Google Cloud Storage bucket. Consider contributing by adding a version by adding a [storage service](https://github.com/simonkernel/kernel-services/blob/main/packages/storage/src/services/storage.js) backed by a local file system instead.
+The `storage` service currently needs to connect to a Google Cloud Storage bucket. Consider contributing by adding a version with a [storage service](https://github.com/kernel-community/services/blob/main/packages/storage/src/services/storage.js) backed by a local file system instead.
 
 ### Running an app
 
