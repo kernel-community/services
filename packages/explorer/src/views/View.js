@@ -8,10 +8,9 @@
 
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useServices } from '@kernel/common'
+import { useServices, Navbar } from '@kernel/common'
 
 import AppConfig from 'App.config'
-import NavBar from 'components/NavBar'
 
 const Page = () => {
   const navigate = useNavigate()
@@ -39,7 +38,12 @@ const Page = () => {
 
   return (
     <div className='md:container md:mx-auto'>
-      <NavBar event={event} />
+      <Navbar
+        title={AppConfig.appTitle}
+        logoUrl={AppConfig.logoUrl}
+        menuLinks={AppConfig.navbar?.links}
+        backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
+      />
       <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
         <div className='md:basis-1/2 grow px-8 rounded-md border-gray-800 shadow-lg min-h-screen'>
           <p>
