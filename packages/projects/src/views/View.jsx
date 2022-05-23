@@ -20,7 +20,8 @@ import { MDXProvider, useMDXComponents } from '@mdx-js/react'
 import { CodePen, Gist, Figma } from 'mdx-embed'
 
 import AppConfig from 'App.config'
-import NavBar from 'components/NavBar'
+
+import Page from 'components/Page'
 
 /* eslint-disable */
 const components = {
@@ -36,7 +37,7 @@ const components = {
 }
 /* eslint-enable */
 
-const Page = () => {
+const View = () => {
   const navigate = useNavigate()
   const { project } = useParams()
 
@@ -85,17 +86,14 @@ const Page = () => {
   }, [markdown])
 
   return (
-    <div className='md:container md:mx-auto'>
-      <NavBar project={project} />
-      <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
-        <div className='md:basis-1/2 grow px-8 rounded-md border-gray-800 shadow-lg min-h-screen'>
-          <MDXProvider components={components}>
-            {markdownError || <Content />}
-          </MDXProvider>
-        </div>
+    <Page projectHandle={project}>
+      <div className='mb-24'>
+        <MDXProvider components={components}>
+          {markdownError || <Content />}
+        </MDXProvider>
       </div>
-    </div>
+    </Page>
   )
 }
 
-export default Page
+export default View
