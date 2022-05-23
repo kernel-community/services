@@ -27,7 +27,8 @@ const INITIAL_STATE = {
   projects: null,
   formStatus: 'clean',
   errorMessage: null,
-  urlPlaceholder: ''
+  urlPlaceholder: '',
+  urlStatus: null
 }
 
 const actions = {}
@@ -56,14 +57,16 @@ const change = (dispatch, type, e) => {
     if (type === 'title') {
       setUrlPlaceholder(payload, dispatch)
     }
+
+    if (type === 'url') {
+      dispatch({ type: 'urlStatus', payload: null })
+    }
   } catch (error) {
     console.log(error)
   }
 }
 
 const value = (state, type) => {
-  console.log(type, state)
-
   return state[type]
 }
 
@@ -107,6 +110,40 @@ const toKebabCase = str =>
 const setUrlPlaceholder = (title, dispatch) => {
   const newUrlPlaceholder = toKebabCase(title)
   dispatch({ type: 'urlPlaceholder', payload: newUrlPlaceholder })
+}
+
+const validateUrl = async (state, dispatch, e) => {
+  e.preventDefault()
+
+  const url = e.target.value
+
+  let urlStatus
+
+  // allow lowercase letters, numbers, and dashes
+  if (!url.match(/^[a-z0-9-]+$/)) {
+    urlStatus = 'invalidChars'
+    dispatch({ type: 'urlStatus', payload: urlStatus })
+    return
+  }
+
+  const allProjects = await state.projects.getAll()
+  const allProjectIds = Object.values(allProjects).map(project => project.id)
+
+  urlStatus = allProjectIds.includes(url) ? 'taken' : 'valid'
+  dispatch({ type: 'urlStatus', payload: urlStatus })
+}
+
+const UrlValidationMessage = ({ urlStatus, url }) => {
+  switch (urlStatus) {
+    case 'invalidChars':
+      return <div className='mt-2 text-sm text-red-500'>Use lowercase letters, numbers, or dashes only.</div>
+    case 'taken':
+      return <div className='mt-2 text-sm text-red-500'>The handle `{url}` is already taken.</div>
+    case 'valid':
+      return <div className='mt-2 text-sm text-green-600'>This handle is available!</div>
+    default:
+      return null
+  }
 }
 
 const ProjectFormAlert = ({ formStatus, errorMessage, projectHandle }) => {
@@ -191,14 +228,16 @@ const ProjectForm = ({ mode, projectHandle }) => {
             <span className='text-gray-700'>Handle</span>
             <br />
             <span className='text-gray-500 text-sm'>
-              This determines the URL of your adventure page. You won't be able to change it later. You can use letters, numbers, and dashes.
+              This determines the URL of your adventure page. You won't be able to change it later. You can use lowercase letters, numbers, and dashes.
             </span>
             <input
               type='text' className={`${formClass} ${mode === 'edit' ? 'bg-gray-300' : ''}`}
               placeholder={value(state, 'urlPlaceholder')}
               value={value(state, 'url')} onChange={change.bind(null, dispatch, 'url')}
+              onBlur={validateUrl.bind(null, state, dispatch)}
               disabled={mode === 'edit'}
             />
+            <UrlValidationMessage urlStatus={value(state, 'urlStatus')} url={value(state, 'url')} />
           </label>
           <label className='block'>
             <span className='text-gray-700'>Template</span>
