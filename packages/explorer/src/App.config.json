@@ -1,6 +1,7 @@
 {
   "appTitle": "Kernel Explorer",
   "logoUrl": "/icon-192x192.png",
+  "homeUrl": "/browse",
   "minRole": 1000,
   "navbar": {
     "links": [

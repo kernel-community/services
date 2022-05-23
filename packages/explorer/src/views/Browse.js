@@ -93,6 +93,7 @@ const Page = () => {
        <Navbar
         title={AppConfig.appTitle}
         logoUrl={AppConfig.logoUrl}
+        homeUrl={AppConfig.homeUrl}
         menuLinks={AppConfig.navbar?.links}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
