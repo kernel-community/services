@@ -18,8 +18,12 @@ import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import NavbarLink from './components/NavbarLink'
 
+// images
+import linesVector from './images/lines.png'
+
 export {
   jwtService, rpcClient,
   ServicesProvider, useServices,
-  Footer, Navbar, NavbarLink
+  Footer, Navbar, NavbarLink,
+  linesVector
 }

@@ -25,8 +25,15 @@ module.exports = {
             dark: '#5932c4'
           }
         }
-      }
+      },
+      fontFamily: {
+        'heading': ['Nanum Myeongjo', 'serif'],
+        'secondary': ['Futura', 'sans-serif'],
+        'primary': ['Libre Franklin', 'sans-serif'],
+      },
     }
   },
-  plugins: []
+  plugins: [
+    require('@tailwindcss/typography'),
+  ]
 }
