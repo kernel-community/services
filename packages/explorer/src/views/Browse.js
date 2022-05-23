@@ -89,8 +89,8 @@ const Page = () => {
   }, [services, user])
 
   return (
-    <div className="flex flex-col min-h-screen">
-       <Navbar
+    <div className='flex flex-col min-h-screen'>
+      <Navbar
         title={AppConfig.appTitle}
         logoUrl={AppConfig.logoUrl}
         homeUrl={AppConfig.homeUrl}
