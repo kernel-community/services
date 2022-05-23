@@ -69,7 +69,7 @@ const save = async (state, dispatch, mode, e) => {
 
   const { projects, title, url, markdown } = state
   const data = { title, url, markdown }
-  
+
   try {
     let saved
     if (mode === 'create') {
@@ -201,8 +201,10 @@ const ProjectForm = ({ mode, projectHandle }) => {
       </div>
 
       <div className='my-4 px-8'>
-        <ProjectFormAlert formStatus={state.formStatus} errorMessage={state.errorMessage}
-          projectHandle={mode === 'create' ? value(state, 'url') : projectHandle} />
+        <ProjectFormAlert
+          formStatus={state.formStatus} errorMessage={state.errorMessage}
+          projectHandle={mode === 'create' ? value(state, 'url') : projectHandle}
+        />
         {markdownError &&
           <label className='my-8 block'>
             <span className='text-gray-700'>Error</span>
