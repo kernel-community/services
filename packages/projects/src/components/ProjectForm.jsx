@@ -26,7 +26,8 @@ const INITIAL_STATE = {
   markdown: '',
   projects: null,
   formStatus: 'clean',
-  errorMessage: null
+  errorMessage: null,
+  urlPlaceholder: ''
 }
 
 const actions = {}
@@ -51,6 +52,10 @@ const change = (dispatch, type, e) => {
     e.preventDefault()
     const payload = e.target.value
     dispatch({ type, payload })
+
+    if (type === 'title') {
+      setUrlPlaceholder(payload, dispatch)
+    }
   } catch (error) {
     console.log(error)
   }
@@ -67,13 +72,18 @@ const save = async (state, dispatch, mode, e) => {
   dispatch({ type: 'formStatus', payload: 'submitting' })
   dispatch({ type: 'errorMessage', payload: null })
 
-  const { projects, title, url, markdown } = state
+  const { projects, title, url, markdown, urlPlaceholder } = state
   const data = { title, url, markdown }
+
+  if (!url || url.length === 0) {
+    data.url = urlPlaceholder
+    dispatch({ type: 'url', payload: urlPlaceholder })
+  }
 
   try {
     let saved
     if (mode === 'create') {
-      saved = await projects.create(data, { id: url })
+      saved = await projects.create(data, { id: data.url })
     } else if (mode === 'edit') {
       saved = await projects.update(url, data)
     }
@@ -84,6 +94,19 @@ const save = async (state, dispatch, mode, e) => {
     dispatch({ type: 'errorMessage', payload: error.message })
     console.log(error)
   }
+}
+
+// source: the internet
+const toKebabCase = str =>
+  str &&
+    str
+      .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+      .join('-')
+      .toLowerCase()
+
+const setUrlPlaceholder = (title, dispatch) => {
+  const newUrlPlaceholder = toKebabCase(title)
+  dispatch({ type: 'urlPlaceholder', payload: newUrlPlaceholder })
 }
 
 const ProjectFormAlert = ({ formStatus, errorMessage, projectHandle }) => {
@@ -165,10 +188,16 @@ const ProjectForm = ({ mode, projectHandle }) => {
             />
           </label>
           <label className='block'>
-            <span className='text-gray-700'>URL</span>
+            <span className='text-gray-700'>Handle</span>
+            <br />
+            <span className='text-gray-500 text-sm'>
+              This determines the URL of your adventure page. You won't be able to change it later. You can use letters, numbers, and dashes.
+            </span>
             <input
-              type='text' className={formClass}
+              type='text' className={`${formClass} ${mode === 'edit' ? 'bg-gray-300' : ''}`}
+              placeholder={value(state, 'urlPlaceholder')}
               value={value(state, 'url')} onChange={change.bind(null, dispatch, 'url')}
+              disabled={mode === 'edit'}
             />
           </label>
           <label className='block'>
