@@ -28,13 +28,13 @@ module.exports = {
         }
       },
       fontFamily: {
-        'heading': ['Nanum Myeongjo', 'serif'],
-        'secondary': ['Futura', 'sans-serif'],
-        'primary': ['Libre Franklin', 'sans-serif'],
-      },
+        heading: ['Nanum Myeongjo', 'serif'],
+        secondary: ['Futura', 'sans-serif'],
+        primary: ['Libre Franklin', 'sans-serif']
+      }
     }
   },
   plugins: [
-    require('@tailwindcss/typography'),
+    require('@tailwindcss/typography')
   ]
 }
