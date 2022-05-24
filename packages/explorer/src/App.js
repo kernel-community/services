@@ -15,7 +15,6 @@ import 'App.css'
 
 const Login = lazy(() => import('views/Login.js'))
 const Browse = lazy(() => import('views/Browse.js'))
-const View = lazy(() => import('views/View.js'))
 
 const App = () => {
   return (
@@ -25,7 +24,6 @@ const App = () => {
           <Routes>
             <Route path='/' element={<Login />} />
             <Route path='/browse' element={<Browse />} />
-            <Route path='/view/:event' element={<View />} />
           </Routes>
         </Suspense>
       </ServicesProvider>

@@ -8,10 +8,9 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useServices } from '@kernel/common'
+import { useServices, Navbar, Footer } from '@kernel/common'
 
 import AppConfig from 'App.config'
-import NavBar from 'components/NavBar'
 
 const INITIAL_STATE = { error: '', loading: true, profiles: {}, projects: {} }
 
@@ -90,9 +89,15 @@ const Page = () => {
   }, [services, user])
 
   return (
-    <div className='md:container md:mx-auto'>
-      <NavBar />
-      <div className='flex md:flex-row flex-wrap py-4 justify-center'>
+    <div className='flex flex-col min-h-screen'>
+      <Navbar
+        title={AppConfig.appTitle}
+        logoUrl={AppConfig.logoUrl}
+        homeUrl={AppConfig.homeUrl}
+        menuLinks={AppConfig.navbar?.links}
+        backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
+      />
+      <div className='flex md:flex-row flex-wrap py-4 justify-center flex-grow'>
         <div className='md:basis-2/3 px-8'>
           <div className='grid grid-cols-1 gap-6'>
             {state && state.error &&
@@ -145,6 +150,9 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'>
+        built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
+      </Footer>
     </div>
   )
 }
