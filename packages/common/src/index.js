@@ -20,7 +20,7 @@ import NavbarLink from './components/NavbarLink'
 import Alert from './components/Alert'
 
 // images
-import linesVector from './images/lines.png'
+import linesVector from './assets/images/lines.png'
 
 export {
   jwtService, rpcClient,

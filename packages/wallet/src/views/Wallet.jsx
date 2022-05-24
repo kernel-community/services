@@ -40,7 +40,7 @@ const Wallet = () => {
           </div>
           <div className='font-secondary text-lg text-kernel pt-12'>
             <Link to='/register'>
-              <span className='before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-kernel-highlight relative inline-block cursor-pointer'>
+              <span className='pr-2 before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-kernel-highlight relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>
                     Start your adventure
@@ -50,7 +50,7 @@ const Wallet = () => {
             </Link>
             &nbsp;or&nbsp;
             <Link to='/assets'>
-              <span className='before:block before:absolute before:-inset-1 before:skew-y-3 before:bg-kernel-yellow-light relative inline-block cursor-pointer'>
+              <span className='pl-2 before:block before:absolute before:-inset-1 before:skew-y-3 before:bg-kernel-yellow-light relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>
                     continue connecting
@@ -70,7 +70,7 @@ const Wallet = () => {
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                 <h2 className='font-heading text-3xl text-primary pb-6'>Play</h2>
                 <p>
-                  We call this a <strong>portal</strong> because it can do so much more than hoard money. When we set out to learn together, rather than represent your "worth" with one number, we can discover much more wholesome ways of seeing and being.
+                  We call this a <strong>portal</strong> because it can do so much more than hodl money. When we set out to learn together, rather than represent your "worth" with one number, we can discover much more wholesome ways of seeing and being.
                 </p>
               </div>
             </div>
@@ -120,8 +120,8 @@ const Wallet = () => {
               <h1 className='font-heading text-5xl text-primary pb-6'>Supporting Supporters</h1>
               <div className='font-secondary'>
                 <p className='pb-10'>
-                  At Kernel, we really care about{' '}
-                  <a href='https://www.kernel.community/en/conversation/reciprocity' target='_blank' rel='noreferrer'>
+                  At Kernel, we really care about
+                  <a className='px-2' href='https://www.kernel.community/en/conversation/reciprocity' target='_blank' rel='noreferrer'>
                     <span className='before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-kernel-highlight relative inline-block cursor-pointer'>
                       <span className='relative text-primary'>
                         <span className='underline decoration-dotted'>
