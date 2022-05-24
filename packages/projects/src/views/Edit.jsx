@@ -7,7 +7,7 @@
  */
 
 import { useEffect, useReducer, useState, Fragment } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useServices } from '@kernel/common'
 
 import * as runtime from 'react/jsx-runtime.js'
@@ -20,7 +20,8 @@ import { MDXProvider, useMDXComponents } from '@mdx-js/react'
 import { CodePen, Gist, Figma } from 'mdx-embed'
 
 import AppConfig from 'App.config'
-import NavBar from 'components/NavBar'
+
+import Page from 'components/Page'
 
 const INITIAL_STATE = { url: '', title: '', markdown: '' }
 
@@ -33,7 +34,7 @@ const actions = {
 
 const reducer = (state, action) => {
   try {
-    // console.log(action.type, action.payload, state)
+    console.log(action.type, action.payload, state)
     return actions[action.type](state, action.payload)
   } catch (error) {
     console.log(error)
@@ -73,18 +74,19 @@ const value = (state, type) => {
   return state[type]
 }
 
-const create = async (state, dispatch, e) => {
+const update = async (state, dispatch, e) => {
   e.preventDefault()
   const { projects, title, url, markdown } = state
   const data = { title, url, markdown }
-  const created = await projects.create(data, { id: url })
+  const updated = await projects.update(url, data)
   // dispatch({ type: 'created', payload: updated })
-  console.log(created)
+  console.log(updated)
 }
 
-const Page = () => {
+const Edit = () => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
   const navigate = useNavigate()
+  const { project } = useParams()
 
   const { services, currentUser } = useServices()
   const user = currentUser()
@@ -101,10 +103,15 @@ const Page = () => {
       const resource = 'project'
       const projects = await entityFactory({ resource })
       dispatch({ type: 'projects', payload: projects })
+      const projectEntity = await projects.get(project)
+      setMarkdown(projectEntity.data.markdown)
+      dispatch({ type: 'url', payload: projectEntity.data.url })
+      dispatch({ type: 'title', payload: projectEntity.data.title })
+      dispatch({ type: 'markdown', payload: projectEntity.data.markdown })
     })()
-  }, [services])
+  }, [services, project])
 
-  const [markdown, setMarkdown] = useState()
+  const [markdown, setMarkdown] = useState('')
   const [markdownError, setMarkdownError] = useState(null)
   const [mdxModule, setMdxModule] = useState()
 
@@ -132,10 +139,9 @@ const Page = () => {
   }, [markdown])
 
   return (
-    <div className='md:container md:mx-auto'>
-      <NavBar />
-      <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
-        <div className='md:basis-1/2 px-8'>
+    <Page>
+      <div className='grid grid-cols-2 mb-24'>
+        <div className='px-8'>
           <form className='grid grid-cols-1 gap-6'>
             <label className='block'>
               <span className='text-gray-700'>Title</span>
@@ -147,7 +153,7 @@ const Page = () => {
             <label className='block'>
               <span className='text-gray-700'>URL</span>
               <input
-                type='text' className={formClass}
+                type='text' className={formClass} disabled='true'
                 value={value(state, 'url')} onChange={change.bind(null, dispatch, 'url')}
               />
             </label>
@@ -160,16 +166,16 @@ const Page = () => {
             <label className='block'>
               <span className='text-gray-700'>Markdown</span>
               <textarea
-                rows='10' className={formClass}
+                rows='10' className={formClass} value={markdown}
                 onChange={(e) => setMarkdown(e.target.value)}
               />
             </label>
             <label className='block'>
               <button
-                onClick={create.bind(null, state, dispatch)}
+                onClick={update.bind(null, state, dispatch)}
                 className='w-full py-2 px-3 bg-indigo-500 text-white text-sm font-semibold rounded-md shadow focus:outline-none'
               >
-                Create
+                Update
               </button>
             </label>
             {markdownError &&
@@ -187,8 +193,8 @@ const Page = () => {
           </MDXProvider>
         </div>
       </div>
-    </div>
+    </Page>
   )
 }
 
-export default Page
+export default Edit

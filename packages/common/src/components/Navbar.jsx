@@ -44,7 +44,7 @@ export default function Navbar (props) {
               <i className={`${textColor} fas fa-bars`} />
             </button>}
         </div>
-        {menuLinks &&
+        {(menuLinks || additionalMenuItems) &&
           <div
             className={
               `lg:flex flex-grow lg:flex-grow-0 lg:ml-auto ${backgroundColor} ${navbarOpen ? ' block rounded' : ' hidden'}`
