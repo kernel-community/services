@@ -11,7 +11,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useServices } from '@kernel/common'
 
 import AppConfig from 'App.config'
-import NavBar from 'components/NavBar'
+
+import Page from 'components/Page'
 
 const INITIAL_STATE = { items: {} }
 
@@ -44,7 +45,7 @@ const humanize = (ms, dp = 0) => {
   return `${scaledTime.toFixed(dp)} ${timeUnits[timeScalarIndex]}`
 }
 
-const Page = () => {
+const Browse = () => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
   const navigate = useNavigate()
 
@@ -68,31 +69,24 @@ const Page = () => {
   }, [services])
 
   return (
-    <div className='md:container md:mx-auto'>
-      <NavBar />
-      <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
-        <div className='md:basis-1/2 px-8'>
-          <div className='grid grid-cols-1 gap-6'>
-            <div className='block'>
-              <ul>
-                {state && state.items && Object.keys(state.items).map((e) => {
-                  const meta = state.items[e]
-                  const project = state.items[e].data
-                  const updated = Date.now() - meta.updated
-                  return (
-                    <li key={e} className='text-gray-700'>
-                      <Link to={`/view/${project.url}`}>{project.title}</Link>
-                      <small> {humanize(updated)} ago</small>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          </div>
-        </div>
+    <Page>
+      <div>
+        <ul>
+          {state && state.items && Object.keys(state.items).map((e) => {
+            const meta = state.items[e]
+            const project = state.items[e].data
+            const updated = Date.now() - meta.updated
+            return (
+              <li key={e} className='text-gray-700'>
+                <Link to={`/view/${project.url}`}>{project.title}</Link>
+                <small> {humanize(updated)} ago</small>
+              </li>
+            )
+          })}
+        </ul>
       </div>
-    </div>
+    </Page>
   )
 }
 
-export default Page
+export default Browse

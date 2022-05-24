@@ -17,6 +17,7 @@ import { ServicesProvider, useServices } from './contexts/ServicesContext.js'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import NavbarLink from './components/NavbarLink'
+import Alert from './components/Alert'
 
 // images
 import linesVector from './images/lines.png'
@@ -24,6 +25,6 @@ import linesVector from './images/lines.png'
 export {
   jwtService, rpcClient,
   ServicesProvider, useServices,
-  Footer, Navbar, NavbarLink,
+  Footer, Navbar, NavbarLink, Alert,
   linesVector
 }

@@ -10,14 +10,14 @@ import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { ServicesProvider } from '@kernel/common'
 
-import NotFound from 'views/NotFound.js'
+import NotFound from 'views/NotFound'
 import 'App.css'
 
-const Login = lazy(() => import('views/Login.js'))
-const Create = lazy(() => import('views/Create.js'))
-const Edit = lazy(() => import('views/Edit.js'))
-const Browse = lazy(() => import('views/Browse.js'))
-const View = lazy(() => import('views/View.js'))
+const Login = lazy(() => import('views/Login'))
+const Create = lazy(() => import('views/Create'))
+const Edit = lazy(() => import('views/Edit'))
+const Browse = lazy(() => import('views/Browse'))
+const View = lazy(() => import('views/View'))
 
 const App = () => {
   return (

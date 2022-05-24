@@ -7,15 +7,16 @@
  */
 
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default function NavbarLink (props) {
   const { textColor } = props
   const { url, iconName, title } = props.link
 
   return (
-    <a
+    <Link
       className={`${textColor} px-3 py-4 lg:px-6 lg:py-2 flex items-center text-sm lowercase font-bold`}
-      href={url}
+      to={url}
     >
       {iconName &&
         <>
@@ -23,6 +24,6 @@ export default function NavbarLink (props) {
           {' '}
         </>}
       {title}
-    </a>
+    </Link>
   )
 }
