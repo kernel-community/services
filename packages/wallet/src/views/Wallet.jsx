@@ -64,20 +64,20 @@ const Wallet = () => {
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                 <h2 className='font-heading text-3xl text-primary pb-6'>Learn</h2>
                 <p>
-                  What lies before you is a <strong>non-custodial wallet</strong>. Don't stress if you're not sure what that means. Kernel is an open source learning community, and we're here to help each other figure stuff like this out together.
+                  What lies before you is a <strong>non-custodial wallet</strong>. Don't stress if you're not sure what that means. Kernel is an open source learning community, and we're here to help each other <strong>understand</strong> and use our own <strong>keys</strong> to unlock doors to ever richer, <strong>shared</strong> truths.
                 </p>
               </div>
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                 <h2 className='font-heading text-3xl text-primary pb-6'>Play</h2>
                 <p>
-                  We call this a <strong>portal</strong> because it can do so much more than hodl money. When we set out to learn together, rather than represent your "worth" with one number, we can discover much more wholesome ways of seeing and being.
+                  We call this a <strong>portal</strong> because it can do so much more than hodl money. When we set out to learn together, rather than represent your "worth" with one number, we can discover much more <strong>wholesome</strong> ways of seeing and being.
                 </p>
               </div>
             </div>
             <div className='pt-20'>
               <h1 className='font-heading text-5xl text-primary pb-6'>Help Us Help Each Other</h1>
               <p className='pb-10'>
-                This <strong>portal</strong> will help you:
+                Non-custodial means that you care for your keys, no-one else. Caring for our own keys empowers us, and it makes us <strong>responsible</strong>. That can be a lot to handle on your own, which is why we create open tools for communities of care. Shared learning enhances individual agency. As a part of this process, our <strong>portal</strong> will help you:
               </p>
               <ol className='list-decimal pl-10 pb-10 underline underline-offset-4 decoration-kernel-dark'>
                 <li className='p-2'>
@@ -110,7 +110,7 @@ const Wallet = () => {
                   <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                     <h2 className='font-heading text-3xl text-primary pb-6'>For Kernel</h2>
                     <p>
-                      If you're a Kernel Fellow, then this portal will take you to many more places. Your keys are used not just to sign transactions, but to grant you access to other Fellows, their adventures, and the various events unique to our community.
+                      If you're a Kernel Fellow, then this portal will take you to many more places. Your keys are used not just to sign transactions, but to grant you access to other Fellows, their adventures, and the various events <strong>unique</strong> to our community.
                     </p>
                   </div>
                 </div>
