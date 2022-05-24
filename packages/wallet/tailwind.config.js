@@ -9,6 +9,7 @@ module.exports = {
         kernel: {
           white: '#ffffff',
           dark: '#212144',
+          highlight: '#CBF0C1',
           yellow: {
             light: '#fff7af',
             mid: '#ffcc00',
@@ -25,8 +26,15 @@ module.exports = {
             dark: '#5932c4'
           }
         }
+      },
+      fontFamily: {
+        heading: ['Nanum Myeongjo', 'serif'],
+        secondary: ['Futura', 'sans-serif'],
+        primary: ['Libre Franklin', 'sans-serif']
       }
     }
   },
-  plugins: []
+  plugins: [
+    require('@tailwindcss/typography')
+  ]
 }

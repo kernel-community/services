@@ -24,7 +24,7 @@ export default function Navbar (props) {
   const textColor = props.textColor || defaults.textColor
 
   return (
-    <nav className={`relative ${backgroundColor} flex flex-wrap items-center px-2 py-4`}>
+    <nav className={`relative ${backgroundColor} flex flex-wrap items-center px-2 py-4 shadow-black z-10`}>
       <div className='container px-4 mx-auto flex flex-wrap items-center'>
         <div className='w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start'>
           <button

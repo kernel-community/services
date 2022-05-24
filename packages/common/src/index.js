@@ -19,8 +19,12 @@ import Navbar from './components/Navbar'
 import NavbarLink from './components/NavbarLink'
 import Alert from './components/Alert'
 
+// images
+import linesVector from './assets/images/lines.png'
+
 export {
   jwtService, rpcClient,
   ServicesProvider, useServices,
-  Footer, Navbar, NavbarLink, Alert
+  Footer, Navbar, NavbarLink, Alert,
+  linesVector
 }
