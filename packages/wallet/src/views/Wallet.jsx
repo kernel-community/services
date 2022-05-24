@@ -119,6 +119,21 @@ const Wallet = () => {
             <div className='pt-20'>
               <h1 className='font-heading text-5xl text-primary pb-6'>Supporting Supporters</h1>
               <div className='font-secondary'>
+                <p className='pb-10'>
+                  At Kernel, we really care about{' '}
+                  <a href='https://www.kernel.community/en/conversation/reciprocity' target='_blank' rel='noreferrer'>
+                    <span className='before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-kernel-highlight relative inline-block cursor-pointer'>
+                      <span className='relative text-primary'>
+                        <span className='underline decoration-dotted'>
+                          reciprocity.
+                        </span>
+                      </span>
+                    </span>
+                  </a>
+                </p>
+                <p>
+                  Here are a few of the founding fun-ders who both make this work possible, and benefit from an open source, non-custodial portal that makes their contracts or technology accessible without relying on their own web interfaces.
+                </p>
                 <div className='columns-1 mb-20 sm:columns-2 md:columns-3 lg:columns-4'>
                   <div className='py-10 float-left sm:pr-2'>
                     <img className='max-h-[100px]' alt='supporter-logo' src={ethLogo} />
