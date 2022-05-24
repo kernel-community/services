@@ -9,6 +9,7 @@ module.exports = {
         kernel: {
           white: '#ffffff',
           dark: '#212144',
+          highlight: '#CBF0C1',
           yellow: {
             light: '#fff7af',
             mid: '#ffcc00',
