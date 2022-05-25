@@ -11,6 +11,7 @@
   "type": "module",
   "scripts": {
     "build": "echo \"tbd\"",
+    "upgrade": "yarn upgrade",
     "lint": "echo \"tbd\"",
     "format": "npx standard --fix",
     "test": "echo \"tbd\"",
@@ -29,7 +30,8 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^5.18.2",
-    "deepmerge": "^4.2.2"
+    "deepmerge": "^4.2.2",
+    "ethers": "5.6.8"
   },
   "devDependencies": {
     "standard": "^17.0.0",

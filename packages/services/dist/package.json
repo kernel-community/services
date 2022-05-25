@@ -17,7 +17,7 @@
     "googleapis": "^100.0.0",
     "deepmerge": "^4.2.2",
     "dotenv": "^16.0.0",
-    "ethers": "^5.6.0",
+    "ethers": "^5.6.8",
     "fastify": "^3.27.2",
     "fastify-cors": "^6.0.3",
     "fastify-rate-limit": "^5.7.2",

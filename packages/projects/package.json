@@ -23,7 +23,7 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
-    "ethers": "^5.6.1",
+    "ethers": "5.6.8",
     "mdx-embed": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -38,6 +38,7 @@
   "scripts": {
     "start": "craco start",
     "build": "BUILD_PATH='./dist/build' craco build",
+    "upgrade": "yarn upgrade",
     "test": "craco test",
     "lint": "npx standard",
     "format": "npx standard --fix",
