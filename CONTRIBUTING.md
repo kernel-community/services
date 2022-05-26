@@ -14,6 +14,20 @@ Feel free to submit an issue through the issue tracker.
 
 For non-trivial changes, please first seek a conversation to avoid any unnecessary work.
 
+You'll want to fork this repo and submit a PR from your fork to this repo's `main` branch.
+
+When you're ready to submit a PR:
+
+1. Run `yarn lint` from the root directory to see the linter errors (it can also be run per package from inside the package's directory). Run `yarn format` to auto-fix the errors where possible.
+1. Ensure your branch includes the latest commits from `main`.
+1. Write a PR title and description summarizing your changes.
+1. In your PR description, mention any Issues that your PR addresses.
+1. For changes visible in the frontend, include screenshots in your PR description.
+1. CI will run on your branch. It will need to be green before your PR can be merged.
+1. Get at least 1 PR review from another contributor. If changes are requested, make the requested changes in new commits and request a new review from the PR reviewer.
+1. When CI and PR reviews are green, your PR will be merged via "Squash and merge" which will trigger a deploy to staging.
+
+
 ## Developing
 
 _Node_: Check that Node is [installed](https://nodejs.org/en/download/) with version `>= 16.8.0`. You can check this with `node -v`.
