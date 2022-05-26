@@ -278,6 +278,10 @@ const ProjectForm = ({ mode, projectHandle }) => {
           </label>
           <label className='block'>
             <span className='text-gray-700'>Markdown</span>
+            <br />
+            <span className='text-gray-500 text-sm'>
+              Here's a <a href='https://www.markdownguide.org/cheat-sheet/' target='_blank' rel='noreferrer'>cheat sheet</a> for Markdown syntax.
+            </span>
             <textarea
               rows='10' className={formClass} value={markdown}
               onChange={(e) => setMarkdown(e.target.value)}
