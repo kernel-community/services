@@ -20,15 +20,30 @@ import { MDXProvider, useMDXComponents } from '@mdx-js/react'
 
 import { components } from 'constants.js'
 
+const FORM_STATUSES = {
+  clean: 'clean',
+  submitting: 'submitting',
+  success: 'success',
+  error: 'error'
+}
+
+const URL_STATUSES = {
+  clean: 'clean',
+  blank: 'blank',
+  invalidChars: 'invalidChars',
+  taken: 'taken',
+  valid: 'valid'
+}
+
 const INITIAL_STATE = {
   url: '',
   title: '',
   markdown: '',
   projects: null,
-  formStatus: 'clean',
+  formStatus: FORM_STATUSES.clean,
   errorMessage: null,
   urlPlaceholder: '',
-  urlStatus: null
+  urlStatus: URL_STATUSES.clean,
 }
 
 const actions = {}
@@ -49,6 +64,8 @@ const reducer = (state, action) => {
 const formClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
 
 const change = (dispatch, type, e) => {
+  dispatch({ type: 'formStatus', payload: FORM_STATUSES.clean })
+
   try {
     e.preventDefault()
     const payload = e.target.value
@@ -59,7 +76,7 @@ const change = (dispatch, type, e) => {
     }
 
     if (type === 'url') {
-      dispatch({ type: 'urlStatus', payload: null })
+      dispatch({ type: 'urlStatus', payload: URL_STATUSES.clean })
     }
   } catch (error) {
     console.log(error)
@@ -72,7 +89,7 @@ const value = (state, type) => {
 
 const save = async (state, dispatch, mode, e) => {
   e.preventDefault()
-  dispatch({ type: 'formStatus', payload: 'submitting' })
+  dispatch({ type: 'formStatus', payload: FORM_STATUSES.submitting })
   dispatch({ type: 'errorMessage', payload: null })
 
   const { projects, title, url, markdown } = state
@@ -85,10 +102,10 @@ const save = async (state, dispatch, mode, e) => {
     } else if (mode === 'edit') {
       saved = await projects.update(url, data)
     }
-    dispatch({ type: 'formStatus', payload: 'success' })
+    dispatch({ type: 'formStatus', payload: FORM_STATUSES.success })
     console.log(saved)
   } catch (error) {
-    dispatch({ type: 'formStatus', payload: 'error' })
+    dispatch({ type: 'formStatus', payload: FORM_STATUSES.error })
     dispatch({ type: 'errorMessage', payload: error.message })
     console.log(error)
   }
@@ -102,12 +119,15 @@ const toKebabCase = str =>
       .join('-')
       .toLowerCase()
 
-const setUrl = (state, dispatch) => {
+const setUrl = async (state, dispatch) => {
   const title = value(state, 'title')
   const url = value(state, 'url')
 
   if (!url || url.length === 0) {
-    dispatch({ type: 'url', payload: toKebabCase(title) })
+    const suggestedUrl = toKebabCase(title)
+    dispatch({ type: 'urlStatus', payload: URL_STATUSES.clean })
+    dispatch({ type: 'url', payload: suggestedUrl })
+    await validateUrl(suggestedUrl, state, dispatch)
   }
 }
 
@@ -116,34 +136,42 @@ const setUrlPlaceholder = (title, dispatch) => {
   dispatch({ type: 'urlPlaceholder', payload: newUrlPlaceholder })
 }
 
-const validateUrl = async (state, dispatch, e) => {
+const onUrlBlur = (state, dispatch, e) => {
   e.preventDefault()
 
   const url = e.target.value
 
-  let urlStatus
+  validateUrl(url, state, dispatch)
+}
+
+const validateUrl = async (url, state, dispatch) => {
+  if (url.length === 0) {
+    dispatch({ type: 'urlStatus', payload: URL_STATUSES.blank })
+    return
+  }
 
   // allow lowercase letters, numbers, and dashes
-  if (!url.match(/^[a-z0-9-]+$/)) {
-    urlStatus = 'invalidChars'
-    dispatch({ type: 'urlStatus', payload: urlStatus })
+  if (url.length > 0 && !url.match(/^[a-z0-9-]+$/)) {
+    dispatch({ type: 'urlStatus', payload: URL_STATUSES.invalidChars })
     return
   }
 
   const allProjects = await state.projects.getAll()
   const allProjectIds = Object.values(allProjects).map(project => project.id)
 
-  urlStatus = allProjectIds.includes(url) ? 'taken' : 'valid'
+  const urlStatus = allProjectIds.includes(url) ? URL_STATUSES.taken : URL_STATUSES.valid
   dispatch({ type: 'urlStatus', payload: urlStatus })
 }
 
 const UrlValidationMessage = ({ urlStatus, url }) => {
   switch (urlStatus) {
-    case 'invalidChars':
+    case URL_STATUSES.blank:
+      return <div className='mt-2 text-sm text-red-500'>This field is required.</div>
+    case URL_STATUSES.invalidChars:
       return <div className='mt-2 text-sm text-red-500'>Use lowercase letters, numbers, or dashes only.</div>
-    case 'taken':
+    case URL_STATUSES.taken:
       return <div className='mt-2 text-sm text-red-500'>The handle `{url}` is already taken.</div>
-    case 'valid':
+    case URL_STATUSES.valid:
       return <div className='mt-2 text-sm text-green-600'>This handle is available!</div>
     default:
       return null
@@ -152,16 +180,16 @@ const UrlValidationMessage = ({ urlStatus, url }) => {
 
 const ProjectFormAlert = ({ formStatus, errorMessage, projectHandle }) => {
   switch (formStatus) {
-    case 'submitting':
+    case FORM_STATUSES.submitting:
       return <Alert type='transparent'>Saving your changes...</Alert>
-    case 'success':
+    case FORM_STATUSES.success:
       return (
         <Alert type='success'>
           Your changes have been saved!{' '}
           <Link to={`/view/${projectHandle}`}>View your adventure.</Link>
         </Alert>
       )
-    case 'error':
+    case FORM_STATUSES.error:
       return <Alert type='danger'>Something went wrong. {errorMessage}</Alert>
     default:
       return null
@@ -239,7 +267,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
               type='text' className={`${formClass} ${mode === 'edit' ? 'bg-gray-300' : ''}`}
               placeholder={value(state, 'urlPlaceholder')}
               value={value(state, 'url')} onChange={change.bind(null, dispatch, 'url')}
-              onBlur={validateUrl.bind(null, state, dispatch)}
+              onBlur={onUrlBlur.bind(null, state, dispatch)}
               disabled={mode === 'edit'}
             />
             <UrlValidationMessage urlStatus={value(state, 'urlStatus')} url={value(state, 'url')} />
@@ -258,9 +286,9 @@ const ProjectForm = ({ mode, projectHandle }) => {
             />
           </label>
           <button
-            disabled={state.formStatus === 'submitting'}
+            disabled={state.formStatus === FORM_STATUSES.submitting}
             onClick={save.bind(null, state, dispatch, mode)}
-            className={`mt-2 px-6 py-4 ${state.formStatus === 'submitting' ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
+            className={`mt-2 px-6 py-4 ${state.formStatus === FORM_STATUSES.submitting ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
           >
             Save
           </button>
