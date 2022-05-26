@@ -99,7 +99,7 @@ const kernelCards = [
     description: 'Horizontal conversations',
     url: 'https://staging.chat.kernel.community/',
     active: false
-  },
+  }
 ]
 
 const Home = () => {
@@ -151,9 +151,10 @@ const Home = () => {
               {everyoneCards.map((everyoneCard, index) => {
                 return (
                   <a key={index} href={`${everyoneCard.active ? everyoneCard.url : '#'}`}>
-                    <div className={ 
+                    <div className={
                       `${everyoneCard.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
-                    }>
+                    }
+                    >
                       <div className='text-xl mb-2'>{everyoneCard.title}</div>
                       <div className='text-base mb-1'>{everyoneCard.description}</div>
                     </div>
@@ -167,16 +168,15 @@ const Home = () => {
             <div className='grid grid-cols-1 gap-y-8'>
               {kernelCards.map((kernelCard, index) => {
                 return (
-                  <div className='w-full md:w-72 my-0 mx-auto'>
-                    <a key={index} href={`${kernelCard.active ? kernelCard.url : '#'}`}>
-                      <div className={ 
-                        `${kernelCard.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
-                      }>
-                        <div className='text-xl mb-2'>{kernelCard.title}</div>
-                        <div className='text-base mb-1'>{kernelCard.description}</div>
-                      </div>
-                    </a>
-                  </div>
+                  <a key={index} href={`${kernelCard.active ? kernelCard.url : '#'}`} className='w-full md:w-72 my-0 mx-auto'>
+                    <div className={
+                      `${kernelCard.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
+                    }
+                    >
+                      <div className='text-xl mb-2'>{kernelCard.title}</div>
+                      <div className='text-base mb-1'>{kernelCard.description}</div>
+                    </div>
+                  </a>
                 )
               })}
             </div>
