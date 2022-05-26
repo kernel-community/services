@@ -43,7 +43,7 @@ const INITIAL_STATE = {
   formStatus: FORM_STATUSES.clean,
   errorMessage: null,
   urlPlaceholder: '',
-  urlStatus: URL_STATUSES.clean,
+  urlStatus: URL_STATUSES.clean
 }
 
 const actions = {}
