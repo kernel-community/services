@@ -75,13 +75,8 @@ const save = async (state, dispatch, mode, e) => {
   dispatch({ type: 'formStatus', payload: 'submitting' })
   dispatch({ type: 'errorMessage', payload: null })
 
-  const { projects, title, url, markdown, urlPlaceholder } = state
+  const { projects, title, url, markdown } = state
   const data = { title, url, markdown }
-
-  if (!url || url.length === 0) {
-    data.url = urlPlaceholder
-    dispatch({ type: 'url', payload: urlPlaceholder })
-  }
 
   try {
     let saved
@@ -106,6 +101,15 @@ const toKebabCase = str =>
       .match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
       .join('-')
       .toLowerCase()
+
+const setUrl = (state, dispatch) => {
+  const title = value(state, 'title')
+  const url = value(state, 'url')
+
+  if (!url || url.length === 0) {
+    dispatch({ type: 'url', payload: toKebabCase(title) })
+  }
+}
 
 const setUrlPlaceholder = (title, dispatch) => {
   const newUrlPlaceholder = toKebabCase(title)
@@ -222,6 +226,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
             <input
               type='text' className={formClass}
               value={value(state, 'title')} onChange={change.bind(null, dispatch, 'title')}
+              onBlur={setUrl.bind(null, state, dispatch)}
             />
           </label>
           <label className='block'>
