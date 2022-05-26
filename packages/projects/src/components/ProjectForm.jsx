@@ -100,7 +100,7 @@ const save = async (state, dispatch, mode, e) => {
     if (mode === 'create') {
       saved = await projects.create(data, { id: data.url })
     } else if (mode === 'edit') {
-      saved = await projects.update(url, data)
+      saved = await projects.patch(url, { title, markdown })
     }
     dispatch({ type: 'formStatus', payload: FORM_STATUSES.success })
     console.log(saved)
@@ -156,10 +156,8 @@ const validateUrl = async (url, state, dispatch) => {
     return
   }
 
-  const allProjects = await state.projects.getAll()
-  const allProjectIds = Object.values(allProjects).map(project => project.id)
-
-  const urlStatus = allProjectIds.includes(url) ? URL_STATUSES.taken : URL_STATUSES.valid
+  const taken = await state.projects.exists(url)
+  const urlStatus = taken ? URL_STATUSES.taken : URL_STATUSES.valid
   dispatch({ type: 'urlStatus', payload: urlStatus })
 }
 
