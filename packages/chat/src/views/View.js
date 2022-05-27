@@ -106,21 +106,38 @@ const Textarea = ({ state, dispatch }) => {
       <textarea
         className='w-full' rows='5' readOnly={!!state.loading}
         value={value(state, 'content')} onChange={change.bind(null, dispatch, 'content')}
+        onKeyDown={handleKeys.bind(null, state, dispatch)}
       />
     )
   }
   return (
     <textarea
       className='w-full' rows='5' value={value(state, 'content')} onChange={change.bind(null, dispatch, 'content')}
-      onKeyDown={e=>{handleMetaEnter(e)}}
+      onKeyDown={handleKeys.bind(null, state, dispatch)}
     />
   )
 }
 
-const handleMetaEnter = e => {
-  if(e.key === 'Enter' && (e.metaKey || e.ctrlKey)){
+const handleKeys = async (state, dispatch, e) => {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
     e.preventDefault()
-    e.target.form.requestSubmit()
+    await sendMessage(state, dispatch, e)
+  } else if (e.key === 'ArrowUp' && (e.metaKey || e.ctrlKey) && state && state.channels) {
+    e.preventDefault()
+    const _channels = Object.values(state.channels)
+    const _current = _channels.find(c => {
+      return state.active === c.data.name
+    })
+    const _index = (_channels.indexOf(_current) - 1 < 0 ? _channels.length - 1 : _channels.indexOf(_current) - 1)
+    await changeChannel(state, dispatch, _channels[_index])
+  } else if (e.key === 'ArrowDown' && (e.metaKey || e.ctrlKey) && state && state.channels) {
+    e.preventDefault()
+    const _channels = Object.values(state.channels)
+    const _current = _channels.find(c => {
+      return state.active === c.data.name
+    })
+    const _index = (_channels.indexOf(_current) + 1) % _channels.length
+    await changeChannel(state, dispatch, _channels[_index])
   }
 }
 
@@ -201,7 +218,7 @@ const Page = () => {
         </div>
         <div className='md:basis-2/3 grow px-8 rounded-md border-gray-800 shadow-lg min-h-screen'>
           <p className='uppercase'>Messages</p>
-          <form onSubmit={sendMessage.bind(null, state, dispatch)} >
+          <form onSubmit={sendMessage.bind(null, state, dispatch)}>
             <Textarea state={state} dispatch={dispatch} />
             <input
               value='Send' type='submit' disabled={state.loading}
