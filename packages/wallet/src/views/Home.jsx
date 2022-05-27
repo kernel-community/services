@@ -104,8 +104,8 @@ const memberCards = [
   }
 ]
 
-const LinkCard = ({ cardConfig }) => {
-  const Card = cardConfig.map((card, index) => {
+const LinkCards = ({ cardConfig }) => {
+  return cardConfig.map((card, index) => {
     return (
       <a key={index} href={`${card.active ? card.url : '#'}`}>
         <div className={
@@ -118,7 +118,6 @@ const LinkCard = ({ cardConfig }) => {
       </a>
     )
   })
-  return Card
 }
 
 const Home = () => {
@@ -167,7 +166,7 @@ const Home = () => {
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>For Everyone</h3>
             <div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-8 border-0 md:border-r border-kernel-grey md:pr-12'>
-              <LinkCard
+              <LinkCards
                 cardConfig={everyoneCards}
               />
             </div>
@@ -175,7 +174,7 @@ const Home = () => {
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>Kernel Additions</h3>
             <div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-8 md:pl-12'>
-              <LinkCard
+              <LinkCards
                 cardConfig={memberCards}
               />
             </div>
