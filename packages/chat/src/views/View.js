@@ -112,8 +112,16 @@ const Textarea = ({ state, dispatch }) => {
   return (
     <textarea
       className='w-full' rows='5' value={value(state, 'content')} onChange={change.bind(null, dispatch, 'content')}
+      onKeyDown={e=>{handleMetaEnter(e)}}
     />
   )
+}
+
+const handleMetaEnter = e => {
+  if(e.key === 'Enter' && e.metaKey){
+    e.preventDefault()
+    e.target.form.requestSubmit()
+  }
 }
 
 const Page = () => {
@@ -193,7 +201,7 @@ const Page = () => {
         </div>
         <div className='md:basis-2/3 grow px-8 rounded-md border-gray-800 shadow-lg min-h-screen'>
           <p className='uppercase'>Messages</p>
-          <form onSubmit={sendMessage.bind(null, state, dispatch)}>
+          <form onSubmit={sendMessage.bind(null, state, dispatch)} >
             <Textarea state={state} dispatch={dispatch} />
             <input
               value='Send' type='submit' disabled={state.loading}
