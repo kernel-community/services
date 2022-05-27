@@ -12,6 +12,7 @@ import { linesVector } from '@kernel/common'
 
 import Page from 'components/Page'
 
+const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
 const WALLET_STORE_VERSION = '1'
 
 const getItem = (k) => JSON.parse(localStorage.getItem(k))
@@ -75,29 +76,29 @@ const everyoneCards = [
   }
 ]
 
-const kernelCards = [
+const memberCards = [
   {
     title: 'UnProfile',
     description: 'Unprofile yourself',
-    url: 'https://staging.unprofile.kernel.community/',
+    url: `${env === 'STAGING' ? 'https://staging.unprofile.kernel.community/' : 'https://unprofile.kernel.community'}`,
     active: true
   },
   {
     title: 'Adventure',
     description: 'Heed the call to adventure',
-    url: 'https://staging.adventures.kernel.community/',
+    url: `${env === 'STAGING' ? 'https://staging.adventures.kernel.community/' : 'https://adventures.kernel.community'}`,
     active: true
   },
   {
     title: 'Explore',
     description: 'Connect with other Fellows',
-    url: 'https://staging.explore.kernel.community/',
+    url: `${env === 'STAGING' ? 'https://staging.explore.kernel.community/' : 'https://explore.kernel.community'}`,
     active: true
   },
   {
     title: 'Chat',
     description: 'Horizontal conversations',
-    url: 'https://staging.chat.kernel.community/',
+    url: `${env === 'STAGING' ? 'https://staging.chat.kernel.community/' : 'https://chat.kernel.community'}`,
     active: false
   }
 ]
@@ -166,15 +167,15 @@ const Home = () => {
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>Kernel Additions</h3>
             <div className='grid grid-cols-1 gap-y-8'>
-              {kernelCards.map((kernelCard, index) => {
+              {memberCards.map((memberCard, index) => {
                 return (
-                  <a key={index} href={`${kernelCard.active ? kernelCard.url : '#'}`} className='w-full md:w-72 my-0 mx-auto'>
+                  <a key={index} href={`${memberCard.active ? memberCard.url : '#'}`} className='w-full md:w-72 my-0 mx-auto'>
                     <div className={
-                      `${kernelCard.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
+                      `${memberCard.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
                     }
                     >
-                      <div className='text-xl mb-2'>{kernelCard.title}</div>
-                      <div className='text-base mb-1'>{kernelCard.description}</div>
+                      <div className='text-xl mb-2'>{memberCard.title}</div>
+                      <div className='text-base mb-1'>{memberCard.description}</div>
                     </div>
                   </a>
                 )
