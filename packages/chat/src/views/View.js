@@ -118,7 +118,7 @@ const Textarea = ({ state, dispatch }) => {
 }
 
 const handleMetaEnter = e => {
-  if(e.key === 'Enter' && e.metaKey){
+  if(e.key === 'Enter' && (e.metaKey || e.ctrlKey)){
     e.preventDefault()
     e.target.form.requestSubmit()
   }
