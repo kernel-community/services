@@ -63,7 +63,7 @@ const ProjectCard = ({ meta }) => {
 
   return (
     <Link to={`/view/${project.url}`}>
-      <div className='my-4 px-4 py-3 w-fit border-2 border-kernel-eggplant-light/50 rounded'>
+      <div className='my-4 px-4 py-3 w-fit border-2 border-kernel-eggplant-light/50 rounded shadow'>
         <span className='text-kernel-eggplant-light'>{project.title}</span>
         <span className='text-gray-700 text-xs'> {humanize(updated)} ago</span>
       </div>
