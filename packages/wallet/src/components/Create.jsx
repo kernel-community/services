@@ -16,7 +16,7 @@ const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
 const endpoint = process.env[`REACT_APP_AUTH_ENDPOINT_${env}`]
 
 const WALLET_STORE_VERSION = '1'
-const SUCCESS_TO = '/assets'
+const SUCCESS_TO = '/home'
 
 const authClient = async (jwtFn) =>
   rpcClient.build({ rpcEndpoint: endpoint, jwtFn })

@@ -8,6 +8,7 @@ module.exports = {
       colors: {
         kernel: {
           white: '#ffffff',
+          grey: '#eee',
           dark: '#212144',
           highlight: '#CBF0C1',
           yellow: {

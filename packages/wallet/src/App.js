@@ -13,7 +13,7 @@ import NotFound from 'views/NotFound.jsx'
 import 'App.css'
 
 const Wallet = lazy(() => import('views/Wallet.jsx'))
-const Assets = lazy(() => import('views/Assets.jsx'))
+const Home = lazy(() => import('views/Home.jsx'))
 const Register = lazy(() => import('views/Register.jsx'))
 const Create = lazy(() => import('components/Create.jsx'))
 const Import = lazy(() => import('components/Import.jsx'))
@@ -25,13 +25,12 @@ const App = () => {
       <Suspense fallback={<NotFound />}>
         <Routes>
           <Route path='/' element={<Wallet />} />
-          <Route path='/assets' element={<Navigate to='/assets/overview' replace />} />
-          <Route path='/assets/overview' element={<Assets />} />
+          <Route path='/home' element={<Home />} />
 
-          <Route path='/assets/transactions' element={<Navigate to='/assets/overview' replace />} />
-          <Route path='/assets/nfts' element={<Navigate to='/assets/overview' replace />} />
-          <Route path='/assets/tokens' element={<Navigate to='/assets/overview' replace />} />
-          <Route path='/assets/contracts' element={<Navigate to='/assets/overview' replace />} />
+          <Route path='/home/transactions' element={<Navigate to='/home' replace />} />
+          <Route path='/home/nfts' element={<Navigate to='/home' replace />} />
+          <Route path='/home/tokens' element={<Navigate to='/home' replace />} />
+          <Route path='/home/contracts' element={<Navigate to='/home' replace />} />
 
           <Route path='/register' element={<Register />}>
             <Route path='create' element={<Create />} />
