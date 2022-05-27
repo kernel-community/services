@@ -27,16 +27,18 @@ export default function Navbar (props) {
     <nav className={`relative ${backgroundColor} flex flex-wrap items-center px-2 py-4 shadow-black z-10`}>
       <div className='container px-4 mx-auto flex flex-wrap items-center'>
         <div className='w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start'>
-          <button
-            className={`${textColor} text-sm font-bold leading-relaxed inline-block mr-4 py-2
-              whitespace-nowrap uppercase`}
-          >
-            {logoUrl && <span><img src={logoUrl} className='inline-block max-h-8 mr-3' /></span>}
-            {title &&
-              <span className='inline-block align-middle'>
-                <Link to={homeUrl} className={textColor}>{title}</Link>
-              </span>}
-          </button>
+          <Link to={homeUrl} className={textColor}>
+            <button
+              className={`${textColor} text-sm font-bold leading-relaxed inline-block mr-4 py-2
+                whitespace-nowrap uppercase`}
+            >
+              {logoUrl && <span><img src={logoUrl} className='inline-block max-h-8 mr-3' /></span>}
+              {title &&
+                <span className='inline-block align-middle'>
+                  {title}
+                </span>}
+            </button>
+          </Link>
           {(menuLinks?.length > 0) &&
             <button
               className={`cursor-pointer text-xl leading-none px-3 py-1 border border-solid

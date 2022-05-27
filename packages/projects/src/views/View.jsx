@@ -73,7 +73,7 @@ const View = () => {
 
   return (
     <Page projectHandle={project}>
-      <div className='mb-24'>
+      <div className='mb-24 px-0 lg:px-24 xl:px-48'>
         <MDXProvider components={components}>
           {markdownError || <Content />}
         </MDXProvider>

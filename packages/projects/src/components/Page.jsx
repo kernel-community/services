@@ -37,7 +37,7 @@ const Page = ({ projectHandle, children }) => {
         additionalMenuItems={additionalMenuItems}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
-      <div className='mb-auto mt-24 mx-24'>
+      <div className='mb-auto mx-24 py-24'>
         {children}
       </div>
       <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'>

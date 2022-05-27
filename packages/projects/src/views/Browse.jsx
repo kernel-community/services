@@ -45,6 +45,32 @@ const humanize = (ms, dp = 0) => {
   return `${scaledTime.toFixed(dp)} ${timeUnits[timeScalarIndex]}`
 }
 
+const sortByUpdated = items => Object.values(items).sort(compareByUpdated)
+
+const compareByUpdated = (project1, project2) => {
+  if (project1.updated > project2.updated) {
+    return -1
+  } else if (project1.updated < project2.updated) {
+    return 1
+  } else {
+    return 0
+  }
+}
+
+const ProjectCard = ({ meta }) => {
+  const project = meta.data
+  const updated = Date.now() - meta.updated
+
+  return (
+    <Link to={`/view/${project.url}`}>
+      <div className='my-4 px-4 py-3 w-fit border-2 border-kernel-eggplant-light/50 rounded shadow'>
+        <span className='text-kernel-eggplant-light'>{project.title}</span>
+        <span className='text-gray-700 text-xs'> {humanize(updated)} ago</span>
+      </div>
+    </Link>
+  )
+}
+
 const Browse = () => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
   const navigate = useNavigate()
@@ -70,16 +96,13 @@ const Browse = () => {
 
   return (
     <Page>
-      <div>
+      <div className='px-2 sm:px-8 lg:px-16'>
+        <div className='py-4 text-4xl'>All adventures</div>
         <ul>
-          {state && state.items && Object.keys(state.items).map((e) => {
-            const meta = state.items[e]
-            const project = state.items[e].data
-            const updated = Date.now() - meta.updated
+          {state && state.items && sortByUpdated(state.items).map(projectMeta => {
             return (
-              <li key={e} className='text-gray-700'>
-                <Link to={`/view/${project.url}`}>{project.title}</Link>
-                <small> {humanize(updated)} ago</small>
+              <li key={projectMeta.id} className='text-gray-700'>
+                <ProjectCard meta={projectMeta} />
               </li>
             )
           })}

@@ -20,11 +20,21 @@ import { MDXProvider, useMDXComponents } from '@mdx-js/react'
 
 import { components } from 'constants.js'
 
+const MODES = {
+  create: 'create',
+  edit: 'edit'
+}
+
 const FORM_STATUSES = {
   clean: 'clean',
   submitting: 'submitting',
   success: 'success',
   error: 'error'
+}
+
+const TITLE_STATUSES = {
+  clean: 'clean',
+  blank: 'blank'
 }
 
 const URL_STATUSES = {
@@ -35,6 +45,11 @@ const URL_STATUSES = {
   valid: 'valid'
 }
 
+const MARKDOWN_STATUSES = {
+  clean: 'clean',
+  blank: 'blank'
+}
+
 const INITIAL_STATE = {
   url: '',
   title: '',
@@ -43,7 +58,9 @@ const INITIAL_STATE = {
   formStatus: FORM_STATUSES.clean,
   errorMessage: null,
   urlPlaceholder: '',
-  urlStatus: URL_STATUSES.clean
+  titleStatus: TITLE_STATUSES.clean,
+  urlStatus: URL_STATUSES.clean,
+  markdownStatus: MARKDOWN_STATUSES.clean
 }
 
 const actions = {}
@@ -89,17 +106,25 @@ const value = (state, type) => {
 
 const save = async (state, dispatch, mode, e) => {
   e.preventDefault()
+
   dispatch({ type: 'formStatus', payload: FORM_STATUSES.submitting })
   dispatch({ type: 'errorMessage', payload: null })
+
+  const projectIsValid = await validateFields(state, dispatch, mode)
+  if (!projectIsValid) {
+    dispatch({ type: 'formStatus', payload: FORM_STATUSES.error })
+    dispatch({ type: 'errorMessage', payload: 'Check for errors above.' })
+    return
+  }
 
   const { projects, title, url, markdown } = state
   const data = { title, url, markdown }
 
   try {
     let saved
-    if (mode === 'create') {
+    if (mode === MODES.create) {
       saved = await projects.create(data, { id: data.url })
-    } else if (mode === 'edit') {
+    } else if (mode === MODES.edit) {
       saved = await projects.patch(url, { title, markdown })
     }
     dispatch({ type: 'formStatus', payload: FORM_STATUSES.success })
@@ -136,43 +161,117 @@ const setUrlPlaceholder = (title, dispatch) => {
   dispatch({ type: 'urlPlaceholder', payload: newUrlPlaceholder })
 }
 
-const onUrlBlur = (state, dispatch, e) => {
+const onTitleBlur = (state, dispatch, e) => {
+  e.preventDefault()
+
+  const title = e.target.value
+
+  validateTitle(title, state, dispatch)
+  setUrl(state, dispatch)
+}
+
+const onUrlBlur = async (state, dispatch, e) => {
   e.preventDefault()
 
   const url = e.target.value
 
-  validateUrl(url, state, dispatch)
+  await validateUrl(url, state, dispatch)
+}
+
+const onMarkdownBlur = (state, dispatch, e) => {
+  e.preventDefault()
+
+  const markdown = e.target.value
+
+  validateMarkdown(markdown, state, dispatch)
+}
+
+const validateTitle = (title, state, dispatch) => {
+  if (title.length === 0) {
+    dispatch({ type: 'titleStatus', payload: TITLE_STATUSES.blank })
+    return false
+  }
+
+  dispatch({ type: 'titleStatus', payload: TITLE_STATUSES.clean })
+  return true
 }
 
 const validateUrl = async (url, state, dispatch) => {
   if (url.length === 0) {
     dispatch({ type: 'urlStatus', payload: URL_STATUSES.blank })
-    return
+    return false
   }
 
   // allow lowercase letters, numbers, and dashes
   if (url.length > 0 && !url.match(/^[a-z0-9-]+$/)) {
     dispatch({ type: 'urlStatus', payload: URL_STATUSES.invalidChars })
-    return
+    return false
   }
 
   const taken = await state.projects.exists(url)
   const urlStatus = taken ? URL_STATUSES.taken : URL_STATUSES.valid
   dispatch({ type: 'urlStatus', payload: urlStatus })
+
+  return !taken
 }
 
-const UrlValidationMessage = ({ urlStatus, url }) => {
-  switch (urlStatus) {
-    case URL_STATUSES.blank:
-      return <div className='mt-2 text-sm text-red-500'>This field is required.</div>
-    case URL_STATUSES.invalidChars:
-      return <div className='mt-2 text-sm text-red-500'>Use lowercase letters, numbers, or dashes only.</div>
-    case URL_STATUSES.taken:
-      return <div className='mt-2 text-sm text-red-500'>The handle `{url}` is already taken.</div>
-    case URL_STATUSES.valid:
-      return <div className='mt-2 text-sm text-green-600'>This handle is available!</div>
-    default:
-      return null
+const validateMarkdown = (markdown, state, dispatch) => {
+  if (markdown.length === 0) {
+    dispatch({ type: 'markdownStatus', payload: MARKDOWN_STATUSES.blank })
+    return false
+  }
+
+  dispatch({ type: 'markdownStatus', payload: MARKDOWN_STATUSES.clean })
+  return true
+}
+
+const validateFields = async (state, dispatch, mode) => {
+  const { title, url, markdown } = state
+
+  const titleIsValid = validateTitle(title, state, dispatch)
+  const markdownIsValid = validateMarkdown(markdown, state, dispatch)
+  const patchFieldsValid = titleIsValid && markdownIsValid
+
+  if (mode === MODES.create) {
+    const urlIsValid = await validateUrl(url, state, dispatch)
+    return patchFieldsValid && urlIsValid
+  } else {
+    return patchFieldsValid
+  }
+}
+
+const ValidationMessage = ({ fieldName, fieldStatus, value }) => {
+  if (fieldName === 'title') {
+    switch (fieldStatus) {
+      case TITLE_STATUSES.blank:
+        return <div className='mt-2 text-sm text-red-500'>This field is required.</div>
+      default:
+        return null
+    }
+  }
+
+  if (fieldName === 'url') {
+    switch (fieldStatus) {
+      case URL_STATUSES.blank:
+        return <div className='mt-2 text-sm text-red-500'>This field is required.</div>
+      case URL_STATUSES.invalidChars:
+        return <div className='mt-2 text-sm text-red-500'>Use lowercase letters, numbers, or dashes only.</div>
+      case URL_STATUSES.taken:
+        return <div className='mt-2 text-sm text-red-500'>The handle `{value}` is already taken.</div>
+      case URL_STATUSES.valid:
+        return <div className='mt-2 text-sm text-green-600'>This handle is available!</div>
+      default:
+        return null
+    }
+  }
+
+  if (fieldName === 'markdown') {
+    switch (fieldStatus) {
+      case MARKDOWN_STATUSES.blank:
+        return <div className='mt-2 text-sm text-red-500'>This field is required.</div>
+      default:
+        return null
+    }
   }
 }
 
@@ -206,7 +305,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
       const projects = await entityFactory({ resource })
       dispatch({ type: 'projects', payload: projects })
 
-      if (mode === 'edit') {
+      if (mode === MODES.edit) {
         const projectEntity = await projects.get(projectHandle)
         setMarkdown(projectEntity.data.markdown)
         dispatch({ type: 'url', payload: projectEntity.data.url })
@@ -252,7 +351,11 @@ const ProjectForm = ({ mode, projectHandle }) => {
             <input
               type='text' className={formClass}
               value={value(state, 'title')} onChange={change.bind(null, dispatch, 'title')}
-              onBlur={setUrl.bind(null, state, dispatch)}
+              onBlur={onTitleBlur.bind(null, state, dispatch)}
+            />
+            <ValidationMessage
+              fieldName='title'
+              fieldStatus={value(state, 'titleStatus')} value={value(state, 'title')}
             />
           </label>
           <label className='block'>
@@ -266,9 +369,12 @@ const ProjectForm = ({ mode, projectHandle }) => {
               placeholder={value(state, 'urlPlaceholder')}
               value={value(state, 'url')} onChange={change.bind(null, dispatch, 'url')}
               onBlur={onUrlBlur.bind(null, state, dispatch)}
-              disabled={mode === 'edit'}
+              disabled={mode === MODES.edit}
             />
-            <UrlValidationMessage urlStatus={value(state, 'urlStatus')} url={value(state, 'url')} />
+            <ValidationMessage
+              fieldName='url'
+              fieldStatus={value(state, 'urlStatus')} value={value(state, 'url')}
+            />
           </label>
           <label className='block'>
             <span className='text-gray-700'>Template</span>
@@ -285,6 +391,11 @@ const ProjectForm = ({ mode, projectHandle }) => {
             <textarea
               rows='10' className={formClass} value={markdown}
               onChange={(e) => setMarkdown(e.target.value)}
+              onBlur={onMarkdownBlur.bind(null, state, dispatch)}
+            />
+            <ValidationMessage
+              fieldName='markdown'
+              fieldStatus={value(state, 'markdownStatus')} value={value(state, 'markdown')}
             />
           </label>
           <button
@@ -306,7 +417,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
       <div className='my-4 px-8'>
         <ProjectFormAlert
           formStatus={state.formStatus} errorMessage={state.errorMessage}
-          projectHandle={mode === 'create' ? value(state, 'url') : projectHandle}
+          projectHandle={mode === MODES.create ? value(state, 'url') : projectHandle}
         />
         {markdownError &&
           <label className='my-8 block'>
