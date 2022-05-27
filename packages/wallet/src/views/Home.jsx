@@ -13,6 +13,7 @@ import { linesVector } from '@kernel/common'
 import Page from 'components/Page'
 
 const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
+const prefix = env === 'STAGING' ? 'staging.' : ''
 const WALLET_STORE_VERSION = '1'
 
 const getItem = (k) => JSON.parse(localStorage.getItem(k))
@@ -80,28 +81,45 @@ const memberCards = [
   {
     title: 'UnProfile',
     description: 'Unprofile yourself',
-    url: `${env === 'STAGING' ? 'https://staging.unprofile.kernel.community/' : 'https://unprofile.kernel.community'}`,
+    url: `https://${prefix}unprofile.kernel.community`,
     active: true
   },
   {
     title: 'Adventure',
     description: 'Heed the call to adventure',
-    url: `${env === 'STAGING' ? 'https://staging.adventures.kernel.community/' : 'https://adventures.kernel.community'}`,
+    url: `https://${prefix}adventures.kernel.community`,
     active: true
   },
   {
     title: 'Explore',
     description: 'Connect with other Fellows',
-    url: `${env === 'STAGING' ? 'https://staging.explore.kernel.community/' : 'https://explore.kernel.community'}`,
+    url: `https://${prefix}explore.kernel.community`,
     active: true
   },
   {
     title: 'Chat',
     description: 'Horizontal conversations',
-    url: `${env === 'STAGING' ? 'https://staging.chat.kernel.community/' : 'https://chat.kernel.community'}`,
+    url: `https://${prefix}chat.kernel.community`,
     active: false
   }
 ]
+
+const LinkCard = ({ cardConfig }) => {
+  const Card = cardConfig.map((card, index) => {
+    return (
+      <a key={index} href={`${card.active ? card.url : '#'}`}>
+        <div className={
+          `${card.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
+        }
+        >
+          <div className='text-xl mb-2'>{card.title}</div>
+          <div className='text-base mb-1'>{card.description}</div>
+        </div>
+      </a>
+    )
+  })
+  return Card
+}
 
 const Home = () => {
   const wallet = loadWallet()
@@ -149,37 +167,17 @@ const Home = () => {
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>For Everyone</h3>
             <div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-8 border-0 md:border-r border-kernel-grey md:pr-12'>
-              {everyoneCards.map((everyoneCard, index) => {
-                return (
-                  <a key={index} href={`${everyoneCard.active ? everyoneCard.url : '#'}`}>
-                    <div className={
-                      `${everyoneCard.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
-                    }
-                    >
-                      <div className='text-xl mb-2'>{everyoneCard.title}</div>
-                      <div className='text-base mb-1'>{everyoneCard.description}</div>
-                    </div>
-                  </a>
-                )
-              })}
+              <LinkCard
+                cardConfig={everyoneCards}
+              />
             </div>
           </div>
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>Kernel Additions</h3>
-            <div className='grid grid-cols-1 gap-y-8'>
-              {memberCards.map((memberCard, index) => {
-                return (
-                  <a key={index} href={`${memberCard.active ? memberCard.url : '#'}`} className='w-full md:w-72 my-0 mx-auto'>
-                    <div className={
-                      `${memberCard.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
-                    }
-                    >
-                      <div className='text-xl mb-2'>{memberCard.title}</div>
-                      <div className='text-base mb-1'>{memberCard.description}</div>
-                    </div>
-                  </a>
-                )
-              })}
+            <div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-8 md:pl-12'>
+              <LinkCard
+                cardConfig={memberCards}
+              />
             </div>
           </div>
         </div>
