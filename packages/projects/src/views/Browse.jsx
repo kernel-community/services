@@ -57,6 +57,20 @@ const compareByUpdated = (project1, project2) => {
   }
 }
 
+const ProjectCard = ({ meta }) => {
+  const project = meta.data
+  const updated = Date.now() - meta.updated
+
+  return (
+    <Link to={`/view/${project.url}`}>
+      <div className='my-4 px-4 py-3 w-fit border-2 border-kernel-eggplant-light/50 rounded'>
+        <span className='text-kernel-eggplant-light'>{project.title}</span>
+        <span className='text-gray-700 text-xs'> {humanize(updated)} ago</span>
+      </div>
+    </Link>
+  )
+}
+
 const Browse = () => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
   const navigate = useNavigate()
@@ -82,16 +96,13 @@ const Browse = () => {
 
   return (
     <Page>
-      <div>
+      <div className='px-2 sm:px-8 lg:px-16'>
+        <div className='py-4 text-4xl'>All adventures</div>
         <ul>
           {state && state.items && sortByUpdated(state.items).map(projectMeta => {
-            const project = projectMeta.data
-            const updated = Date.now() - projectMeta.updated
-
             return (
               <li key={projectMeta.id} className='text-gray-700'>
-                <Link to={`/view/${project.url}`}>{project.title}</Link>
-                <small> {humanize(updated)} ago</small>
+                <ProjectCard meta={projectMeta} />
               </li>
             )
           })}
