@@ -8,9 +8,8 @@
 
 import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { ServicesProvider } from '@kernel/common'
+import { ServicesProvider, Loading } from '@kernel/common'
 
-import NotFound from 'views/NotFound'
 import 'App.css'
 
 const Admin = lazy(() => import('views/Admin'))
@@ -23,7 +22,7 @@ const App = () => {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <ServicesProvider>
-        <Suspense fallback={<NotFound />}>
+        <Suspense fallback={<Loading />}>
           <Routes>
             <Route path='/' element={<Admin />} />
             <Route path='/dashboard' element={<Dashboard />} />
