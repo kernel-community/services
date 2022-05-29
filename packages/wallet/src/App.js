@@ -8,8 +8,8 @@
 
 import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { Loading } from '@kernel/common'
 
-import NotFound from 'views/NotFound.jsx'
 import 'App.css'
 
 const Wallet = lazy(() => import('views/Wallet.jsx'))
@@ -22,7 +22,7 @@ const Auth = lazy(() => import('components/Auth.jsx'))
 const App = () => {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
-      <Suspense fallback={<NotFound />}>
+      <Suspense fallback={<Loading />}>
         <Routes>
           <Route path='/' element={<Wallet />} />
           <Route path='/home' element={<Home />} />
