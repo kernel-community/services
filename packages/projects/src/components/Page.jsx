@@ -7,9 +7,7 @@
  */
 
 import { Link } from 'react-router-dom'
-
 import { Footer, Navbar } from '@kernel/common'
-
 import AppConfig from 'App.config'
 
 const editMenuItem = ({ projectHandle }) => {
@@ -40,9 +38,7 @@ const Page = ({ projectHandle, children }) => {
       <div className='mb-auto mx-24 py-24'>
         {children}
       </div>
-      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'>
-        built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
-      </Footer>
+      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'></Footer>
     </div>
   )
 }
