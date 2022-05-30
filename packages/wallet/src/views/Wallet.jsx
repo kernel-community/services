@@ -153,7 +153,7 @@ const Wallet = () => {
           </div>
         </div>
       </main>
-      <Footer absolute />
+      <Footer />
     </div>
   )
 }

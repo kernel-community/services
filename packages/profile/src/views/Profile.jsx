@@ -231,7 +231,7 @@ const Profile = () => {
 
         </form>
       </div>
-      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'></Footer>
+      <Footer />
     </div>
   )
 }
