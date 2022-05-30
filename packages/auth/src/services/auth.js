@@ -21,6 +21,7 @@ const KERNEL_AUD = 'kernel.community'
 const API_ROLE = 50
 const API_NICKNAME = 'apiServer'
 const NEW_ROLE = 1000
+const DEFAULT_GROUP_IDS = []
 
 const header = jwtService.HEADER
 const now = () => Date.now()
@@ -33,7 +34,7 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
 
   const newToken = async () => 
     jwtService.createJwt(wallet, jwtService.AUTH_JWT,
-      jwtService.authPayload({ iss: authMemberId, nickname: API_NICKNAME, role: API_ROLE }))
+      jwtService.authPayload({ iss: authMemberId, nickname: API_NICKNAME, role: API_ROLE, groupIds: DEFAULT_GROUP_IDS }))
   let jwtToken = await newToken()
   const jwtFn = async () => {
     const {payload: { exp } } = jwtService.decode(jwtToken)
@@ -49,12 +50,14 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
   const members = await entityClient({ resource: 'member', uri: 'members' })
   const wallets = await entityClient({ resource: 'wallet', uri: 'wallets' })
 
+  /*
   const walletJWK = await (async () => {
     const payload = {
       kty: 'ES256K', crv: 'secp256k1', iss: wallet.address
     }
     return jwtService.createJwt(wallet, jwtService.JWK, payload)
   })()
+  */
 
   // ensure api server is registered
   const setup = async () => {
@@ -64,7 +67,7 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     if (exists) {
       return
     }
-    const { id: member_id, data: { role } } = await members.create({ wallet: iss, role: API_ROLE })
+    const { id: member_id, data: { role } } = await members.create({ wallet: iss, role: API_ROLE, groupIds: DEFAULT_GROUP_IDS })
     const registered = await wallets.create({ member_id, nickname }, { id: iss, owner: member_id })
   }
 
@@ -90,6 +93,7 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     return { header, payload, signature }
   }
 
+  // TODO: remove
   const register = async (jwt) => {
     const { header, payload: { iss, nickname }, signature } = decodeJwt(jwt)
 
@@ -111,7 +115,7 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     let member
     const exists = await wallets.exists(iss)
     if (!exists) {
-      member = await members.create({ wallet: iss, role: NEW_ROLE })
+      member = await members.create({ wallet: iss, role: NEW_ROLE, groupIds: DEFAULT_GROUP_IDS })
       await members.updateMeta(member.id, { owner: member.id })
       const { id: member_id, data: { role } } = member
       await wallets.create({ member_id, nickname }, { id: iss, owner: member_id })
@@ -122,8 +126,8 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
       await members.updateMeta(member.id, { owner: member.id })
     }
 
-    const { id, data: { role } } = member
-    const authPayload = jwtService.authPayload({ iss: id, exp, nickname, role })
+    const { id, data: { role, groupIds = DEFAULT_GROUP_IDS } } = member
+    const authPayload = jwtService.authPayload({ iss: id, exp, nickname, role, groupIds })
     return jwtService.createJwt(wallet, jwtService.AUTH_JWT, authPayload)
   }
 

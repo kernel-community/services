@@ -37,7 +37,8 @@ const AUTH_JWT = {
     { name: 'iat', type: 'uint256' },
     { name: 'exp', type: 'uint256' },
     { name: 'nickname', type: 'string' },
-    { name: 'role', type: 'uint256' }
+    { name: 'role', type: 'uint256' },
+    { name: 'groupIds', type: 'string[]' }
   ]
 }
 const JWK = {
@@ -93,8 +94,8 @@ const createJwt = (wallet, type, payload) =>
     .then((signature) => encode({ payload, signature }) )
 
 const authPayload = ({ iss, aud = AUD, iat = now(),
-  exp = tokenExp(), nickname, role }) => {
-    return { iss, aud, iat, exp, nickname, role }
+  exp = tokenExp(), nickname, role, groupIds }) => {
+    return { iss, aud, iat, exp, nickname, role, groupIds }
 }
 
 const clientPayload = ({ iss, aud = AUD, iat = now(),

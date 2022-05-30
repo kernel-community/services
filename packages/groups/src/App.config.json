@@ -1,0 +1,16 @@
+{
+  "appTitle": "Kernel Groups",
+  "minRole": 1000,
+  "navbar": {
+    "links": [
+      {
+        "url": "/browse",
+        "title": "Browse"
+      },
+      {
+        "url": "/create",
+        "title": "Create"
+      }
+    ]
+  }
+}

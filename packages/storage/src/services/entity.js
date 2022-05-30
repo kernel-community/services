@@ -18,8 +18,8 @@ const BASE = 'resources'
 const DELIMITER = '/'
 
 const ROLE_ALL = 1000
-const ROLE_OWNER = 2000
 const ROLE_CORE = 100
+const DEFAULT_GROUP_IDS = []
 
 const AccessDeniedError = ({ iss, policy }) => {
   throw { name: 'AccessDenied', message: `Not able to take this action: ${iss}, ${JSON.stringify(policy)}`   }
@@ -69,10 +69,10 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   }
 
 
-  const get = async ({ iss, role }, { resource }, id) => {
+  const get = async ({ iss, role, groupIds = DEFAULT_GROUP_IDS }, { resource }, id) => {
     const { uri, policy } = resources[resource]
     const entity = await client.download(entityFile(entityUri(uri, id)))
-    if (role > policy.get && entity.owner != iss) {
+    if (role > policy.get && entity.owner != iss && !groupIds.includes(entity.owner)) {
       AccessDeniedError({ iss, policy })
     }
     return entity
@@ -114,10 +114,10 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
     return { resource, uri, id }
   }
 
-  const patch = async ({ iss, role }, { resource }, id, data) => {
+  const patch = async ({ iss, role, groupIds = DEFAULT_GROUP_IDS }, { resource }, id, data) => {
     const { uri, policy } = resources[resource]
     const entity = await get({ iss, role }, { resource }, id)
-    if (role > policy.update && entity.owner != iss) {
+    if (role > policy.update && entity.owner != iss && !groupIds.include(entity.owner)) {
       AccessDeniedError({ iss, policy })
     }
     Object.assign(entity.data, merge(entity.data, data))
@@ -125,10 +125,10 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
     return client.save(entityFile(entity.uri), entity)
   }
 
-  const update = async ({ iss, role }, { resource }, id, data) => {
+  const update = async ({ iss, role, groupIds = DEFAULT_GROUP_IDS }, { resource }, id, data) => {
     const { uri, policy } = resources[resource]
     const entity = await get({ iss, role }, { resource }, id)
-    if (role > policy.update && entity.owner != iss) {
+    if (role > policy.update && entity.owner != iss && !groupIds.include(entity.owner)) {
       AccessDeniedError({ iss, policy })
     }
     Object.assign(entity, { data })
@@ -136,10 +136,10 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
     return client.save(entityFile(entity.uri), entity)
   }
 
-  const updateMeta = async ({ iss, role }, { resource }, id, { owner }) => {
+  const updateMeta = async ({ iss, role, groupIds = DEFAULT_GROUP_IDS }, { resource }, id, { owner }) => {
     const { uri, policy } = resources[resource]
     const entity = await get({ iss, role }, { resource }, id)
-    if (role > policy.updateMeta && entity.owner != iss) {
+    if (role > policy.updateMeta && entity.owner != iss && !groupIds.include(entity.owner)) {
       AccessDeniedError({ iss, policy })
     }
     Object.assign(entity, merge(entity, { owner }))

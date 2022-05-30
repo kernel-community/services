@@ -198,6 +198,7 @@ const Profile = () => {
       <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
         <form className='form-control w-full'>
           <Input fieldName='wallet' editable={false} state={state} dispatch={dispatch} />
+          <Input fieldName='memberId' editable={false} state={state} dispatch={dispatch} />
           {FORM_INPUT.map((fieldName) => {
             return (
               <Input key={fieldName} fieldName={fieldName} state={state} dispatch={dispatch} />

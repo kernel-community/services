@@ -16,6 +16,7 @@ import rpcClientBuilder from './../../../auth/src/services/rpcClient.js'
 
 const API_ROLE = 50
 const API_NICKNAME = 'apiServer'
+const DEFAULT_GROUP_IDS = []
 
 const now = () => Date.now()
 
@@ -34,7 +35,7 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
 
   const newToken = async () => 
     jwtService.createJwt(wallet, jwtService.AUTH_JWT,
-      jwtService.authPayload({ iss: authMemberId, nickname: API_NICKNAME, role: API_ROLE }))
+      jwtService.authPayload({ iss: authMemberId, nickname: API_NICKNAME, role: API_ROLE, groupIds: DEFAULT_GROUP_IDS }))
   let jwtToken = await newToken()
   const jwtFn = async () => {
     const {payload: { exp } } = jwtService.decode(jwtToken)

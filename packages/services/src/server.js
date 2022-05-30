@@ -102,6 +102,7 @@ const start = async () => {
     await server.listen(PORT, '0.0.0.0')
     listenFns.forEach(({ listen }) => listen())
   } catch (err) {
+    console.log(err)
     server.log.error(err)
     process.exit(1)
   }
