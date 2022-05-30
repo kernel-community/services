@@ -38,7 +38,7 @@ const Page = ({ projectHandle, children }) => {
       <div className='mb-auto mx-24 py-24'>
         {children}
       </div>
-      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'></Footer>
+      <Footer />
     </div>
   )
 }
