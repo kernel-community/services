@@ -209,14 +209,12 @@ const Profile = () => {
               <Switch
                 checked={state.consentToggleEnabled}
                 onChange={changeConsentToggle}
-                className={`${
-                  state.consentToggleEnabled ? 'bg-kernel-green-dark' : 'bg-gray-200'
-                } relative inline-flex h-6 w-9 items-center rounded-full`}
+                className={`${state.consentToggleEnabled ? 'bg-kernel-green-dark' : 'bg-gray-200'
+                  } relative inline-flex h-6 w-9 items-center rounded-full`}
               >
                 <span
-                  className={`transform transition ease-in-out duration-200 ${
-                    state.consentToggleEnabled ? 'translate-x-4' : 'translate-x-1'
-                  } inline-block h-4 w-4 transform rounded-full bg-white`}
+                  className={`transform transition ease-in-out duration-200 ${state.consentToggleEnabled ? 'translate-x-4' : 'translate-x-1'
+                    } inline-block h-4 w-4 transform rounded-full bg-white`}
                 />
               </Switch>
               <Switch.Label passive className='ml-2 align-top'>Make my information available to others</Switch.Label>
@@ -234,9 +232,7 @@ const Profile = () => {
 
         </form>
       </div>
-      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'>
-        built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
-      </Footer>
+      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'></Footer>
     </div>
   )
 }
