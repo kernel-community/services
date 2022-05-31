@@ -91,8 +91,7 @@ const Form = () => {
   const navigate = useNavigate()
 
   const { group } = useParams()
-  const mode = group ? MODES.edit : MODES.create
-  console.log(mode)
+  const mode = group ? MODES.update : MODES.create
 
   const { services, currentUser } = useServices()
   const user = currentUser()

@@ -6,26 +6,27 @@
  *
  */
 
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import { Footer, Navbar } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
-const editMenuItem = ({ projectHandle }) => {
+const editMenuItem = ({ group }) => {
   return (
     <Link
       key='edit'
       className='text-kernel-white px-3 py-4 lg:px-6 lg:py-2 flex items-center text-sm lowercase font-bold'
-      to={`/edit/${projectHandle}`}
+      to={`/edit/${group}`}
     >
       Edit
     </Link>
   )
 }
 
-const Page = ({ projectHandle, children }) => {
-  const additionalMenuItems = projectHandle ? [editMenuItem({ projectHandle })] : []
+const Page = ({ children }) => {
+  const { group } = useParams()
+  const additionalMenuItems = group ? [editMenuItem({ group })] : []
 
   return (
     <div className='flex flex-col h-screen justify-between'>
