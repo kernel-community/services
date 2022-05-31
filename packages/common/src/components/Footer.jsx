@@ -16,17 +16,17 @@ const defaults = {
     { href: getUrl('explorer'), title: 'explorer' },
     { href: getUrl('unprofile'), title: 'unprofile' },
     { href: getUrl('adventures'), title: 'adventures' },
-    { href: getUrl('wallet'), title: 'portal' },
+    { href: getUrl('wallet'), title: 'portal' }
   ]
 }
 
-export default function Footer({ children, backgroundColor = defaults.backgroundColor, textColor = defaults.textColor, footerLinks = defaults.footerLinks }) {
+export default function Footer ({ children, backgroundColor = defaults.backgroundColor, textColor = defaults.textColor, footerLinks = defaults.footerLinks }) {
   return (
     <>
       <footer className={backgroundColor}>
         <div className={`px-4 py-6 text-sm ${textColor}`}>
           <div className='text-center'>
-            {children ? children : (
+            {children || (
               <>
                 <ul className='flex justify-center flex-col lg:flex-row list-none ml-3 mt-3 lg:mt-0 font-semibold'>
                   {footerLinks.map((link, idx) => {

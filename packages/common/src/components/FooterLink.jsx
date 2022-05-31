@@ -8,7 +8,7 @@
 
 import React from 'react'
 
-export default function FooterLink(props) {
+export default function FooterLink (props) {
   const { textColor } = props
   const { href, title } = props.link
 
