@@ -14,7 +14,7 @@ import AppConfig from 'App.config'
 
 const INITIAL_STATE = { error: '', loading: true, profiles: {}, projects: {} }
 
-const actions = { }
+const actions = {}
 
 Object.keys(INITIAL_STATE)
   .forEach((key) => {
@@ -151,9 +151,7 @@ const Page = () => {
           </div>
         </div>
       </div>
-      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'>
-        built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
-      </Footer>
+      <Footer />
     </div>
   )
 }

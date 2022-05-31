@@ -13,10 +13,14 @@ import rpcClient from './services/rpcClient.js'
 // contexts
 import { ServicesProvider, useServices } from './contexts/ServicesContext.js'
 
+// utils
+import { getUrl } from './utils/urls.js'
+
 // components
-import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import NavbarLink from './components/NavbarLink'
+import Footer from './components/Footer'
+import FooterLink from './components/FooterLink'
 import Alert from './components/Alert'
 import Loading from './components/Loading'
 
@@ -26,6 +30,7 @@ import linesVector from './assets/images/lines.png'
 export {
   jwtService, rpcClient,
   ServicesProvider, useServices,
-  Footer, Navbar, NavbarLink, Alert, Loading,
+  getUrl,
+  Footer, FooterLink, Navbar, NavbarLink, Alert, Loading,
   linesVector
 }

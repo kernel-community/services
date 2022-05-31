@@ -8,12 +8,10 @@
 
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { linesVector } from '@kernel/common'
+import { linesVector, getUrl } from '@kernel/common'
 
 import Page from 'components/Page'
 
-const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
-const prefix = env === 'STAGING' ? 'staging.' : ''
 const WALLET_STORE_VERSION = '1'
 
 const getItem = (k) => JSON.parse(localStorage.getItem(k))
@@ -81,25 +79,25 @@ const memberCards = [
   {
     title: 'UnProfile',
     description: 'Unprofile yourself',
-    url: `https://${prefix}unprofile.kernel.community`,
+    url: getUrl('unprofile'),
     active: true
   },
   {
     title: 'Adventure',
     description: 'Heed the call to adventure',
-    url: `https://${prefix}adventures.kernel.community`,
+    url: getUrl('adventures'),
     active: true
   },
   {
     title: 'Explore',
     description: 'Connect with other Fellows',
-    url: `https://${prefix}explore.kernel.community`,
+    url: getUrl('explore'),
     active: true
   },
   {
     title: 'Chat',
     description: 'Horizontal conversations',
-    url: `https://${prefix}chat.kernel.community`,
+    url: getUrl('chat'),
     active: false
   }
 ]

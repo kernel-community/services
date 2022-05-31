@@ -7,23 +7,41 @@
  */
 
 import React from 'react'
+import { FooterLink, getUrl } from '@kernel/common'
 
 const defaults = {
-  backgroundColor: 'bg-gray-900',
-  textColor: 'text-white'
+  backgroundColor: 'bg-kernel-dark',
+  textColor: 'text-white',
+  footerLinks: [
+    { href: getUrl('explorer'), title: 'explorer' },
+    { href: getUrl('unprofile'), title: 'unprofile' },
+    { href: getUrl('adventures'), title: 'adventures' },
+    { href: getUrl('wallet'), title: 'portal' }
+  ]
 }
 
-export default function Footer (props) {
-  const { children } = props
-  const backgroundColor = props.backgroundColor || defaults.backgroundColor
-  const textColor = props.textColor || defaults.textColor
-
+export default function Footer ({ children, backgroundColor = defaults.backgroundColor, textColor = defaults.textColor, footerLinks = defaults.footerLinks }) {
   return (
     <>
       <footer className={backgroundColor}>
-        <div className={`px-4 py-6 text-sm ${textColor} font-semibold`}>
+        <div className={`px-4 py-6 text-sm ${textColor}`}>
           <div className='text-center'>
-            {children}
+            {children || (
+              <>
+                <ul className='flex justify-center flex-col lg:flex-row list-none ml-3 mt-3 lg:mt-0 font-semibold'>
+                  {footerLinks.map((link, idx) => {
+                    return (
+                      <li key={idx} className='flex items-center'>
+                        <FooterLink link={link} textColor={textColor} />
+                      </li>
+                    )
+                  })}
+                </ul>
+                <div className='mt-5'>
+                  built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </footer>
