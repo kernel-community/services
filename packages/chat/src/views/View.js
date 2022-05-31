@@ -122,7 +122,7 @@ const switchChannel = (state, step) => {
   const { active, channels } = state
   const cnt = Object.keys(channels).length
   const index = Object.values(channels)
-      .reduce((acc, {data: { name }}, i) => name === active ? i : acc, -1) + step
+    .reduce((acc, { data: { name } }, i) => name === active ? i : acc, -1) + step
 
   // https://stackoverflow.com/a/45397704
   const newIndex = (index % cnt + cnt) % cnt
@@ -130,7 +130,7 @@ const switchChannel = (state, step) => {
   return channel
 }
 
-const STEPS = {'ArrowDown': -1, 'ArrowUp': 1}
+const STEPS = { ArrowDown: -1, ArrowUp: 1 }
 
 const handleKeys = async (state, dispatch, e) => {
   // bail early if meta/ctrl key not pressed. Other keys can be added in the future to trigger the hotkeys
@@ -145,7 +145,6 @@ const handleKeys = async (state, dispatch, e) => {
     const step = STEPS[e.key]
     const channel = switchChannel(state, step)
     await changeChannel(state, dispatch, channel)
-    return
   }
 }
 
