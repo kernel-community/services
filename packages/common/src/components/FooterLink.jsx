@@ -7,16 +7,15 @@
  */
 
 import React from 'react'
-import { getUrl } from '@kernel/common'
 
 export default function FooterLink(props) {
   const { textColor } = props
-  const { app, title } = props.link
+  const { href, title } = props.link
 
   return (
     <a
       className={`${textColor} px-3 py-4 lg:px-6 lg:py-2 flex items-center text-sm lowercase font-bold`}
-      href={getUrl(app)}
+      href={href}
     >
       {title}
     </a>

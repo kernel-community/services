@@ -7,16 +7,16 @@
  */
 
 import React from 'react'
-import { FooterLink } from '@kernel/common'
+import { FooterLink, getUrl } from '@kernel/common'
 
 const defaults = {
   backgroundColor: 'bg-kernel-dark',
   textColor: 'text-white',
   footerLinks: [
-    { app: 'explorer', title: 'explorer' },
-    { app: 'unprofile', title: 'unprofile' },
-    { app: 'adventures', title: 'adventures' },
-    { app: 'wallet', title: 'portal' },
+    { href: getUrl('explorer'), title: 'explorer' },
+    { href: getUrl('unprofile'), title: 'unprofile' },
+    { href: getUrl('adventures'), title: 'adventures' },
+    { href: getUrl('wallet'), title: 'portal' },
   ]
 }
 
@@ -26,19 +26,22 @@ export default function Footer({ children, backgroundColor = defaults.background
       <footer className={backgroundColor}>
         <div className={`px-4 py-6 text-sm ${textColor}`}>
           <div className='text-center'>
-            {children}
-            <ul className='flex justify-center flex-col lg:flex-row list-none ml-3 mt-3 lg:mt-0 font-semibold'>
-              {!children && footerLinks.map((link, idx) => {
-                return (
-                  <li key={idx} className='flex items-center'>
-                    <FooterLink link={link} textColor={textColor} />
-                  </li>
-                )
-              })}
-            </ul>
-            <div className='mt-5'>
-              built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
-            </div>
+            {children ? children : (
+              <>
+                <ul className='flex justify-center flex-col lg:flex-row list-none ml-3 mt-3 lg:mt-0 font-semibold'>
+                  {footerLinks.map((link, idx) => {
+                    return (
+                      <li key={idx} className='flex items-center'>
+                        <FooterLink link={link} textColor={textColor} />
+                      </li>
+                    )
+                  })}
+                </ul>
+                <div className='mt-5'>
+                  built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </footer>
