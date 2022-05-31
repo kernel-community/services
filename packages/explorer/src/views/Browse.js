@@ -117,7 +117,8 @@ const Page = () => {
                   const created = Date.now() - meta.created
                   return (
                     <li key={meta.id} className='text-gray-700 py-4'>
-                      <small>{humanize(created)}</small>
+                      <p><small>{humanize(created)}</small></p>
+                      <p><small>{profile.memberId}</small></p>
                       <p><b>{profile.name}</b> ({profile.pronouns})</p>
                       <p>{profile.city} - {profile.company}</p>
                       <p>{profile.bio}</p>
