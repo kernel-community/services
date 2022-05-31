@@ -118,26 +118,34 @@ const Textarea = ({ state, dispatch }) => {
   )
 }
 
+const switchChannel = (state, step) => {
+  const { active, channels } = state
+  const cnt = Object.keys(channels).length
+  const index = Object.values(channels)
+      .reduce((acc, {data: { name }}, i) => name === active ? i : acc, -1) + step
+
+  // https://stackoverflow.com/a/45397704
+  const newIndex = (index % cnt + cnt) % cnt
+  const channel = Object.values(channels)[newIndex]
+  return channel
+}
+
+const STEPS = {'ArrowDown': -1, 'ArrowUp': 1}
+
 const handleKeys = async (state, dispatch, e) => {
-  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+  // bail early if meta/ctrl key not pressed. Other keys can be added in the future to trigger the hotkeys
+  if (!(e.metaKey || e.ctrlKey)) {
+    return
+  }
+  if (e.key === 'Enter') {
     e.preventDefault()
     await sendMessage(state, dispatch, e)
-  } else if (e.key === 'ArrowUp' && (e.metaKey || e.ctrlKey) && state && state.channels) {
-    e.preventDefault()
-    const _channels = Object.values(state.channels)
-    const _current = _channels.find(c => {
-      return state.active === c.data.name
-    })
-    const _index = (_channels.indexOf(_current) - 1 < 0 ? _channels.length - 1 : _channels.indexOf(_current) - 1)
-    await changeChannel(state, dispatch, _channels[_index])
-  } else if (e.key === 'ArrowDown' && (e.metaKey || e.ctrlKey) && state && state.channels) {
-    e.preventDefault()
-    const _channels = Object.values(state.channels)
-    const _current = _channels.find(c => {
-      return state.active === c.data.name
-    })
-    const _index = (_channels.indexOf(_current) + 1) % _channels.length
-    await changeChannel(state, dispatch, _channels[_index])
+  }
+  if (Object.keys(STEPS).includes(e.key)) {
+    const step = STEPS[e.key]
+    const channel = switchChannel(state, step)
+    await changeChannel(state, dispatch, channel)
+    return
   }
 }
 
