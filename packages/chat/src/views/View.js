@@ -106,14 +106,46 @@ const Textarea = ({ state, dispatch }) => {
       <textarea
         className='w-full' rows='5' readOnly={!!state.loading}
         value={value(state, 'content')} onChange={change.bind(null, dispatch, 'content')}
+        onKeyDown={handleKeys.bind(null, state, dispatch)}
       />
     )
   }
   return (
     <textarea
       className='w-full' rows='5' value={value(state, 'content')} onChange={change.bind(null, dispatch, 'content')}
+      onKeyDown={handleKeys.bind(null, state, dispatch)}
     />
   )
+}
+
+const switchChannel = (state, step) => {
+  const { active, channels } = state
+  const cnt = Object.keys(channels).length
+  const index = Object.values(channels)
+    .reduce((acc, { data: { name } }, i) => name === active ? i : acc, -1) + step
+
+  // https://stackoverflow.com/a/45397704
+  const newIndex = (index % cnt + cnt) % cnt
+  const channel = Object.values(channels)[newIndex]
+  return channel
+}
+
+const STEPS = { ArrowDown: -1, ArrowUp: 1 }
+
+const handleKeys = async (state, dispatch, e) => {
+  // bail early if meta/ctrl key not pressed. Other keys can be added in the future to trigger the hotkeys
+  if (!(e.metaKey || e.ctrlKey)) {
+    return
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    await sendMessage(state, dispatch, e)
+  }
+  if (Object.keys(STEPS).includes(e.key)) {
+    const step = STEPS[e.key]
+    const channel = switchChannel(state, step)
+    await changeChannel(state, dispatch, channel)
+  }
 }
 
 const Page = () => {
