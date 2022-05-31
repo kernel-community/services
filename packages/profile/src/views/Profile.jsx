@@ -36,7 +36,7 @@ const actions = {}
 // { bio: (state, value) => Object.assign({}, state, bio: value}) }
 // each field's action updates the state with the given value
 Object.keys(INITIAL_STATE)
-  .concat(['consent', 'profiles', 'members', 'memberId', 'profileId'])
+  .concat(['consent', 'groupIds', 'members', 'memberId', 'profiles', 'profileId'])
   .forEach((key) => {
     actions[key] = (state, value) => Object.assign({}, state, { [key]: value })
   })
@@ -152,6 +152,8 @@ const Profile = () => {
     (async () => {
       const memberId = user.iss
       dispatch({ type: 'memberId', payload: memberId })
+      const groupIds = user.groupIds
+      dispatch({ type: 'groupIds', payload: groupIds.join(', ') })
 
       const { entityFactory } = await services()
 
@@ -199,6 +201,7 @@ const Profile = () => {
         <form className='form-control w-full'>
           <Input fieldName='wallet' editable={false} state={state} dispatch={dispatch} />
           <Input fieldName='memberId' editable={false} state={state} dispatch={dispatch} />
+          <Input fieldName='groupIds' editable={false} state={state} dispatch={dispatch} />
           {FORM_INPUT.map((fieldName) => {
             return (
               <Input key={fieldName} fieldName={fieldName} state={state} dispatch={dispatch} />

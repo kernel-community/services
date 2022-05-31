@@ -65,8 +65,9 @@ const Browse = () => {
             const group = state.items[e].data
             return (
               <li key={e} className='text-gray-700'>
-                <Link to={`/view/${meta.id}`}>{group.name}</Link>
-                <small> {meta.id} - {group.memberIds.length} members</small>
+                <Link to={`/view/${meta.id}`}>
+                  {group.name} <small> {meta.id} - {group.memberIds.length} members</small>
+                </Link>
               </li>
             )
           })}

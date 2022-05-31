@@ -46,6 +46,7 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
   const members = await entityClient({ resource: 'member' })
   const projects = await entityClient({ resource: 'project' })
   const profiles = await entityClient({ resource: 'profile' })
+  const groups = await entityClient({ resource: 'group' })
 
   // google services
   const googleServices = await google.build({ projectId, serviceAccount })
@@ -120,7 +121,39 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
     return updated
   }
 
-  return { sendEmail, emailMember, emailMembers, rsvpCalendarEvent, followProject }
+  // basic set operations
+  const superset = (set, subset) => [...subset].reduce((acc, e) => acc && set.has(e), true)
+  const difference = (a, b) => [...a].reduce((acc, e) => b.has(e) ? acc : [...acc, e], [])
+  const intersection = (a, b) => [...a].reduce((acc, e) => b.has(e) ? [...acc, e] : acc, [])
+
+  const syncGroupMembers = async ({ iss, role }, { groupId, memberIds }) => {
+    const group = await groups.get(groupId)
+    const existingIds = new Set(group.data.memberIds)
+    const newIds = new Set(memberIds)
+
+    const removeIds = difference(existingIds, newIds)
+    const addIds = difference(newIds, existingIds)
+    const unchangedIds = intersection(newIds, existingIds)
+    console.log('groups', groupId, removeIds, addIds, unchangedIds)
+
+    for (const memberId of removeIds) {
+      const member = await members.get(memberId)
+      const groupIds = member.data.groupIds ?
+        member.data.groupIds.filter((e) => e !== groupId) : []
+      const data = {...member.data, groupIds}
+      await members.update(memberId, data)
+    }
+    for (const memberId of addIds) {
+      await members.patch(memberId, { groupIds: [groupId] })
+    }
+
+    const data = {...group.data, memberIds }
+    const updatedGroup = await groups.update(groupId, data) 
+
+    return { groupId, removeIds, addIds, existingIds, updatedGroup } 
+  }
+
+  return { sendEmail, emailMember, emailMembers, rsvpCalendarEvent, followProject, syncGroupMembers }
 }
 
 const taskQueue = { build }
