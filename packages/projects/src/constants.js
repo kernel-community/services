@@ -1,4 +1,5 @@
 import { CodePen, Gist, Figma } from 'mdx-embed'
+import { Link } from 'react-router-dom'
 
 /* eslint-disable */
 const components = {
@@ -13,6 +14,7 @@ const components = {
   li: (props) => <li {...props} className="my-2" />,
   p: (props) => <p {...props} className="my-4" />,
   hr: (props) => <hr {...props} className="my-4" />,
+  Link: (props) => <Link {...props} to={props.to}>{props.children}</Link>,
   CodePen, Gist, Figma
 }
 /* eslint-enable */
