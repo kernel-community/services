@@ -406,6 +406,20 @@ const ProjectForm = ({ mode, projectHandle }) => {
             Save
           </button>
         </form>
+
+        <div className='my-6'>
+          <ProjectFormAlert
+            formStatus={state.formStatus} errorMessage={state.errorMessage}
+            projectHandle={mode === MODES.create ? value(state, 'url') : projectHandle}
+          />
+          {markdownError &&
+            <label className='my-8 block'>
+              <span className='text-gray-700'>Error</span>
+              <div className={formClass}>
+                {markdownError.message}
+              </div>
+            </label>}
+        </div>
       </div>
 
       <div className='px-8 rounded-md border-gray-800 shadow-lg'>
@@ -414,19 +428,6 @@ const ProjectForm = ({ mode, projectHandle }) => {
         </MDXProvider>
       </div>
 
-      <div className='my-4 px-8'>
-        <ProjectFormAlert
-          formStatus={state.formStatus} errorMessage={state.errorMessage}
-          projectHandle={mode === MODES.create ? value(state, 'url') : projectHandle}
-        />
-        {markdownError &&
-          <label className='my-8 block'>
-            <span className='text-gray-700'>Error</span>
-            <div className={formClass}>
-              {markdownError.message}
-            </div>
-          </label>}
-      </div>
     </div>
   )
 }
