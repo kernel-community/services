@@ -33,5 +33,5 @@ export {
   ServicesProvider, useServices,
   getUrl, timeUtils,
   Footer, FooterLink, Navbar, NavbarLink, Alert, Loading,
-  linesVector,
+  linesVector
 }
