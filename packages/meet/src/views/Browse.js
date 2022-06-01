@@ -8,7 +8,7 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useServices } from '@kernel/common'
+import { useServices, timeUtils } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import NavBar from 'components/NavBar'
@@ -30,19 +30,7 @@ const reducer = (state, action) => {
   }
 }
 
-// Credits: https://stackoverflow.com/a/68121710
-const timeScalars = [1000, 60, 60, 24, 7, 52]
-const timeUnits = ['ms', 'secs', 'min(s)', 'hr(s)', 'day(s)', 'week(s)', 'year(s)']
-
-const humanize = (ms, dp = 0) => {
-  let timeScalarIndex = 0; let scaledTime = ms
-
-  while (scaledTime > timeScalars[timeScalarIndex]) {
-    scaledTime /= timeScalars[timeScalarIndex++]
-  }
-
-  return `${scaledTime.toFixed(dp)} ${timeUnits[timeScalarIndex]}`
-}
+const { humanize } = timeUtils
 
 const Page = () => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
@@ -82,7 +70,7 @@ const Page = () => {
                   return (
                     <li key={e} className='text-gray-700'>
                       <Link to={`/view/${meta.id}`}>{event.title}</Link>
-                      <small> {humanize(updated)} ago</small>
+                      <small> {humanize(updated)}</small>
                     </li>
                   )
                 })}

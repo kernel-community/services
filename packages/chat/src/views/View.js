@@ -8,7 +8,7 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useServices } from '@kernel/common'
+import { useServices, timeUtils } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import NavBar from 'components/NavBar'
@@ -36,22 +36,7 @@ const reducer = (state, action) => {
   }
 }
 
-// Credits: https://stackoverflow.com/a/68121710
-const timeScalars = [1000, 60, 60, 24, 7, 52]
-const timeUnits = ['ms', 'secs', 'min', 'hr', 'day', 'week', 'year']
-
-const humanize = (ms, dp = 0) => {
-  let timeScalarIndex = 0; let scaledTime = ms
-
-  while (scaledTime > timeScalars[timeScalarIndex]) {
-    scaledTime /= timeScalars[timeScalarIndex++]
-  }
-
-  const i = scaledTime.toFixed(dp)
-  const unit = timeUnits[timeScalarIndex]
-  const pluralize = i > 1 && unit.slice(-1) !== 's' ? 's' : ''
-  return `${i < 0 ? 0 : i} ${unit}${pluralize} ago`
-}
+const { humanize } = timeUtils
 
 const readable = (error) => {
   if (error.toLowerCase().indexOf('consent') > 0) {
