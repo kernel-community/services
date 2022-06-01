@@ -1,0 +1,18 @@
+{
+  "appTitle": "Kernel Community",
+  "logoUrl": "/icon-192x192.png",
+  "homeUrl": "/browse",
+  "minRole": 1000,
+  "navbar": {
+    "links": [
+      {
+        "url": "/browse",
+        "title": "Browse"
+      },
+      {
+        "url": "/create",
+        "title": "Create"
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+@tailwind base;
+
+@layer base {
+  a {
+    @apply text-kernel-eggplant-light
+  }
+}
+@tailwind components;
+@tailwind utilities;
