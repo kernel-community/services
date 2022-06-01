@@ -45,16 +45,8 @@ const humanize = (ms, dp = 0) => {
   return `${scaledTime.toFixed(dp)} ${timeUnits[timeScalarIndex]}`
 }
 
-const sortByUpdated = items => Object.values(items).sort(compareByUpdated)
-
-const compareByUpdated = (project1, project2) => {
-  if (project1.updated > project2.updated) {
-    return -1
-  } else if (project1.updated < project2.updated) {
-    return 1
-  } else {
-    return 0
-  }
+const sortByUpdated = items => {
+  return Object.values(items).sort((a, b) => b.updated - a.updated)
 }
 
 const ProjectCard = ({ meta }) => {
