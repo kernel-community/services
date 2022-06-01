@@ -8,7 +8,7 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useServices } from '@kernel/common'
+import { useServices, timeUtils } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
@@ -31,19 +31,7 @@ const reducer = (state, action) => {
   }
 }
 
-// Credits: https://stackoverflow.com/a/68121710
-const timeScalars = [1000, 60, 60, 24, 7, 52]
-const timeUnits = ['ms', 'secs', 'min(s)', 'hr(s)', 'day(s)', 'week(s)', 'year(s)']
-
-const humanize = (ms, dp = 0) => {
-  let timeScalarIndex = 0; let scaledTime = ms
-
-  while (scaledTime > timeScalars[timeScalarIndex]) {
-    scaledTime /= timeScalars[timeScalarIndex++]
-  }
-
-  return `${scaledTime.toFixed(dp)} ${timeUnits[timeScalarIndex]}`
-}
+const { humanize } = timeUtils
 
 const sortByUpdated = items => {
   return Object.values(items).sort((a, b) => b.updated - a.updated)
@@ -57,7 +45,7 @@ const ProjectCard = ({ meta }) => {
     <Link to={`/view/${project.url}`}>
       <div className='my-4 px-4 py-3 w-fit border-2 border-kernel-eggplant-light/50 rounded shadow'>
         <span className='text-kernel-eggplant-light'>{project.title}</span>
-        <span className='text-gray-700 text-xs'> {humanize(updated)} ago</span>
+        <span className='text-gray-700 text-xs'> {humanize(updated)}</span>
       </div>
     </Link>
   )
