@@ -1,0 +1,8 @@
+{
+  "appTitle": "Kernel Application",
+  "logoUrl": "/icon-192x192.png",
+  "minRole": 1000,
+  "navbar": {
+    "links": []
+  }
+}
