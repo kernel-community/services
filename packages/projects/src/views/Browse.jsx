@@ -18,7 +18,8 @@ const INITIAL_STATE = { items: {} }
 
 const actions = {
   items: (state, items) => Object.assign({}, state, { items }),
-  projects: (state, projects) => Object.assign({}, state, { projects })
+  profiles: (state, profiles) => Object.assign({}, state, { profiles }),
+  groups: (state, groups) => Object.assign({}, state, { groups }),
 }
 
 const reducer = (state, action) => {
@@ -37,15 +38,25 @@ const sortByUpdated = items => {
   return Object.values(items).sort((a, b) => b.updated - a.updated)
 }
 
-const ProjectCard = ({ meta }) => {
+const profilesByOwner = profiles => {
+  const results = {}
+
+  Object.values(profiles).forEach(profile => results[profile.owner] = profile)
+
+  return results
+}
+
+const ProjectCard = ({ meta, profiles }) => {
   const project = meta.data
+  const ownerName = profiles[meta.owner]?.data?.name || 'Anon'
   const updated = Date.now() - meta.updated
 
   return (
     <Link to={`/view/${project.url}`}>
       <div className='my-4 px-4 py-3 w-fit border-2 border-kernel-eggplant-light/50 rounded shadow'>
         <span className='text-kernel-eggplant-light'>{project.title}</span>
-        <span className='text-gray-700 text-xs'> {humanize(updated)}</span>
+        <span className='text-gray-700'> by {ownerName}</span>
+        <div className='text-gray-700 text-xs'> {humanize(updated)}</div>
       </div>
     </Link>
   )
@@ -71,8 +82,23 @@ const Browse = () => {
       const projects = await entityFactory({ resource })
       const items = await projects.getAll()
       dispatch({ type: 'items', payload: items })
+
+      const groupsApi = await entityFactory({ resource: 'group' })
+      const groups = await groupsApi.getAll()
+      dispatch({ type: 'groups', payload: groups })
+
+      const { queryService } = await services()
+      try {
+        const { profiles } = await queryService.recommend()
+        dispatch({ type: 'profiles', payload: profiles })
+        console.log(profiles)
+      } catch (error) {
+        console.log(error)
+      }
     })()
   }, [services])
+
+  const profiles = profilesByOwner(state.profiles)
 
   return (
     <Page>
@@ -82,7 +108,7 @@ const Browse = () => {
           {state && state.items && sortByUpdated(state.items).map(projectMeta => {
             return (
               <li key={projectMeta.id} className='text-gray-700'>
-                <ProjectCard meta={projectMeta} />
+                <ProjectCard meta={projectMeta} profiles={profiles} />
               </li>
             )
           })}
