@@ -25,7 +25,7 @@ import Page from 'components/Page'
 
 const View = () => {
   const navigate = useNavigate()
-  const { project } = useParams()
+  const { project: projectHandle } = useParams()
 
   const { services, currentUser } = useServices()
   const user = currentUser()
@@ -41,11 +41,13 @@ const View = () => {
       const { entityFactory } = await services()
       const resource = 'project'
       const projects = await entityFactory({ resource })
-      const projectEntity = await projects.get(project)
+      const projectEntity = await projects.get(projectHandle)
+      setProjectMeta(projectEntity)
       setMarkdown(projectEntity.data.markdown)
     })()
-  }, [services, project])
+  }, [services, projectHandle])
 
+  const [projectMeta, setProjectMeta] = useState()
   const [markdown, setMarkdown] = useState()
   const [markdownError, setMarkdownError] = useState(null)
   const [mdxModule, setMdxModule] = useState()
@@ -72,7 +74,7 @@ const View = () => {
   }, [markdown])
 
   return (
-    <Page projectHandle={project}>
+    <Page projectHandle={projectHandle} projectMeta={projectMeta}>
       <div className='mb-24 px-0 lg:px-24 xl:px-48'>
         <MDXProvider components={components}>
           {markdownError || <Content />}

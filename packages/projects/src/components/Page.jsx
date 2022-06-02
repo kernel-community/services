@@ -7,7 +7,7 @@
  */
 
 import { Link } from 'react-router-dom'
-import { Footer, Navbar } from '@kernel/common'
+import { useServices, Footer, Navbar } from '@kernel/common'
 import AppConfig from 'App.config'
 
 const editMenuItem = ({ projectHandle }) => {
@@ -22,8 +22,13 @@ const editMenuItem = ({ projectHandle }) => {
   )
 }
 
-const Page = ({ projectHandle, children }) => {
-  const additionalMenuItems = projectHandle ? [editMenuItem({ projectHandle })] : []
+const Page = ({ projectHandle, projectMeta, children }) => {
+  const { currentUser } = useServices()
+  const user = currentUser()
+  const validOwners = [user.iss].concat(user.groupIds)
+  const canEdit = projectMeta && validOwners.includes(projectMeta.owner)
+
+  const additionalMenuItems = (projectHandle && canEdit) ? [editMenuItem({ projectHandle })] : []
 
   return (
     <div className='flex flex-col h-screen justify-between'>
