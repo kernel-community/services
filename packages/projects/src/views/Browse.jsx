@@ -14,7 +14,7 @@ import AppConfig from 'App.config'
 
 import Page from 'components/Page'
 
-const INITIAL_STATE = { items: {} }
+const INITIAL_STATE = { items: {}, profiles: {}, groups: {} }
 
 const actions = {
   items: (state, items) => Object.assign({}, state, { items }),
@@ -46,19 +46,20 @@ const profilesByOwner = profiles => {
   return results
 }
 
-const ProjectCard = ({ meta, profiles }) => {
+const ProjectCard = ({ meta, profiles, groups }) => {
   const project = meta.data
-  const ownerName = profiles[meta.owner]?.data?.name || 'Anon'
+  const ownerRecord = profiles[meta.owner] || groups[meta.owner]
+  const ownerName = ownerRecord?.data?.name || 'Anon'
   const updated = Date.now() - meta.updated
 
   return (
-    <Link to={`/view/${project.url}`}>
-      <div className='my-4 px-4 py-3 w-fit border-2 border-kernel-eggplant-light/50 rounded shadow'>
+    <div className='my-4 px-4 py-3 w-fit border-2 border-kernel-eggplant-light/50 rounded shadow'>
+      <Link to={`/view/${project.url}`}>
         <span className='text-kernel-eggplant-light'>{project.title}</span>
         <span className='text-gray-700'> by {ownerName}</span>
         <div className='text-gray-700 text-xs'> {humanize(updated)}</div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   )
 }
 
@@ -108,7 +109,7 @@ const Browse = () => {
           {state && state.items && sortByUpdated(state.items).map(projectMeta => {
             return (
               <li key={projectMeta.id} className='text-gray-700'>
-                <ProjectCard meta={projectMeta} profiles={profiles} />
+                <ProjectCard meta={projectMeta} profiles={profiles} groups={state.groups} />
               </li>
             )
           })}
