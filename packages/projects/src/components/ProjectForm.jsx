@@ -55,6 +55,8 @@ const INITIAL_STATE = {
   title: '',
   markdown: '',
   projects: null,
+  owner: null,
+  ownerOptions: [],
   formStatus: FORM_STATUSES.clean,
   errorMessage: null,
   urlPlaceholder: '',
@@ -100,6 +102,13 @@ const change = (dispatch, type, e) => {
   }
 }
 
+const changeSelectedOwner = (dispatch, e) => {
+  e.preventDefault()
+
+  const selectedOwnerId = e.target.value
+  dispatch({ type: 'owner', payload: selectedOwnerId })
+}
+
 const value = (state, type) => {
   return state[type]
 }
@@ -117,8 +126,8 @@ const save = async (state, dispatch, mode, e) => {
     return
   }
 
-  const { projects, title, url, markdown } = state
-  const data = { title, url, markdown }
+  const { projects, title, url, owner, markdown } = state
+  const data = { title, url, owner, markdown }
 
   try {
     let saved
@@ -127,6 +136,7 @@ const save = async (state, dispatch, mode, e) => {
     } else if (mode === MODES.edit) {
       saved = await projects.patch(url, { title, markdown })
     }
+    await projects.updateMeta(url, { owner })
     dispatch({ type: 'formStatus', payload: FORM_STATUSES.success })
     console.log(saved)
   } catch (error) {
@@ -296,7 +306,37 @@ const ProjectFormAlert = ({ formStatus, errorMessage, projectHandle }) => {
 const ProjectForm = ({ mode, projectHandle }) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
 
-  const { services } = useServices()
+  const { services, currentUser } = useServices()
+
+  useEffect(() => {
+    (async () => {
+      const user = currentUser()
+      const { iss, nickname, groupIds } = user
+
+      const { entityFactory } = await services()
+      const groupsApi = await entityFactory({ resource: 'group' })
+      const groups = await groupsApi.getAll()
+      const userGroups = Object.values(groups).filter(group => groupIds.includes(group.id))
+
+      const userOptions = [
+        {
+          id: iss,
+          name: nickname
+        }
+      ]
+
+      const groupOptions = userGroups.map(group => {
+        return {
+          id: group.id,
+          name: group.data.name
+        }
+      })
+
+      const intitialOwnerOptions = userOptions.concat(groupOptions)
+
+      dispatch({ type: 'ownerOptions', payload: intitialOwnerOptions })
+    })()
+  }, [currentUser, services])
 
   useEffect(() => {
     (async () => {
@@ -311,6 +351,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
         dispatch({ type: 'url', payload: projectEntity.data.url })
         dispatch({ type: 'title', payload: projectEntity.data.title })
         dispatch({ type: 'markdown', payload: projectEntity.data.markdown })
+        dispatch({ type: 'owner', payload: projectEntity.owner })
       }
     })()
   }, [services, projectHandle, mode])
@@ -375,6 +416,22 @@ const ProjectForm = ({ mode, projectHandle }) => {
               fieldName='url'
               fieldStatus={value(state, 'urlStatus')} value={value(state, 'url')}
             />
+          </label>
+          <label className='block'>
+            <span className='text-gray-700'>Team</span>
+            <br />
+            <span className='text-gray-500 text-sm'>
+              Yourself or one of the groups you are in.
+            </span>
+            <select className={formClass} value={state.owner}
+              onChange={changeSelectedOwner.bind(null, dispatch)}
+            >
+              {state.ownerOptions.map(ownerOption => (
+                <option key={ownerOption.id} value={ownerOption.id}>
+                  {ownerOption.name}
+                </option>
+              ))}
+            </select>
           </label>
           <label className='block'>
             <span className='text-gray-700'>Template</span>
