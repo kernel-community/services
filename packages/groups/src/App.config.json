@@ -1,5 +1,6 @@
 {
   "appTitle": "Kernel Groups",
+  "homeUrl": "/browse",
   "minRole": 1000,
   "navbar": {
     "links": [

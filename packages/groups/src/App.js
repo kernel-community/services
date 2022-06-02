@@ -8,11 +8,10 @@
 
 import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
-import { ServicesProvider, Loading } from '@kernel/common'
+import { ServicesProvider, Loading, Login } from '@kernel/common'
 
 import 'App.css'
 
-const Login = lazy(() => import('views/Login.jsx'))
 const Create = lazy(() => import('views/Create.jsx'))
 const Edit = lazy(() => import('views/Edit.jsx'))
 const Browse = lazy(() => import('views/Browse.jsx'))

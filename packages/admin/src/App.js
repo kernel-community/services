@@ -8,11 +8,10 @@
 
 import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { ServicesProvider, Loading } from '@kernel/common'
+import { ServicesProvider, Loading, Login } from '@kernel/common'
 
 import 'App.css'
 
-const Admin = lazy(() => import('views/Admin'))
 const Dashboard = lazy(() => import('views/Dashboard'))
 const Resources = lazy(() => import('views/Resources'))
 const Entities = lazy(() => import('views/Entities'))
@@ -24,7 +23,7 @@ const App = () => {
       <ServicesProvider>
         <Suspense fallback={<Loading />}>
           <Routes>
-            <Route path='/' element={<Admin />} />
+            <Route path='/' element={<Login />} />
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/resources' element={<Resources />} />
             <Route path='/entities' element={<Entities />} />

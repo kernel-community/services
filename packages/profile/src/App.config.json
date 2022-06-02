@@ -1,6 +1,7 @@
 {
   "appTitle": "Kernel UnProfile",
   "logoUrl": "/icon-192x192.png",
+  "homeUrl": "/me",
   "minRole": 1000,
   "navbar": {
     "links": []
