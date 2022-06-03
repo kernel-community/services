@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom'
 import { useServices, Footer, Navbar } from '@kernel/common'
 import AppConfig from 'App.config'
 
+const ADMIN_ROLE = 100
+
 const editMenuItem = ({ projectHandle }) => {
   return (
     <Link
@@ -25,8 +27,9 @@ const editMenuItem = ({ projectHandle }) => {
 const Page = ({ projectHandle, projectMeta, children }) => {
   const { currentUser } = useServices()
   const user = currentUser()
+  const isAdmin = user && user.role <= ADMIN_ROLE
   const validOwners = [user.iss].concat(user.groupIds)
-  const canEdit = projectMeta && validOwners.includes(projectMeta.owner)
+  const canEdit = projectMeta && (validOwners.includes(projectMeta.owner) || isAdmin)
 
   const additionalMenuItems = (projectHandle && canEdit) ? [editMenuItem({ projectHandle })] : []
 
