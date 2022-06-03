@@ -56,6 +56,7 @@ const INITIAL_STATE = {
   markdown: '',
   projects: null,
   owner: null,
+  ownerName: null,
   ownerOptions: [],
   formStatus: FORM_STATUSES.clean,
   errorMessage: null,
@@ -82,12 +83,12 @@ const reducer = (state, action) => {
 
 const formClass = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
 
-const change = (dispatch, type, e) => {
+const change = (state, dispatch, type, e) => {
   dispatch({ type: 'formStatus', payload: FORM_STATUSES.clean })
 
   try {
     e.preventDefault()
-    const payload = e.target.value
+    const payload = e.target.value || null
     dispatch({ type, payload })
 
     if (type === 'title') {
@@ -97,20 +98,24 @@ const change = (dispatch, type, e) => {
     if (type === 'url') {
       dispatch({ type: 'urlStatus', payload: URL_STATUSES.clean })
     }
+
+    if (type === 'owner') {
+      dispatch({ type: 'ownerName', payload: getOwnerName(payload, state) })
+    }
   } catch (error) {
     console.log(error)
   }
 }
 
-const changeSelectedOwner = (dispatch, e) => {
-  e.preventDefault()
-
-  const selectedOwnerId = e.target.value
-  dispatch({ type: 'owner', payload: selectedOwnerId })
-}
-
 const value = (state, type) => {
   return state[type]
+}
+
+const getOwnerName = (ownerId, state) => {
+  const { ownerOptions } = state
+  const selectedOption = ownerOptions.find(option => option.id === ownerId)
+
+  return selectedOption?.name
 }
 
 const save = async (state, dispatch, mode, e) => {
@@ -127,6 +132,7 @@ const save = async (state, dispatch, mode, e) => {
   }
 
   const { projects, title, url, owner, markdown } = state
+  const ownerName = state.ownerName || getOwnerName(owner, state)
   const data = { title, url, owner, markdown }
 
   try {
@@ -134,7 +140,7 @@ const save = async (state, dispatch, mode, e) => {
     if (mode === MODES.create) {
       saved = await projects.create(data, { id: data.url })
     } else if (mode === MODES.edit) {
-      saved = await projects.patch(url, { title, markdown })
+      saved = await projects.patch(url, { title, markdown, ownerName })
     }
     await projects.updateMeta(url, { owner })
     dispatch({ type: 'formStatus', payload: FORM_STATUSES.success })
@@ -307,21 +313,31 @@ const ProjectForm = ({ mode, projectHandle }) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   const { services, currentUser } = useServices()
+  const user = currentUser()
 
   useEffect(() => {
     (async () => {
-      const user = currentUser()
-      const { iss, nickname, groupIds } = user
+      const { iss, groupIds } = user
 
       const { entityFactory } = await services()
       const groupsApi = await entityFactory({ resource: 'group' })
-      const groups = await groupsApi.getAll()
-      const userGroups = Object.values(groups).filter(group => groupIds.includes(group.id))
+      const userGroups = await Promise.all(groupIds.map(id => groupsApi.get(id)))
+
+      const membersApi = await entityFactory({ resource: 'member' })
+      const member = await membersApi.get(iss)
+
+      let profileName
+      if (member.data.profileId) {
+        const profilesApi = await entityFactory({ resource: 'profile' })
+        const profile = await profilesApi.get(member.data.profileId)
+        profileName = profile.data.name
+      }
+      profileName = profileName || 'Anon'
 
       const userOptions = [
         {
           id: iss,
-          name: nickname
+          name: profileName
         }
       ]
 
@@ -336,7 +352,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
 
       dispatch({ type: 'ownerOptions', payload: intitialOwnerOptions })
     })()
-  }, [currentUser, services])
+  }, [user, services])
 
   useEffect(() => {
     (async () => {
@@ -352,6 +368,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
         dispatch({ type: 'title', payload: projectEntity.data.title })
         dispatch({ type: 'markdown', payload: projectEntity.data.markdown })
         dispatch({ type: 'owner', payload: projectEntity.owner })
+        dispatch({ type: 'ownerName', payload: projectEntity.data.ownerName })
       }
     })()
   }, [services, projectHandle, mode])
@@ -391,7 +408,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
             <span className='text-gray-700'>Title</span>
             <input
               type='text' className={formClass}
-              value={value(state, 'title')} onChange={change.bind(null, dispatch, 'title')}
+              value={value(state, 'title')} onChange={change.bind(null, state, dispatch, 'title')}
               onBlur={onTitleBlur.bind(null, state, dispatch)}
             />
             <ValidationMessage
@@ -408,7 +425,7 @@ const ProjectForm = ({ mode, projectHandle }) => {
             <input
               type='text' className={`${formClass} ${mode === 'edit' ? 'bg-gray-300' : ''}`}
               placeholder={value(state, 'urlPlaceholder')}
-              value={value(state, 'url')} onChange={change.bind(null, dispatch, 'url')}
+              value={value(state, 'url')} onChange={change.bind(null, state, dispatch, 'url')}
               onBlur={onUrlBlur.bind(null, state, dispatch)}
               disabled={mode === MODES.edit}
             />
@@ -424,8 +441,8 @@ const ProjectForm = ({ mode, projectHandle }) => {
               Yourself or one of the groups you are in.
             </span>
             <select
-              className={formClass} value={state.owner}
-              onChange={changeSelectedOwner.bind(null, dispatch)}
+              className={formClass} value={state.owner || ''}
+              onChange={change.bind(null, state, dispatch, 'owner')}
             >
               {state.ownerOptions.map(ownerOption => (
                 <option key={ownerOption.id} value={ownerOption.id}>

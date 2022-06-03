@@ -38,20 +38,9 @@ const sortByUpdated = items => {
   return Object.values(items).sort((a, b) => b.updated - a.updated)
 }
 
-const profilesByOwner = profiles => {
-  const results = {}
-
-  Object.values(profiles).forEach(profile => {
-    results[profile.owner] = profile
-  })
-
-  return results
-}
-
-const ProjectCard = ({ meta, profiles, groups }) => {
+const ProjectCard = ({ meta }) => {
   const project = meta.data
-  const ownerRecord = profiles[meta.owner] || groups[meta.owner]
-  const ownerName = ownerRecord?.data?.name || 'Anon'
+  const ownerName = project.ownerName || 'Anon'
   const updated = Date.now() - meta.updated
 
   return (
@@ -85,23 +74,8 @@ const Browse = () => {
       const projects = await entityFactory({ resource })
       const items = await projects.getAll()
       dispatch({ type: 'items', payload: items })
-
-      const groupsApi = await entityFactory({ resource: 'group' })
-      const groups = await groupsApi.getAll()
-      dispatch({ type: 'groups', payload: groups })
-
-      const { queryService } = await services()
-      try {
-        const { profiles } = await queryService.recommend()
-        dispatch({ type: 'profiles', payload: profiles })
-        console.log(profiles)
-      } catch (error) {
-        console.log(error)
-      }
     })()
   }, [services])
-
-  const profiles = profilesByOwner(state.profiles)
 
   return (
     <Page>
@@ -111,7 +85,7 @@ const Browse = () => {
           {state && state.items && sortByUpdated(state.items).map(projectMeta => {
             return (
               <li key={projectMeta.id} className='text-gray-700'>
-                <ProjectCard meta={projectMeta} profiles={profiles} groups={state.groups} />
+                <ProjectCard meta={projectMeta} />
               </li>
             )
           })}
