@@ -423,7 +423,8 @@ const ProjectForm = ({ mode, projectHandle }) => {
             <span className='text-gray-500 text-sm'>
               Yourself or one of the groups you are in.
             </span>
-            <select className={formClass} value={state.owner}
+            <select
+              className={formClass} value={state.owner}
               onChange={changeSelectedOwner.bind(null, dispatch)}
             >
               {state.ownerOptions.map(ownerOption => (

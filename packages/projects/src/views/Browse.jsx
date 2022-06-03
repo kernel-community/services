@@ -19,7 +19,7 @@ const INITIAL_STATE = { items: {}, profiles: {}, groups: {} }
 const actions = {
   items: (state, items) => Object.assign({}, state, { items }),
   profiles: (state, profiles) => Object.assign({}, state, { profiles }),
-  groups: (state, groups) => Object.assign({}, state, { groups }),
+  groups: (state, groups) => Object.assign({}, state, { groups })
 }
 
 const reducer = (state, action) => {
@@ -41,7 +41,9 @@ const sortByUpdated = items => {
 const profilesByOwner = profiles => {
   const results = {}
 
-  Object.values(profiles).forEach(profile => results[profile.owner] = profile)
+  Object.values(profiles).forEach(profile => {
+    results[profile.owner] = profile
+  })
 
   return results
 }
