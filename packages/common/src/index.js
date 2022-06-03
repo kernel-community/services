@@ -18,6 +18,7 @@ import { getUrl } from './utils/urls'
 import timeUtils from './utils/time'
 
 // components
+import Login from './components/Login'
 import Navbar from './components/Navbar'
 import NavbarLink from './components/NavbarLink'
 import Footer from './components/Footer'
@@ -32,6 +33,6 @@ export {
   jwtService, rpcClient,
   ServicesProvider, useServices,
   getUrl, timeUtils,
-  Footer, FooterLink, Navbar, NavbarLink, Alert, Loading,
+  Login, Footer, FooterLink, Navbar, NavbarLink, Alert, Loading,
   linesVector
 }

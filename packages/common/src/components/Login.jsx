@@ -6,35 +6,21 @@
  *
  */
 
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useServices, Navbar, Footer } from '@kernel/common'
 import AppConfig from 'App.config'
 
-import bgImage from 'assets/images/admin_bg.png'
+import bgImage from '../assets/images/admin_bg.png'
 
-const additionalNavItems = [
-  (
-    <button
-      key='btn-nav'
-      className={`bg-kernel-green-mid text-kernel-dark text-xs font-bold uppercase
-      px-4 py-2 rounded outline-none focus:outline-none ml-3 mt-3 mb-4`}
-      type='button'
-    >
-      <i className='fas fa-user-plus' /> <Link to='/register'>Register</Link>
-    </button>
-  )
-]
-
-const Admin = () => {
+const Login = () => {
   const navigate = useNavigate()
   const { walletLogin } = useServices()
-  const navbarConfig = AppConfig.navbar
 
   const handleLogin = async () => {
     const user = await walletLogin()
-    console.log(user, AppConfig.adminRole)
-    if (user.role <= AppConfig.adminRole) {
-      return navigate('/dashboard')
+    if (user.role <= AppConfig.minRole) {
+      const homeUrl = AppConfig.homeUrl || '/'
+      return navigate(homeUrl)
     }
     navigate('/')
   }
@@ -42,8 +28,8 @@ const Admin = () => {
   return (
     <div>
       <Navbar
-        title={AppConfig.appTitle} menuLinks={navbarConfig.links}
-        additionalMenuItems={additionalNavItems}
+        title={AppConfig.appTitle}
+        logoUrl={AppConfig.logoUrl}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
       <main>
@@ -82,4 +68,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default Login
