@@ -74,7 +74,7 @@ const Page = () => {
   }, [services, user])
 
   const sortByNewest = items => {
-    return Object.values(items).sort((a, b) => b.created - a.created);
+    return Object.values(items).sort((a, b) => b.created - a.created)
   }
 
   return (
