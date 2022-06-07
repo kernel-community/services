@@ -8,10 +8,20 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Resizer from 'react-image-file-resizer'
 import { Switch } from '@headlessui/react'
-import { useServices, Navbar, Footer, Alert } from '@kernel/common'
+import { useServices, Navbar, Footer, Alert, getUrl } from '@kernel/common'
 
 import AppConfig from 'App.config'
+
+const AVATAR_CONFIG = {
+  maxHeight: 500,
+  maxWidth: 500,
+  format: 'PNG',
+  quality: 100, // maximum: no compression
+  rotation: 0,
+  outputType: 'base64'
+}
 
 const FORM_INPUT = ['email', 'name', 'pronouns', 'twitter', 'city', 'company', 'bio']
 
@@ -21,6 +31,7 @@ const INITIAL_FORM_KEYS = ['wallet'].concat(FORM_INPUT)
 const INITIAL_FORM_FIELDS_STATE = INITIAL_FORM_KEYS
   .reduce((acc, key) => Object.assign(acc, { [key]: '' }), {})
 INITIAL_FORM_FIELDS_STATE.consent = true
+INITIAL_FORM_FIELDS_STATE.avatar = null
 
 const INITIAL_FORM_SUBMISSION_STATE = {
   formStatus: 'clean',
@@ -55,12 +66,43 @@ const reducer = (state, action) => {
 // tries to get the payload out of the event and dispatch it
 const change = (dispatch, type, e) => {
   try {
+    if (type === 'avatar') {
+      onAvatarChange(dispatch, e)
+      e.target.value = null // reset so onChange will fire even for same image
+      return
+    }
     const target = e.target
     const payload = target.type === 'checkbox' ? target.checked : target.value
     dispatch({ type, payload })
   } catch (error) {
     console.log(error)
   }
+}
+
+const onAvatarChange = (dispatch, e) => {
+  if (e.target.files.length === 0) {
+    return
+  }
+
+  const { maxHeight, maxWidth, format, quality, rotation, outputType } = AVATAR_CONFIG
+
+  Resizer.imageFileResizer(
+    e.target.files[0],
+    maxWidth,
+    maxHeight,
+    format,
+    quality,
+    rotation,
+    (uri) => {
+      console.log(uri)
+      dispatch({ type: 'avatar', payload: uri })
+    },
+    outputType
+  )
+}
+
+const removeAvatar = (dispatch) => {
+  dispatch({ type: 'avatar', payload: null })
 }
 
 const value = (state, type) => state[type]
@@ -207,6 +249,64 @@ const Profile = () => {
               <Input key={fieldName} fieldName={fieldName} state={state} dispatch={dispatch} />
             )
           })}
+          <div className='mt-8 mb-2 w-min'>
+            <label className='label block mb-1'>
+              <span className='label-text text-gray-700 capitalize'>Avatar</span>
+            </label>
+
+            <div className='mb-2 text-sm text-gray-700'>
+              Upload a JPEG or PNG. Recommended size is 500 x 500.
+            </div>
+
+            <div className={`my-8 grid place-items-center box-border rounded-full h-80 w-80
+              ${state.avatar ? '' : 'border-dashed border-2 border-gray-400'}`}
+            >
+              {value(state, 'avatar')
+                ? <img
+                    src={value(state, 'avatar')} alt='avatar'
+                    className='w-80 h-80 object-cover rounded-full'
+                  />
+                : <span className='text-gray-400'>add an image</span>}
+            </div>
+
+            <div className='my-4'>
+              {state.avatar &&
+                <div className='grid grid-cols-2 gap-x-2'>
+                  <label
+                    className='px-6 py-3 w-full bg-kernel-eggplant-mid text-white rounded text-center cursor-pointer'
+                  >
+                    <input
+                      type='file' accept='image/png, image/jpeg'
+                      className='hidden'
+                      onChange={change.bind(null, dispatch, 'avatar')}
+                    />
+                    <span className='inline-block mt-0.5'>Change</span>
+                  </label>
+                  <button
+                    className='px-6 py-3 w-full border-2 border-kernel-eggplant-mid text-kernel-eggplant-mid rounded'
+                    onClick={removeAvatar.bind(null, dispatch)}
+                  >
+                    Remove
+                  </button>
+                </div>}
+              {!state.avatar &&
+                <div className='grid grid-cols-1'>
+                  <label
+                    className='px-6 py-3 w-full bg-kernel-eggplant-mid text-white rounded text-center cursor-pointer'
+                  >
+                    <input
+                      type='file' accept='image/png, image/jpeg'
+                      className='hidden'
+                      onChange={change.bind(null, dispatch, 'avatar')}
+                    />
+                    <span className='inline-block mt-0.5'>Choose image</span>
+                  </label>
+                </div>}
+            </div>
+          </div>
+
+          <hr className='my-12' />
+
           <div className='mt-8 mb-2'>
             <Switch.Group>
               <Switch
