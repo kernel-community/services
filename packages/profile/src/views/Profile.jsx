@@ -66,12 +66,14 @@ const reducer = (state, action) => {
 // tries to get the payload out of the event and dispatch it
 const change = (dispatch, type, e) => {
   try {
+    const target = e.target
+
     if (type === 'avatar') {
-      onAvatarChange(dispatch, e)
-      e.target.value = null // reset so onChange will fire even for same image
+      onAvatarChange(dispatch, target)
+      target.value = null // reset so onChange will fire even for same image
       return
     }
-    const target = e.target
+
     const payload = target.type === 'checkbox' ? target.checked : target.value
     dispatch({ type, payload })
   } catch (error) {
@@ -79,15 +81,15 @@ const change = (dispatch, type, e) => {
   }
 }
 
-const onAvatarChange = (dispatch, e) => {
-  if (e.target.files.length === 0) {
+const onAvatarChange = (dispatch, target) => {
+  if (target.files.length === 0) {
     return
   }
 
   const { maxHeight, maxWidth, format, quality, rotation, outputType } = AVATAR_CONFIG
 
   Resizer.imageFileResizer(
-    e.target.files[0],
+    target.files[0],
     maxWidth,
     maxHeight,
     format,
@@ -266,9 +268,9 @@ const Profile = () => {
             <div className={`my-8 grid place-items-center box-border rounded-full h-80 w-80
               ${state.avatar ? '' : 'border-dashed border-2 border-gray-400'}`}
             >
-              {value(state, 'avatar')
+              {state.avatar
                 ? <img
-                    src={value(state, 'avatar')} alt='avatar'
+                    src={state.avatar} alt='avatar'
                     className='w-80 h-80 object-cover rounded-full'
                   />
                 : <span className='text-gray-400'>add an image</span>}
