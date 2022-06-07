@@ -169,7 +169,12 @@ const ProfileAlert = ({ formStatus, errorMessage }) => {
     case 'submitting':
       return <Alert type='transparent'>Saving your changes...</Alert>
     case 'success':
-      return <Alert type='success'>Your changes have been saved!</Alert>
+      return (
+        <Alert type='success'>
+          Your changes have been saved!&nbsp;
+          <a href={getUrl('explorer')}>Start exploring.</a>
+        </Alert>
+      )
     case 'error':
       return <Alert type='danger'>Something went wrong. {errorMessage}</Alert>
     default:
