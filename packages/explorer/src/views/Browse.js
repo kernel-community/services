@@ -102,12 +102,20 @@ const Page = () => {
                   const created = Date.now() - meta.created
                   return (
                     <li key={meta.id} className='text-gray-700 py-4'>
-                      <p><small>{humanize(created)}</small></p>
-                      <p><small>{profile.memberId}</small></p>
                       <p><b>{profile.name}</b> ({profile.pronouns})</p>
+
+                      {profile.avatar &&
+                        <div className='my-2 mx-auto grid place-items-center box-border rounded-full h-32 w-32'>
+                          <img
+                            src={profile.avatar} alt='avatar'
+                            className='w-full h-full object-cover rounded-full'
+                          />
+                        </div>}
                       <p>{profile.city} - {profile.company}</p>
                       <p>{profile.bio}</p>
                       <p>{profile.email} - {profile.twitter}</p>
+                      <p><small>{profile.memberId}</small></p>
+                      <p><small>{humanize(created)}</small></p>
                     </li>
                   )
                 })}
