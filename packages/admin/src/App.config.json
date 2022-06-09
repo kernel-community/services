@@ -1,6 +1,6 @@
 {
   "appTitle": "Kernel Steward",
-  "adminRole": 100,
+  "minRole": 100,
   "homeUrl": "/dashboard",
   "navbar": {
     "links": []
