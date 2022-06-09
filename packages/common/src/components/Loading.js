@@ -34,7 +34,7 @@ export default function Loading (props) {
   const type = props.type || LOADING_INDICATOR_TYPES.default
 
   return (
-    <div class='grid place-items-center h-screen'>
+    <div className='grid place-items-center h-screen'>
       <Animation type={type} />
     </div>
   )

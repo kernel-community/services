@@ -109,7 +109,7 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     return jwtService.createJwt(wallet, jwtService.AUTH_JWT, authPayload)
   }
 
-  const accessToken = async (jwt) => {
+  const accessToken = async (jwt, persist = false) => {
     const { header, payload: { iss, exp, nickname }, signature } = decodeJwt(jwt)
 
     let member
@@ -128,7 +128,8 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
 
     const { id, data: { role, groupIds = DEFAULT_GROUP_IDS } } = member
     const authPayload = jwtService.authPayload({ iss: id, exp, nickname, role, groupIds })
-    return jwtService.createJwt(wallet, jwtService.AUTH_JWT, authPayload)
+    const token = await jwtService.createJwt(wallet, jwtService.AUTH_JWT, authPayload)
+    return { jwt: token, persist, authPayload }
   }
 
   return { setup, publicKey, register, accessToken }

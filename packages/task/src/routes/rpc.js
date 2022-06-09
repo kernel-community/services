@@ -50,15 +50,28 @@ const register = async (server, rpcPath, tasksPath, { seed, serviceAccount, auth
   const rpcService = await rpcBuilder.build(services)
 
   const now = () => Date.now()
+
+  const getJWT = (request) => {
+    // Try to get JWT from headers or cookie
+    const header = request.raw.headers.authorization
+    const cookie = request.cookies.stagingJWT
+    if (!header && !cookie) {
+      return
+    }
+    const jwt = header ?
+      header.substring(BEARER_TYPE.length).trim() : cookie
+    return jwt
+  }
+
   const auth = async (request, reply) => {
     if (!authServiceAddress) {
       return reply.serviceUnavailable()
     }
-    const header = request.raw.headers.authorization
-    if (!header) {
+    const jwt = getJWT(request)
+    if (!jwt) {
+      console.debug('unauthorized')
       return reply.unauthorized()
     }
-    const jwt = header.substring(BEARER_TYPE.length).trim()
     try {
       const { payload, signature } = jwtService.decode(jwt)
       const { iss, nickname, iat, exp, aud } = payload
@@ -82,16 +95,20 @@ const register = async (server, rpcPath, tasksPath, { seed, serviceAccount, auth
   }
 
   server.options(`${rpcPath}`, async (request, reply) => {
-    reply.header("Access-Control-Allow-Origin", "*")
+    reply.header("Access-Control-Allow-Origin", request.headers.origin)
     reply.header("Access-Control-Allow-Headers", "*")
+    reply.header("Access-Control-Allow-Credentials", "true")
     reply.header("Access-Control-Allow-Methods", "POST, OPTIONS")
+    reply.header("Access-Control-Allow-Headers", "authorization,content-type")
     return {}
   })
 
   server.post(`${rpcPath}`, { onRequest: auth }, async (request, reply) => {
-    reply.header("Access-Control-Allow-Origin", "*")
+    reply.header("Access-Control-Allow-Origin", request.headers.origin)
     reply.header("Access-Control-Allow-Headers", "*")
+    reply.header("Access-Control-Allow-Credentials", "true")
     reply.header("Access-Control-Allow-Methods", "POST")
+    reply.header("Access-Control-Allow-Headers", "authorization,content-type")
     console.debug('rpc call: ', request.body, request.user)
     const user = request.user
     const { jsonrpc, id, method, params } = request.body

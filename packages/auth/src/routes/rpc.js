@@ -23,6 +23,10 @@ const SERVICE_POLICY = {
     accessToken: ROLE_ALL
   }
 }
+
+const LOCAL = process.env.ENV === 'DEV'
+const DOMAIN = LOCAL ? 'localhost:3003' : 'kernel.community'
+
 const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) => {
 
   const authService = await authBuilder.build({ seed, authMemberId, rpcEndpoint })
@@ -30,18 +34,22 @@ const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) =>
   const services = { authService }
   const rpcService = await rpcBuilder.build(services)
 
-  //TODO: limit origin domains
+  // TODO: allow list for origin
   server.options(`${rpcPath}`, async (request, reply) => {
-    reply.header("Access-Control-Allow-Origin", "*")
+    reply.header("Access-Control-Allow-Origin", request.headers.origin)
     reply.header("Access-Control-Allow-Headers", "*")
+    reply.header("Access-Control-Allow-Credentials", "true")
     reply.header("Access-Control-Allow-Methods", "POST, OPTIONS")
+    reply.header("Access-Control-Allow-Headers", "authorization,content-type")
     return {}
   })
 
   server.post(`${rpcPath}`, async (request, reply) => {
-    reply.header("Access-Control-Allow-Origin", "*")
+    reply.header("Access-Control-Allow-Origin", request.headers.origin)
     reply.header("Access-Control-Allow-Headers", "*")
+    reply.header("Access-Control-Allow-Credentials", "true")
     reply.header("Access-Control-Allow-Methods", "POST")
+    reply.header("Access-Control-Allow-Headers", "authorization,content-type")
     const { jsonrpc, id, method, params } = request.body
     if (!jsonrpc || !id || !method)  {
       return reply.badRequest()
@@ -52,8 +60,24 @@ const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) =>
     console.debug('rpc ', request.body, request.user)
     const [service, fn] = method.split('.') 
     try {
-      const result = await rpcService.call(service, fn, params)
-      return { jsonrpc, id, result }
+      const { authPayload, jwt, persist } = await rpcService.call(service, fn, params)
+      if (persist) {
+        // TODO: set expires, set env properly
+        reply.setCookie('stagingJWT', jwt, {
+          //domain: DOMAIN,
+          maxAge: 60 * 60 * 24,
+          //sameSite: 'none',
+          httpOnly: true,
+          path: '/'
+        })
+        reply.setCookie('stagingUser', JSON.stringify(authPayload), {
+          //domain: DOMAIN,
+          maxAge: 60 * 60 * 24,
+          //sameSite: 'none',
+          path: '/'
+        })
+      }
+      return { jsonrpc, id, result: jwt }
     } catch (e) {
       const error = { code: e.code, message: e.message }
       return { jsonrpc, id, error }

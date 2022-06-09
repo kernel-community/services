@@ -20,8 +20,6 @@ const AUTH_URL = process.env[`REACT_APP_AUTH_URL_${env}`]
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
 const AUTH_TIMEOUT_MS = 24 * 60 * 60 * 1000
 
-const INITIAL_STATE = {}
-
 const rpcEndpointStorage = process.env[`REACT_APP_STORAGE_ENDPOINT_${env}`]
 const rpcEndpointTask = process.env[`REACT_APP_TASK_ENDPOINT_${env}`]
 const rpcEndpointQuery = process.env[`REACT_APP_QUERY_ENDPOINT_${env}`]
@@ -83,11 +81,22 @@ const handleMessage = (dispatch, messageEvent) => {
   }
 }
 
+const hasCookie = () => document.cookie.includes('stagingUser')
+const fromCookie = () => JSON.parse(decodeURIComponent(document.cookie.split('=')[1]))
+
 const walletLogin = async (state, dispatch) => {
   // TODO: check exp
   if (state.user) {
     return state.user
   }
+
+  // TODO: check exp
+  if (hasCookie()) {
+    const payload = fromCookie()
+    dispatch({ type: 'user', payload })
+    return payload
+  }
+
   const auth = window.open(AUTH_URL, '_blank')
   window.addEventListener('message', handleMessage.bind(null, dispatch))
   try {
@@ -134,7 +143,11 @@ const walletLogin = async (state, dispatch) => {
 const currentUser = (state) => state.user
 
 const ServicesProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
+  const initialState = {}
+  if (hasCookie()) {
+    Object.assign(initialState, { user: fromCookie() })
+  }
+  const [state, dispatch] = useReducer(reducer, initialState)
   const value = {
     state,
     dispatch,
