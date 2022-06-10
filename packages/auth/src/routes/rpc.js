@@ -25,7 +25,7 @@ const SERVICE_POLICY = {
 }
 
 const LOCAL = process.env.ENV === 'DEV'
-const DOMAIN = LOCAL ? 'localhost:3003' : 'kernel.community'
+const DOMAIN = LOCAL ? '.app.localhost' : 'kernel.community'
 
 const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) => {
 
@@ -63,17 +63,20 @@ const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) =>
       const { authPayload, jwt, persist } = await rpcService.call(service, fn, params)
       if (persist) {
         // TODO: set expires, set env properly
-        reply.setCookie('stagingJWT', jwt, {
-          //domain: DOMAIN,
+        const opts = {
+          domain: DOMAIN,
           maxAge: 60 * 60 * 24,
-          //sameSite: 'none',
+          sameSite: 'none',
+          secure: true,
           httpOnly: true,
           path: '/'
-        })
+        }
+        reply.setCookie('stagingJWT', jwt, opts)
         reply.setCookie('stagingUser', JSON.stringify(authPayload), {
-          //domain: DOMAIN,
+          domain: DOMAIN,
           maxAge: 60 * 60 * 24,
-          //sameSite: 'none',
+          secure: true,
+          sameSite: 'none',
           path: '/'
         })
       }
