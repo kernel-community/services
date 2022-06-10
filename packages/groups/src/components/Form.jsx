@@ -27,7 +27,6 @@ const MEMBER_IDS_TEXT_STATUS = {
   blank: 'blank',
   clean: 'clean',
   invalidFormat: 'invalidFormat',
-  invalidIds: 'invalidIds',
   valid: 'valid'
 }
 
@@ -46,7 +45,6 @@ const INITIAL_STATE = {
   memberIdsTextStatus: MEMBER_IDS_TEXT_STATUS.clean,
   group: '',
   groups: '',
-  invalidIds: [],
   member: '',
   members: '',
   errorMessage: '',
@@ -100,7 +98,7 @@ const create = async (state, dispatch, e) => {
   const formIsValid = validateFields(state, dispatch)
 
   if (formIsValid) {
-    const {groups, memberIdsText, name, taskService} = state
+    const { groups, memberIdsText, name, taskService } = state
     const memberIds = textToArray(memberIdsText)
 
     try {
@@ -108,7 +106,7 @@ const create = async (state, dispatch, e) => {
       const groupId = group.id
       await groups.updateMeta(groupId, { owner: groupId })
       await taskService.syncGroupMembers({ groupId, memberIds })
-      dispatch({type: 'formStatus', payload: FORM_STATUSES.success})
+      dispatch({ type: 'formStatus', payload: FORM_STATUSES.success })
     } catch (error) {
       dispatch({ type: 'formStatus', payload: FORM_STATUSES.error })
       dispatch({ type: 'errorMessage', payload: error.message })
@@ -116,7 +114,7 @@ const create = async (state, dispatch, e) => {
   }
 }
 
-const update = async (state, dispatch,  e) => {
+const update = async (state, dispatch, e) => {
   e.preventDefault()
   setFormSubmitting(dispatch)
 
@@ -158,42 +156,26 @@ const onMemberIdsTextBlur = (state, dispatch, e) => {
 
 const validateName = (name, _state, dispatch) => {
   if (name.length === 0) {
-    dispatch({type: 'nameStatus', payload: NAME_STATUSES.blank})
+    dispatch({ type: 'nameStatus', payload: NAME_STATUSES.blank })
     return false
   }
 
-  dispatch({type: 'nameStatus', payload: NAME_STATUSES.valid})
+  dispatch({ type: 'nameStatus', payload: NAME_STATUSES.valid })
   return true
 }
 
-const validateMemberIdsText = async (memberIdsText, state, dispatch) => {
+const validateMemberIdsText = async (memberIdsText, _state, dispatch) => {
   if (memberIdsText.length === 0) {
-    dispatch({type: 'memberIdsTextStatus', payload: MEMBER_IDS_TEXT_STATUS.blank})
+    dispatch({ type: 'memberIdsTextStatus', payload: MEMBER_IDS_TEXT_STATUS.blank })
     return false
   }
 
-  if (memberIdsText.match(/[^\ \d\,]/)) {
-    dispatch({type: 'memberIdsTextStatus', payload: MEMBER_IDS_TEXT_STATUS.invalidFormat})
+  if (memberIdsText.match(/[^\d, ]/)) {
+    dispatch({ type: 'memberIdsTextStatus', payload: MEMBER_IDS_TEXT_STATUS.invalidFormat })
     return false
   }
 
-  const memberIds = textToArray(memberIdsText)
-  let invalidIds = []
-  memberIds.forEach(async (memberId) => {
-    const memberExists = await state.members.exists(memberId)
-    if (!memberExists) {
-      invalidIds.push(memberId)
-    }
-  })
-
-  if (invalidIds.length > 0) {
-    dispatch({type: 'memberIdsTextStatus', payload: MEMBER_IDS_TEXT_STATUS.invalidIds})
-    dispatch({type: 'invalidIds', payload: invalidIds})
-    return false
-  }
-
-  dispatch({type: 'memberIdsTextStatus', payload: MEMBER_IDS_TEXT_STATUS.valid})
-  dispatch({type: 'invalidIds', payload: []})
+  dispatch({ type: 'memberIdsTextStatus', payload: MEMBER_IDS_TEXT_STATUS.valid })
   return true
 }
 
@@ -205,25 +187,25 @@ const validateFields = async (state, dispatch) => {
   const formIsValid = nameIsValid && memberIdsTextIsValid
 
   if (!formIsValid) {
-    dispatch({type: 'formStatus', payload: FORM_STATUSES.error})
-    dispatch({type: 'errorMessage', payload: 'Check for errors above.'})
+    dispatch({ type: 'formStatus', payload: FORM_STATUSES.error })
+    dispatch({ type: 'errorMessage', payload: 'Check for errors above.' })
   } else {
-    dispatch({type: 'formStatus', payload: FORM_STATUSES.valid})
+    dispatch({ type: 'formStatus', payload: FORM_STATUSES.valid })
     dispatch({ type: 'errorMessage', payload: '' })
   }
 
   return formIsValid
 }
 
-const ErrorMessage = ({text}) => {
+const ErrorMessage = ({ text }) => {
   return <div className='mt-2 text-sm text-red-500'>{text}</div>
 }
 
-const ValidationMessage = ({fieldName, fieldStatus}) => {
+const ValidationMessage = ({ fieldName, fieldStatus }) => {
   if (fieldName === 'name') {
     switch (fieldStatus) {
       case NAME_STATUSES.blank:
-        return <ErrorMessage text="This field is required." />
+        return <ErrorMessage text='This field is required.' />
       default:
         return null
     }
@@ -232,12 +214,9 @@ const ValidationMessage = ({fieldName, fieldStatus}) => {
   if (fieldName === 'memberIdsText') {
     switch (fieldStatus) {
       case MEMBER_IDS_TEXT_STATUS.blank:
-        return <ErrorMessage text="This field is required." />
+        return <ErrorMessage text='This field is required.' />
       case MEMBER_IDS_TEXT_STATUS.invalidFormat:
-        return <ErrorMessage text="Group IDs must be numbers separated by commas" />
-      case MEMBER_IDS_TEXT_STATUS.invalidIds:
-        const idsText = global.state.invalidIds.join(", ")
-        return <ErrorMessage text={`${idsText} are not valid member IDs`} />
+        return <ErrorMessage text='Group IDs must be numbers separated by commas' />
       default:
         return null
     }
@@ -273,7 +252,7 @@ const Form = () => {
       dispatch({ type: 'taskService', payload: taskService })
       const members = await entityFactory({ resource: 'member' })
       const member = await members.get(user.iss)
-      const groups = await entityFactory({resource: 'group'})
+      const groups = await entityFactory({ resource: 'group' })
       dispatch({ type: 'members', payload: members })
       dispatch({ type: 'member', payload: member })
       dispatch({ type: 'groups', payload: groups })
@@ -305,7 +284,7 @@ const Form = () => {
     }
   }
 
-  const isSubmitDisabled = state.formStatus === FORM_STATUSES.submitting 
+  const isSubmitDisabled = state.formStatus === FORM_STATUSES.submitting
 
   return (
     <form className='grid grid-cols-1 gap-6'>
