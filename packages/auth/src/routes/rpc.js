@@ -63,9 +63,10 @@ const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) =>
       const { authPayload, jwt, persist } = await rpcService.call(service, fn, params)
       if (persist) {
         // TODO: set expires, set env properly
+        //const maxAge = authPayload.exp - Date.now()
         const opts = {
           domain: DOMAIN,
-          maxAge: 60 * 60 * 24,
+          maxAge: 60 * 60 * 20,
           sameSite: 'none',
           secure: true,
           httpOnly: true,
@@ -74,7 +75,7 @@ const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) =>
         reply.setCookie('stagingJWT', jwt, opts)
         reply.setCookie('stagingUser', JSON.stringify(authPayload), {
           domain: DOMAIN,
-          maxAge: 60 * 60 * 24,
+          maxAge: 60 * 60 * 20,
           secure: true,
           sameSite: 'none',
           path: '/'
