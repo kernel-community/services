@@ -73,6 +73,10 @@ const Page = () => {
     })()
   }, [services, user])
 
+  const sortByNewest = items => {
+    return Object.values(items).sort((a, b) => b.created - a.created)
+  }
+
   return (
     <div className='flex flex-col min-h-screen'>
       <Navbar
@@ -96,7 +100,7 @@ const Page = () => {
             <div className='block text-center'>
               <h1 className='uppercase text-center py-4'>Humans</h1>
               <ul>
-                {state && state.profiles && Object.entries(state.profiles).map(([_, e]) => {
+                {state && state.profiles && sortByNewest(state.profiles).map((e) => {
                   const meta = e
                   const profile = e.data
                   const created = Date.now() - meta.created

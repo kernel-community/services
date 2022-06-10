@@ -23,13 +23,14 @@ const build = async ({ rpcEndpoint, jwtFn }) => {
 
   const request = async (url, data) => {
     const jwt = await jwtFn.call()
+    const headers = { 'Content-Type': 'application/json' }
+    if (jwt) {
+      Object.assign(headers, { Authorization: `Bearer ${jwt}` })
+    }
     const opts = {
       method: 'POST',
-      // TODO: add authentication
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`
-      },
+      credentials: 'include',
+      headers,
       body: JSON.stringify(data)
     }
     console.log(opts)

@@ -130,7 +130,11 @@ const Auth = () => {
       const jwt = await jwtService.createJwt(wallet, jwtService.CLIENT_JWT, authJwt)
       const client = await authClient(() => '')
 
-      const authToken = await client.call({ method: 'authService.accessToken', params: [jwt] })
+      window.client = client
+      window.jwt = jwt
+
+      const authToken = await client.call({ method: 'authService.accessToken', params: [jwt, persist] })
+
       if (persist) {
         storeItem('jwt', authToken)
       }

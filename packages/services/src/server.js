@@ -9,8 +9,9 @@
 'use strict'
 
 import 'dotenv/config'
+import cookie from '@fastify/cookie'
 import fastify from 'fastify'
-import sensible from 'fastify-sensible'
+import sensible from '@fastify/sensible'
 
 //import rpcStorage from './../../storage/src/routes/rpc.js'
 //import rpcAuth from './../../auth/src/routes/rpc.js'
@@ -53,6 +54,7 @@ const start = async () => {
   const server = fastify(opts)
   try {
     server.register(sensible)
+    server.register(cookie)
     // Cloud Tasks sends this content type
     // https://github.com/googleapis/nodejs-tasks/blob/main/samples/server.js#L26
     server.addContentTypeParser('application/octet-stream', { parseAs: 'buffer' }, async (request, body) => {
@@ -60,7 +62,7 @@ const start = async () => {
     })
     let seed = process.env.SEED || ''
     let serviceAccount
-    if (!local()) {
+    if (true) {
       const secretService = await secretBuilder.build({ projectId: PROJECT_ID })
       const authSecret = await secretService.access({
         secretId: AUTH_SEED_SECRET_ID, crc32c: AUTH_SEED_SECRET_CRC32C
@@ -99,7 +101,7 @@ const start = async () => {
         rpcEndpoint: `http://${HOST}:${PORT}${STORAGE_RPC_PATH}`
       })
     ])
-    await server.listen(PORT, '0.0.0.0')
+    await server.listen({ port: PORT, host: '0.0.0.0' })
     listenFns.forEach(({ listen }) => listen())
   } catch (err) {
     console.log(err)
