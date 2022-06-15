@@ -18,6 +18,7 @@ import { getUrl } from './utils/urls'
 import timeUtils from './utils/time'
 
 // components
+import AutocompleteInput from './components/AutocompleteInput'
 import Login from './components/Login'
 import Navbar from './components/Navbar'
 import NavbarLink from './components/NavbarLink'
@@ -33,6 +34,6 @@ export {
   jwtService, rpcClient,
   ServicesProvider, useServices,
   getUrl, timeUtils,
-  Login, Footer, FooterLink, Navbar, NavbarLink, Alert, Loading,
+  AutocompleteInput, Login, Footer, FooterLink, Navbar, NavbarLink, Alert, Loading,
   linesVector
 }
