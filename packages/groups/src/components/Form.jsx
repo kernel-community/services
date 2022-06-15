@@ -8,13 +8,13 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useServices } from '@kernel/common'
+import { useServices, AutocompleteInput, errorUtils } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
 const MODES = { create: 'create', update: 'update' }
-const KEYS = ['name', 'memberIdsText']
-const STATE_KEYS = ['group', 'groups', 'member', 'members', 'error', 'status', 'taskService']
+const KEYS = ['name', 'memberIdsText', 'groupMembers']
+const STATE_KEYS = ['group', 'groups', 'member', 'members', 'profiles', 'error', 'status', 'taskService']
 const INITIAL_STATE = STATE_KEYS.concat(KEYS)
   .reduce((acc, k) => Object.assign(acc, { [k]: '' }), {})
 
@@ -23,6 +23,8 @@ Object.keys(INITIAL_STATE)
   .forEach((k) => {
     actions[k] = (state, e) => Object.assign({}, state, { [k]: e })
   })
+INITIAL_STATE.groupMembers = []
+INITIAL_STATE.profiles = []
 
 const reducer = (state, action) => {
   try {
@@ -50,8 +52,8 @@ const value = (state, type) => {
 }
 
 // dedupe, sort
-const textToArray = (s) => [...new Set(s.split(',').map((e) => e.trim()))].sort()
-const arrayToText = (arr) => arr.join(', ')
+const getMemberIds = (groupMembers) => groupMembers.map(groupMember => groupMember.id)
+const transformProfiles = (profiles) => Object.values(profiles).map(({ data: { memberId, name } }) => ({ id: memberId, name }))
 const resetAlerts = (dispatch) => {
   dispatch({ type: 'error', payload: '' })
   dispatch({ type: 'status', payload: 'submitting' })
@@ -60,9 +62,9 @@ const resetAlerts = (dispatch) => {
 const create = async (state, dispatch, e) => {
   e.preventDefault()
   resetAlerts(dispatch)
-  const { groups, memberIdsText, name, taskService } = state
-  const memberIds = textToArray(memberIdsText)
-  if (!name.length || !memberIdsText.length) {
+  const { groups, groupMembers, name, taskService } = state
+  const memberIds = getMemberIds(groupMembers)
+  if (!name.length || !groupMembers.length) {
     dispatch({ type: 'error', payload: 'name and member ids are required' })
     return
   }
@@ -80,9 +82,9 @@ const create = async (state, dispatch, e) => {
 const update = async (state, dispatch, e) => {
   e.preventDefault()
   resetAlerts(dispatch)
-  const { group, groups, memberIdsText, name, taskService } = state
+  const { group, groups, groupMembers, name, taskService } = state
   const groupId = group.id
-  const memberIds = textToArray(memberIdsText)
+  const memberIds = getMemberIds(groupMembers)
   try {
     if (group.data.name !== name) {
       await groups.patch(groupId, { name })
@@ -107,6 +109,7 @@ const Form = () => {
 
   const { services, currentUser } = useServices()
   const user = currentUser()
+  const { readable } = errorUtils
 
   useEffect(() => {
     if (!user || user.role > AppConfig.minRole) {
@@ -117,14 +120,22 @@ const Form = () => {
   useEffect(() => {
     (async () => {
       dispatch({ type: 'status', payload: 'Loading' })
-      const { entityFactory, taskService } = await services()
+      const { entityFactory, taskService, queryService } = await services()
       dispatch({ type: 'taskService', payload: taskService })
       const members = await entityFactory({ resource: 'member' })
       const member = await members.get(user.iss)
       const groups = await entityFactory({ resource: 'group' })
+      let transformedProfiles = []
+      try {
+        const { profiles } = await queryService.recommend()
+        transformedProfiles = transformProfiles(profiles)
+      } catch (error) {
+        dispatch({ type: 'error', payload: readable(error.message) })
+      }
       dispatch({ type: 'members', payload: members })
       dispatch({ type: 'member', payload: member })
       dispatch({ type: 'groups', payload: groups })
+      dispatch({ type: 'profiles', payload: transformedProfiles })
       if (mode === MODES.update) {
         const entity = await groups.get(group)
         dispatch({ type: 'group', payload: entity })
@@ -133,17 +144,16 @@ const Form = () => {
           .forEach(([k, v]) => {
             let type = k
             let payload = v
-            // TODO: more ergonomic way to select group memebers
             if (k === 'memberIds') {
-              type = 'memberIdsText'
-              payload = arrayToText(v)
+              type = 'groupMembers'
+              payload = transformedProfiles.filter(item => v.includes(item.id))
             }
             dispatch({ type, payload })
           })
       }
       dispatch({ type: 'status', payload: '' })
     })()
-  }, [services, user.iss, mode, group])
+  }, [services, user.iss, mode, group, readable])
 
   return (
     <form className='grid grid-cols-1 gap-6'>
@@ -155,10 +165,11 @@ const Form = () => {
         />
       </label>
       <label className='block'>
-        <span className='text-gray-700'>Member Ids (comma separated)</span>
-        <input
-          type='text' multiple className={formClass}
-          value={value(state, 'memberIdsText')} onChange={change.bind(null, dispatch, 'memberIdsText')}
+        <span className='text-gray-700'>Member Names</span>
+        <AutocompleteInput
+          items={value(state, 'profiles')}
+          selectedItems={value(state, 'groupMembers')}
+          setSelectedItems={items => dispatch({ type: 'groupMembers', payload: items })}
         />
       </label>
       <label className='block'>
