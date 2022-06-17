@@ -63,7 +63,6 @@ const View = () => {
   const [taskService, setTaskService] = useState()
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
-  const [timeoutId, setTimeoutId] = useState()
 
   useEffect(() => {
     (async () => {
@@ -86,15 +85,14 @@ const View = () => {
         const updatedEntity = await proposals.get(id)
         setEntity(updatedEntity)
         const refreshMs = Math.floor(Math.random() * REFRESH_INTERVAL) + REFRESH_INTERVAL
-        setTimeoutId(setTimeout(refreshFn, refreshMs))
+        setTimeout(refreshFn, refreshMs)
       }
-      setTimeoutId(setTimeout(refreshFn, REFRESH_INTERVAL))
+      setTimeout(refreshFn, REFRESH_INTERVAL)
     })()
     return () => {
       console.log('cleanup')
-      clearTimeout(timeoutId)
     }
-  }, [services, id, user.iss, timeoutId])
+  }, [services, id, user.iss])
 
   return (
     <Page>
