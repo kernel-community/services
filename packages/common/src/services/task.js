@@ -22,8 +22,9 @@ const build = async ({ rpcClient }) => {
   const emailMembers = async ({ subject, template }) => call('emailMembers', { subject, template })
   const followProject = async (projectId) => call('followProject', projectId)
   const syncGroupMembers = async ({ groupId, memberIds }) => call('syncGroupMembers', { groupId, memberIds })
+  const voteProposal = async ({ proposalId, choice }) => call('voteProposal', { proposalId, choice })
 
-  return { sendEmail, emailMember, emailMembers, followProject, syncGroupMembers }
+  return { sendEmail, emailMember, emailMembers, followProject, syncGroupMembers, voteProposal }
 }
 
 const taskService = {

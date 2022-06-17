@@ -47,6 +47,7 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
   const projects = await entityClient({ resource: 'project' })
   const profiles = await entityClient({ resource: 'profile' })
   const groups = await entityClient({ resource: 'group' })
+  const proposals = await entityClient({ resource: 'proposal' })
 
   // google services
   const googleServices = await google.build({ projectId, serviceAccount })
@@ -153,7 +154,11 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
     return { groupId, removeIds, addIds, existingIds, updatedGroup } 
   }
 
-  return { sendEmail, emailMember, emailMembers, rsvpCalendarEvent, followProject, syncGroupMembers }
+  const voteProposal = async ({ iss, role }, { proposalId, choice }) => {
+    const proposal = await proposals.patch(proposalId, { votes: { [iss]: choice }})
+    return { proposal }
+  }
+  return { sendEmail, emailMember, emailMembers, rsvpCalendarEvent, followProject, syncGroupMembers, voteProposal }
 }
 
 const taskQueue = { build }

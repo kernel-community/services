@@ -38,7 +38,8 @@ const SERVICE_POLICY = {
     emailMembers: ROLE_CORE,
     rsvpCalendarEvent: ROLE_ALL,
     followProject: ROLE_ALL,
-    syncGroupMembers: ROLE_ALL
+    syncGroupMembers: ROLE_ALL,
+    voteProposal: ROLE_ALL
   }
 }
 
