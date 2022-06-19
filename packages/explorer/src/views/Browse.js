@@ -8,7 +8,7 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useServices, timeUtils, Navbar, Footer } from '@kernel/common'
+import { useServices, timeUtils, errorUtils, Navbar, Footer } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
@@ -33,15 +33,7 @@ const reducer = (state, action) => {
 
 const { humanize } = timeUtils
 
-const readable = (error) => {
-  if (error.toLowerCase().indexOf('consent') > 0) {
-    return 'You need to share your profile data in order to view recommendations.'
-  }
-  if (error.toLowerCase().indexOf('profile') > 0) {
-    return 'You need to create your profile first in order to view recommendations.'
-  }
-  return 'You need to refresh your auth token by reloading this page.'
-}
+const { readable } = errorUtils
 
 const Page = () => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
