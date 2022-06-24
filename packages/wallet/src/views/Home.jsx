@@ -8,24 +8,12 @@
 
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { linesVector, getUrl } from '@kernel/common'
 
+import { loadWallet, defaultProvider, voidSigner } from 'common'
+
 import Page from 'components/Page'
-
-const WALLET_STORE_VERSION = '1'
-
-const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
-const PROVIDER_ENDPOINT = process.env[`REACT_APP_PROVIDER_ENDPOINT_${env}`]
-
-const getItem = (k) => JSON.parse(localStorage.getItem(k))
-
-const loadWallet = () => {
-  const wallet = getItem('wallet')
-  if (wallet.version !== WALLET_STORE_VERSION) {
-    throw new Error('unsupported wallet')
-  }
-  return wallet
-}
 
 const everyoneCards = [
   {
@@ -122,22 +110,30 @@ const LinkCards = ({ cardConfig }) => {
 }
 
 const Home = () => {
-  const wallet = loadWallet()
-  const [address] = useState(wallet.address)
-  const [nickname] = useState(wallet.nickname)
+  const navigate = useNavigate()
+
+  const [address, setAddress] = useState('')
+  const [nickname, setNickname] = useState('')
   /* eslint-disable no-unused-vars */
   const [signer, setSigner] = useState(null)
   /* eslint-disable no-unused-vars */
   const [balance, setBalance] = useState(0)
 
-  window.ethers = ethers
+  const wallet = loadWallet()
+
+  useEffect(() => {
+    if (!wallet) {
+      return navigate('/register/create')
+    }
+    setAddress(wallet.address)
+    setNickname(wallet.nickname)
+  }, [navigate, wallet])
 
   useEffect(() => {
     // TODO: pass in context
-    const defaultProvider = new ethers.providers.JsonRpcProvider(PROVIDER_ENDPOINT, 4)
-    const voidSigner = new ethers.VoidSigner(address, defaultProvider)
-    setSigner(voidSigner)
-    voidSigner.getBalance().then((e) => setBalance(ethers.utils.formatEther(e)))
+    const signer = voidSigner(address, defaultProvider())
+    setSigner(signer)
+    signer.getBalance().then((e) => setBalance(ethers.utils.formatEther(e)))
   }, [address])
 
   return (

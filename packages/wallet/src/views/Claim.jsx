@@ -12,9 +12,11 @@ import { useServices, linesVector } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
+import { loadWallet, defaultProvider, voidSigner, humanizeEther } from 'common'
 import Page from 'components/Page'
 
-const STATE_KEYS = ['taskService', 'error', 'status', 'disabled']
+const STATE_KEYS = ['taskService', 'provider', 'signer', 'balance',
+  'error', 'status', 'disabled', 'wallet', 'rinkebyFaucet']
 const INITIAL_STATE = STATE_KEYS
   .reduce((acc, k) => Object.assign(acc, { [k]: '' }), {})
 INITIAL_STATE.disabled = false
@@ -59,17 +61,28 @@ const Claim = () => {
   const user = currentUser()
 
   useEffect(() => {
+    const wallet = loadWallet()
+    if (!wallet) {
+      return navigate('/register/create')
+    }
+    dispatch({ type: 'wallet', payload: wallet })
     if (!user || user.role > AppConfig.minRole) {
       return navigate('/login')
     }
-  }, [navigate, user])
-
-  useEffect(() => {
     (async () => {
       const { taskService } = await services()
       dispatch({ type: 'taskService', payload: taskService })
+      const provider = defaultProvider()
+      dispatch({ type: 'provider', payload: provider })
+      const signer = voidSigner(wallet.address, provider)
+      dispatch({ type: 'signer', payload: voidSigner })
+      const balance = await signer.getBalance()
+      dispatch({ type: 'balance', payload: balance })
+      const faucet = voidSigner(AppConfig.servicesWallet, provider)
+      const faucetBalance = await faucet.getBalance()
+      dispatch({ type: 'rinkebyFaucet', payload: faucetBalance })
     })()
-  }, [services])
+  }, [navigate, user, services])
 
   return (
     <Page>
@@ -89,7 +102,9 @@ const Claim = () => {
           <hr />
           <div className='text-2xl my-4 text-secondary' />
           <div className='my-4 text-secondary'>
-            Here you can claim a number of tokens to start your web3 journey.
+            {state.wallet && state.wallet.address &&
+              <p><b>Address:</b> {state.wallet.address}</p>}
+            <p><b>Balance:</b> {humanizeEther(state.balance)} ETH</p>
           </div>
         </div>
 
@@ -100,9 +115,10 @@ const Claim = () => {
               <button
                 disabled={state.disabled}
                 onClick={claim.bind(null, state, dispatch)}
-                className='mt-6 mb-4 px-6 py-4 text-kernel-white bg-kernel-green-dark w-full rounded font-bold capitalize'
+                className='mt-6 mb-0 px-6 py-4 text-kernel-white bg-kernel-green-dark w-full rounded font-bold capitalize'
               >Rinkeby
               </button>
+              <label>Faucet balance: {humanizeEther(state.rinkebyFaucet)} ETH</label>
             </div>
           </div>
           <div>
