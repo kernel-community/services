@@ -15,16 +15,17 @@ import jwtService from './../../../auth/src/services/jwt.js'
 import entityBuilder from './../../../auth/src/services/entity.js'
 import rpcClientBuilder from './../../../auth/src/services/rpcClient.js'
 
+const RINKEBY_CHAIN_ID = 4
 const API_ROLE = 50
 const API_NICKNAME = 'apiServer'
 const DEFAULT_GROUP_IDS = []
 
 const now = () => Date.now()
 
-const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoint }) => {
+const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, authMemberId, rpcEndpoint }) => {
 
   // TODO: move to separate service
-  const provider = jwtService.defaultProvider()
+  const provider = new ethers.providers.JsonRpcProvider(`https://rinkeby.infura.io/v3/${infuraId}`, RINKEBY_CHAIN_ID)
   const wallet =
     await jwtService.walletFromSeed(jwtService.fromBase64Url(seed), provider)
 
@@ -107,7 +108,6 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
     return `emailed ${i} members`
   }
 
-
   const rsvpCalendarEvent = async ({ iss, role }, { calendarId, eventId }) => {
     const { email } = await profiles.get(iss)
     const patchedEvent = await googleServices.patchCalendarEvent(calendarId, eventId, {
@@ -158,7 +158,26 @@ const build = async ({ projectId, seed, serviceAccount, authMemberId, rpcEndpoin
     const proposal = await proposals.patch(proposalId, { votes: { [iss]: choice }})
     return { proposal }
   }
-  return { sendEmail, emailMember, emailMembers, rsvpCalendarEvent, followProject, syncGroupMembers, voteProposal }
+
+  const ethereumFaucet = async ({ iss, role }, { chainId }) => {
+    if (chainId != RINKEBY_CHAIN_ID) {
+      console.log('unsupported network', chainId)
+      return
+    }
+    const member = await members.get(iss)
+    const memberAddress = member.data.wallet
+    const tx = await wallet.sendTransaction({
+      to: memberAddress,
+      value: ethers.utils.parseEther(faucetAmount)
+    })
+
+    return { tx }
+  }
+
+  return {
+    sendEmail, emailMember, emailMembers, rsvpCalendarEvent, followProject, syncGroupMembers, voteProposal,
+    ethereumFaucet
+  }
 }
 
 const taskQueue = { build }

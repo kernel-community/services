@@ -23,8 +23,9 @@ const build = async ({ rpcClient }) => {
   const followProject = async (projectId) => call('followProject', projectId)
   const syncGroupMembers = async ({ groupId, memberIds }) => call('syncGroupMembers', { groupId, memberIds })
   const voteProposal = async ({ proposalId, choice }) => call('voteProposal', { proposalId, choice })
+  const ethereumFaucet = async ({ chainId }) => call('ethereumFaucet', { chainId })
 
-  return { sendEmail, emailMember, emailMembers, followProject, syncGroupMembers, voteProposal }
+  return { sendEmail, emailMember, emailMembers, followProject, syncGroupMembers, voteProposal, ethereumFaucet }
 }
 
 const taskService = {

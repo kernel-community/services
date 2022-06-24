@@ -1,6 +1,8 @@
 {
   "appTitle": "Kernel",
+  "minRole": 1000,
   "logoUrl": "/icon-192x192.png",
+  "homeUrl": "/home/claim",
   "navbar": {
     "links": []
   }

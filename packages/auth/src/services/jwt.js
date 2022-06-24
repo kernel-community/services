@@ -82,7 +82,7 @@ const decode = (jwt) => {
 
 const defaultProvider = () => new ethers.providers.CloudflareProvider()
 const walletFromSeed = (seed, provider) =>
-  ethers.Wallet.fromMnemonic(ethers.utils.entropyToMnemonic(seed))
+  ethers.Wallet.fromMnemonic(ethers.utils.entropyToMnemonic(seed)).connect(provider)
 
 const verify = (type, payload, address, signature) =>
   ethers.utils.verifyTypedData(DOMAIN, type, payload, signature) == address 

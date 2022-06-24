@@ -14,6 +14,9 @@ import Page from 'components/Page'
 
 const WALLET_STORE_VERSION = '1'
 
+const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
+const PROVIDER_ENDPOINT = process.env[`REACT_APP_PROVIDER_ENDPOINT_${env}`]
+
 const getItem = (k) => JSON.parse(localStorage.getItem(k))
 
 const loadWallet = () => {
@@ -28,8 +31,8 @@ const everyoneCards = [
   {
     title: 'Claim',
     description: 'Get set up with some test ETH',
-    url: '/claim',
-    active: false
+    url: '/home/claim',
+    active: true
   },
   {
     title: 'Transact',
@@ -98,7 +101,7 @@ const memberCards = [
     title: 'Chat',
     description: 'Horizontal conversations',
     url: getUrl('chat'),
-    active: false
+    active: true
   }
 ]
 
@@ -127,9 +130,11 @@ const Home = () => {
   /* eslint-disable no-unused-vars */
   const [balance, setBalance] = useState(0)
 
+  window.ethers = ethers
+
   useEffect(() => {
     // TODO: pass in context
-    const defaultProvider = new ethers.providers.CloudflareProvider()
+    const defaultProvider = new ethers.providers.JsonRpcProvider(PROVIDER_ENDPOINT, 4)
     const voidSigner = new ethers.VoidSigner(address, defaultProvider)
     setSigner(voidSigner)
     voidSigner.getBalance().then((e) => setBalance(ethers.utils.formatEther(e)))

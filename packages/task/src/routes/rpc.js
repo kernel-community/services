@@ -39,14 +39,15 @@ const SERVICE_POLICY = {
     rsvpCalendarEvent: ROLE_ALL,
     followProject: ROLE_ALL,
     syncGroupMembers: ROLE_ALL,
-    voteProposal: ROLE_ALL
+    voteProposal: ROLE_ALL,
+    ethereumFaucet: ROLE_ALL
   }
 }
 
-const register = async (server, rpcPath, tasksPath, { seed, serviceAccount, authMemberId, rpcEndpoint, projectId }) => {
+const register = async (server, rpcPath, tasksPath, { seed, serviceAccount, faucetAmount, infuraId, authMemberId, rpcEndpoint, projectId }) => {
 
   const taskService = await taskBuilder.build({ projectId, relativeUri: tasksPath })
-  const taskQueueService = await taskQueueBuilder.build({ seed, serviceAccount, authMemberId, rpcEndpoint })
+  const taskQueueService = await taskQueueBuilder.build({ seed, serviceAccount, faucetAmount, infuraId, authMemberId, rpcEndpoint })
   const services = { taskService, taskQueueService }
   const rpcService = await rpcBuilder.build(services)
 

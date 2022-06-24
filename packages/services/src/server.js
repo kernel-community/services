@@ -21,6 +21,7 @@ import rpcTask from '@kernel/task'
 import rpcQuery from '@kernel/query'
 
 import health from './routes/health.js'
+import provider from './routes/provider.js'
 
 import secretBuilder from './services/secret.js'
 
@@ -36,12 +37,17 @@ const TASKS_PATH = process.env.TASKS_PATH || '/tasks'
 
 const QUERY_RPC_PATH = process.env.QUERY_RPC_PATH || '/query/rpc'
 
+const ETH_PROVIDER_RPC_PATH = process.env.ETH_PROVIDER_RPC_PATH || '/provider/rpc/eth/4'
+
 const AUTH_SEED_SECRET_CRC32C = process.env.AUTH_SEED_SECRET_CRC32C 
 const AUTH_MEMBER_ID = process.env.AUTH_MEMBER_ID
 const PROJECT_ID = process.env.PROJECT_ID
 const BUCKET = process.env.BUCKET
 const TASK_SERVICE_SECRET_ID = process.env.TASK_SERVICE_SECRET_ID
 const TASK_SERVICE_SECRET_CRC32C = process.env.TASK_SERVICE_SECRET_CRC32C
+const INFURA_SECRET_ID = process.env.INFURA_SECRET_ID
+const INFURA_SECRET_CRC32C = process.env.INFURA_SECRET_CRC32C
+const FAUCET_AMOUNT = process.env.FAUCET_AMOUNT
 
 const local = () => process.env.ENV === 'DEV'
 
@@ -60,22 +66,23 @@ const start = async () => {
     server.addContentTypeParser('application/octet-stream', { parseAs: 'buffer' }, async (request, body) => {
       return JSON.parse(Buffer.from(body, 'base64'))
     })
-    let seed = process.env.SEED || ''
-    let serviceAccount
-    if (true) {
-      const secretService = await secretBuilder.build({ projectId: PROJECT_ID })
-      const authSecret = await secretService.access({
-        secretId: AUTH_SEED_SECRET_ID, crc32c: AUTH_SEED_SECRET_CRC32C
-      })
-      seed = authSecret.payload.data.toString()
-      const taskSecret = await secretService.access({
-        secretId: TASK_SERVICE_SECRET_ID, crc32c: TASK_SERVICE_SECRET_CRC32C
-      })
-      serviceAccount = JSON.parse(taskSecret.payload.data.toString())
-    }
+    const secretService = await secretBuilder.build({ projectId: PROJECT_ID })
+    const authSecret = await secretService.access({
+      secretId: AUTH_SEED_SECRET_ID, crc32c: AUTH_SEED_SECRET_CRC32C
+    })
+    const seed = authSecret.payload.data.toString()
+    const taskSecret = await secretService.access({
+      secretId: TASK_SERVICE_SECRET_ID, crc32c: TASK_SERVICE_SECRET_CRC32C
+    })
+    const serviceAccount = JSON.parse(taskSecret.payload.data.toString())
+    const infuraSecret = await secretService.access({
+      secretId: INFURA_SECRET_ID, crc32c: INFURA_SECRET_CRC32C
+    })
+    const infuraId = JSON.parse(infuraSecret.payload.data.toString()).id
 
     const listenFns = await Promise.all([
       health.register(server),
+      provider.register(server, ETH_PROVIDER_RPC_PATH, { infuraId }),
       rpcStorage.register(server, STORAGE_RPC_PATH, {
         projectId: PROJECT_ID,
         bucket: BUCKET,
@@ -90,6 +97,8 @@ const start = async () => {
         projectId: PROJECT_ID,
         seed,
         serviceAccount,
+        infuraId,
+        faucetAmount: FAUCET_AMOUNT,
         authMemberId: AUTH_MEMBER_ID,
         rpcEndpoint: `http://${HOST}:${PORT}${STORAGE_RPC_PATH}`
       }),

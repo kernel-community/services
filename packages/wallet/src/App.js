@@ -8,37 +8,44 @@
 
 import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { Loading } from '@kernel/common'
+import { ServicesProvider, Loading, Login } from '@kernel/common'
 
 import 'App.css'
 
-const Wallet = lazy(() => import('views/Wallet.jsx'))
-const Home = lazy(() => import('views/Home.jsx'))
-const Register = lazy(() => import('views/Register.jsx'))
-const Create = lazy(() => import('components/Create.jsx'))
-const Import = lazy(() => import('components/Import.jsx'))
-const Auth = lazy(() => import('components/Auth.jsx'))
+const Wallet = lazy(() => import('views/Wallet'))
+const Home = lazy(() => import('views/Home'))
+const Claim = lazy(() => import('views/Claim'))
+
+const Register = lazy(() => import('views/Register'))
+const Create = lazy(() => import('components/Create'))
+const Import = lazy(() => import('components/Import'))
+const Auth = lazy(() => import('components/Auth'))
 
 const App = () => {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          <Route path='/' element={<Wallet />} />
-          <Route path='/home' element={<Home />} />
+      <ServicesProvider>
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route path='/' element={<Wallet />} />
+            <Route path='/home' element={<Home />} />
 
-          <Route path='/home/transactions' element={<Navigate to='/home' replace />} />
-          <Route path='/home/nfts' element={<Navigate to='/home' replace />} />
-          <Route path='/home/tokens' element={<Navigate to='/home' replace />} />
-          <Route path='/home/contracts' element={<Navigate to='/home' replace />} />
+            <Route path='/home/claim' element={<Claim />} />
 
-          <Route path='/register' element={<Register />}>
-            <Route path='create' element={<Create />} />
-            <Route path='import' element={<Import />} />
-          </Route>
-          <Route path='/auth' element={<Auth />} />
-        </Routes>
-      </Suspense>
+            <Route path='/home/transactions' element={<Navigate to='/home' replace />} />
+            <Route path='/home/nfts' element={<Navigate to='/home' replace />} />
+            <Route path='/home/tokens' element={<Navigate to='/home' replace />} />
+            <Route path='/home/contracts' element={<Navigate to='/home' replace />} />
+
+            <Route path='/register' element={<Register />}>
+              <Route path='create' element={<Create />} />
+              <Route path='import' element={<Import />} />
+            </Route>
+            <Route path='/auth' element={<Auth />} />
+            <Route path='/login' element={<Login />} />
+          </Routes>
+        </Suspense>
+      </ServicesProvider>
     </BrowserRouter>
   )
 }
