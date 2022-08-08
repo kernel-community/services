@@ -27,7 +27,8 @@ const loadWallet = () => {
   }
 }
 
-const defaultProvider = () => new ethers.providers.JsonRpcProvider(PROVIDER_ENDPOINT, 4)
+const provider = (chainId) => new ethers.providers.JsonRpcProvider(`${PROVIDER_ENDPOINT}/${chainId}`, chainId)
+const defaultProvider = () => provider(4)
 
 const voidSigner = (address, provider) => new ethers.VoidSigner(address, provider)
 
@@ -42,4 +43,4 @@ const humanizeEther = (bigNum) => {
   return ether.substring(0, end)
 }
 
-export { loadWallet, defaultProvider, voidSigner, humanizeEther }
+export { loadWallet, defaultProvider, provider, voidSigner, humanizeEther }

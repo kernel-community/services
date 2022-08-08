@@ -37,7 +37,7 @@ const TASKS_PATH = process.env.TASKS_PATH || '/tasks'
 
 const QUERY_RPC_PATH = process.env.QUERY_RPC_PATH || '/query/rpc'
 
-const ETH_PROVIDER_RPC_PATH = process.env.ETH_PROVIDER_RPC_PATH || '/provider/rpc/eth/4'
+const ETH_PROVIDER_RPC_PATH = process.env.ETH_PROVIDER_RPC_PATH || '/provider/rpc/eth'
 
 const AUTH_SEED_SECRET_CRC32C = process.env.AUTH_SEED_SECRET_CRC32C 
 const AUTH_MEMBER_ID = process.env.AUTH_MEMBER_ID

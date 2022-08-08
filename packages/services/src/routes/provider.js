@@ -13,7 +13,7 @@ import providerBuilder from './../services/ethereumProvider.js'
 const register = async (server, rpcPath, { infuraId }) => {
   const providerService = await providerBuilder.build({ infuraId })
  
-  server.options(`${rpcPath}`, async (request, reply) => {
+  server.options(`${rpcPath}/:chainId`, async (request, reply) => {
     reply.header("Access-Control-Allow-Origin", request.headers.origin)
     reply.header("Access-Control-Allow-Headers", "*")
     reply.header("Access-Control-Allow-Credentials", "true")
@@ -22,13 +22,14 @@ const register = async (server, rpcPath, { infuraId }) => {
     return {}
   })
 
-  server.post(`${rpcPath}`, async (request, reply) => {
+  server.post(`${rpcPath}/:chainId`, async (request, reply) => {
     reply.header("Access-Control-Allow-Origin", request.headers.origin)
     reply.header("Access-Control-Allow-Headers", "*")
     reply.header("Access-Control-Allow-Credentials", "true")
     reply.header("Access-Control-Allow-Methods", "POST")
     reply.header("Access-Control-Allow-Headers", "authorization,content-type")
-    const json = await providerService.request(request.body)
+    const { params: { chainId }, body } = request
+    const json = await providerService.request(chainId, body)
     return json
   })
 

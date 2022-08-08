@@ -12,11 +12,16 @@ import { useServices, linesVector } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
-import { loadWallet, defaultProvider, voidSigner, humanizeEther } from 'common'
+import { loadWallet, provider, voidSigner, humanizeEther } from 'common'
 import Page from 'components/Page'
 
-const STATE_KEYS = ['taskService', 'provider', 'signer', 'balance',
-  'error', 'status', 'disabled', 'wallet', 'rinkebyFaucet']
+const RINKEBY_CHAIN_ID = 4
+const GOERLI_CHAIN_ID = 5
+
+const STATE_KEYS = ['taskService', 'error', 'status', 'disabled', 'wallet',
+  'rinkebyProvider', 'rinkebySigner', 'rinkebyBalance', 'rinkebyFaucet',
+  'goerliProvider', 'goerliSigner', 'goerliBalance', 'goerliFaucet'
+]
 const INITIAL_STATE = STATE_KEYS
   .reduce((acc, k) => Object.assign(acc, { [k]: '' }), {})
 INITIAL_STATE.disabled = false
@@ -38,14 +43,14 @@ const reducer = (state, action) => {
   }
 }
 
-const claim = async (state, dispatch, e) => {
+const claim = async (chainId, state, dispatch, e) => {
   e.preventDefault()
   dispatch({ type: 'error', payload: '' })
   dispatch({ type: 'status', payload: 'submitting' })
   dispatch({ type: 'disabled', payload: true })
   const { taskService } = state
   try {
-    await taskService.ethereumFaucet({ chainId: 4 })
+    await taskService.ethereumFaucet({ chainId })
     dispatch({ type: 'status', payload: 'Faucet request submitted' })
   } catch (error) {
     dispatch({ type: 'error', payload: error.message })
@@ -72,15 +77,30 @@ const Claim = () => {
     (async () => {
       const { taskService } = await services()
       dispatch({ type: 'taskService', payload: taskService })
-      const provider = defaultProvider()
-      dispatch({ type: 'provider', payload: provider })
-      const signer = voidSigner(wallet.address, provider)
-      dispatch({ type: 'signer', payload: voidSigner })
-      const balance = await signer.getBalance()
-      dispatch({ type: 'balance', payload: balance })
-      const faucet = voidSigner(AppConfig.servicesWallet, provider)
-      const faucetBalance = await faucet.getBalance()
-      dispatch({ type: 'rinkebyFaucet', payload: faucetBalance })
+
+      const rinkebyProvider = provider(RINKEBY_CHAIN_ID)
+      dispatch({ type: 'rinkebyProvider', payload: rinkebyProvider })
+
+      const rinkebySigner = voidSigner(wallet.address, rinkebyProvider)
+      dispatch({ type: 'rinkebySigner', payload: rinkebySigner })
+      const rinkebyBalance = await rinkebySigner.getBalance()
+      dispatch({ type: 'rinkebyBalance', payload: rinkebyBalance })
+
+      const rinkebyFaucet = voidSigner(AppConfig.servicesWallet, rinkebyProvider)
+      const rinkebyFaucetBalance = await rinkebyFaucet.getBalance()
+      dispatch({ type: 'rinkebyFaucet', payload: rinkebyFaucetBalance })
+
+      const goerliProvider = provider(GOERLI_CHAIN_ID)
+      dispatch({ type: 'goerliProvider', payload: goerliProvider })
+
+      const goerliSigner = voidSigner(wallet.address, goerliProvider)
+      dispatch({ type: 'goerliSigner', payload: goerliSigner })
+      const goerliBalance = await goerliSigner.getBalance()
+      dispatch({ type: 'goerliBalance', payload: goerliBalance })
+
+      const goerliFaucet = voidSigner(AppConfig.servicesWallet, goerliProvider)
+      const goerliFaucetBalance = await goerliFaucet.getBalance()
+      dispatch({ type: 'goerliFaucet', payload: goerliFaucetBalance })
     })()
   }, [navigate, user, services])
 
@@ -104,7 +124,8 @@ const Claim = () => {
           <div className='my-4 text-secondary'>
             {state.wallet && state.wallet.address &&
               <p><b>Address:</b> {state.wallet.address}</p>}
-            <p><b>Balance:</b> {humanizeEther(state.balance)} ETH</p>
+            <p><b>Rinkeby balance:</b> {humanizeEther(state.rinkebyBalance)} rinkETH</p>
+            <p><b>Goerli balance:</b> {humanizeEther(state.goerliBalance)} goeETH</p>
           </div>
         </div>
 
@@ -114,11 +135,20 @@ const Claim = () => {
             <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 border-0 md:border-r border-kernel-grey md:pr-12'>
               <button
                 disabled={state.disabled}
-                onClick={claim.bind(null, state, dispatch)}
+                onClick={claim.bind(null, RINKEBY_CHAIN_ID, state, dispatch)}
                 className='mt-6 mb-0 px-6 py-4 text-kernel-white bg-kernel-green-dark w-full rounded font-bold capitalize'
               >Rinkeby
               </button>
               <label>Faucet balance: {humanizeEther(state.rinkebyFaucet)} ETH</label>
+            </div>
+            <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 border-0 md:border-r border-kernel-grey md:pr-12'>
+              <button
+                disabled={state.disabled}
+                onClick={claim.bind(null, GOERLI_CHAIN_ID, state, dispatch)}
+                className='mt-6 mb-0 px-6 py-4 text-kernel-white bg-kernel-green-dark w-full rounded font-bold capitalize'
+              >Goerli
+              </button>
+              <label>Faucet balance: {humanizeEther(state.goerliFaucet)} ETH</label>
             </div>
           </div>
           <div>

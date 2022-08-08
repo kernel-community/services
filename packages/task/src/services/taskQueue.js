@@ -16,6 +16,7 @@ import entityBuilder from './../../../auth/src/services/entity.js'
 import rpcClientBuilder from './../../../auth/src/services/rpcClient.js'
 
 const RINKEBY_CHAIN_ID = 4
+const GOERLI_CHAIN_ID = 5
 const API_ROLE = 50
 const API_NICKNAME = 'apiServer'
 const DEFAULT_GROUP_IDS = []
@@ -25,12 +26,20 @@ const now = () => Date.now()
 const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, authMemberId, rpcEndpoint }) => {
 
   // TODO: move to separate service
-  const provider = new ethers.providers.JsonRpcProvider(`https://rinkeby.infura.io/v3/${infuraId}`, RINKEBY_CHAIN_ID)
-  const wallet =
-    await jwtService.walletFromSeed(jwtService.fromBase64Url(seed), provider)
+  const rinkebyProvider = new ethers.providers.JsonRpcProvider(`https://rinkeby.infura.io/v3/${infuraId}`, RINKEBY_CHAIN_ID)
+  const rinkebyWallet =
+    await jwtService.walletFromSeed(jwtService.fromBase64Url(seed), rinkebyProvider)
+  const goerliProvider = new ethers.providers.JsonRpcProvider(`https://goerli.infura.io/v3/${infuraId}`, GOERLI_CHAIN_ID)
+  const goerliWallet =
+    await jwtService.walletFromSeed(jwtService.fromBase64Url(seed), goerliProvider)
+
+  const wallets = {
+    RINKEBY_CHAIN_ID: rinkebyWallet,
+    GOERLI_CHAIN_ID: goerliWallet
+  }
 
   const newToken = async () => 
-    jwtService.createJwt(wallet, jwtService.AUTH_JWT,
+    jwtService.createJwt(rinkebyWallet, jwtService.AUTH_JWT,
       jwtService.authPayload({ iss: authMemberId, nickname: API_NICKNAME, role: API_ROLE, groupIds: DEFAULT_GROUP_IDS }))
   let jwtToken = await newToken()
   const jwtFn = async () => {
@@ -160,7 +169,8 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
   }
 
   const ethereumFaucet = async ({ iss, role }, { chainId }) => {
-    if (chainId != RINKEBY_CHAIN_ID) {
+    const wallet = wallets[chainId]
+    if (!wallet) {
       console.log('unsupported network', chainId)
       return
     }
