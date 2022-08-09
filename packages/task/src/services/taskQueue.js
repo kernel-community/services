@@ -34,8 +34,8 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
     await jwtService.walletFromSeed(jwtService.fromBase64Url(seed), goerliProvider)
 
   const wallets = {
-    RINKEBY_CHAIN_ID: rinkebyWallet,
-    GOERLI_CHAIN_ID: goerliWallet
+    [RINKEBY_CHAIN_ID]: rinkebyWallet,
+    [GOERLI_CHAIN_ID]: goerliWallet
   }
 
   const newToken = async () => 
@@ -172,7 +172,7 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
     const wallet = wallets[chainId]
     if (!wallet) {
       console.log('unsupported network', chainId)
-      return
+      return {}
     }
     const member = await members.get(iss)
     const memberAddress = member.data.wallet
