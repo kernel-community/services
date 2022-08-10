@@ -23,8 +23,8 @@ const build = async ({ rpcClient }, { resource }) => {
   const exists = async (id) => call('exists', id)
 
   // TODO: add pagination support
-  const getAll = async () => call('getAll')
-  const list = async () => call('list')
+  const getAll = async (path = '') => call('getAll', path)
+  const list = async (path = '') => call('list', path)
 
   const remove = async (id) => call('remove', id)
 

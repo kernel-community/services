@@ -38,6 +38,7 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
 
   const entityUri = (uri, id) => `${base}${DELIMITER}${uri}${DELIMITER}${id}`
   const entityFile = (uri) => `${uri}.json`
+
   const entityObject = ({ id, owner, created, updated, kind, uri, data  }) => {
     return { id, owner, created, updated, kind, uri, data }
   }
@@ -79,25 +80,33 @@ const build = async (client, resourceService, { base = BASE } = {}) => {
   }
 
   //TODO: add pagination support
-  const list = async ({ iss, role }, { resource }) => {
+  const list = async ({ iss, role }, { resource }, path = '') => {
     const { uri, policy } = resources[resource]
     if (role > policy.list) {
       AccessDeniedError({ iss, policy })
     }
+    let prefix = `${base}${DELIMITER}${uri}${DELIMITER}`
+    if (path.length) {
+      prefix += `${path}${DELIMITER}`
+    }
     const entities = await client.listObjects({
-      query: {prefix: `${base}${DELIMITER}${uri}${DELIMITER}`}
+      query: { prefix }
     })
-    return entities.map((e) => e.split(DELIMITER).slice(-1)[0])
+    return entities.map((e) => e.replace(prefix, `${path}${DELIMITER}`))
   }
 
   //TODO: add pagination support
-  const getAll = async ({ iss, role }, { resource }) => {
+  const getAll = async ({ iss, role }, { resource }, path = '') => {
     const { uri, policy } = resources[resource]
     if (role > policy.getAll) {
       AccessDeniedError({ iss, policy })
     }
+    let prefix = `${base}${DELIMITER}${uri}${DELIMITER}`
+    if (path.length) {
+      prefix += `${path}${DELIMITER}`
+    }
     return await client.getObjects({
-      query: {prefix: `${base}${DELIMITER}${uri}${DELIMITER}`},
+      query: { prefix },
       reducer: (acc, e) => {
         acc[e.id] = e
         return acc
