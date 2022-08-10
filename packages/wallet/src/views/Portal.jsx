@@ -8,25 +8,26 @@
 
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { linesVector, getUrl } from '@kernel/common'
+import { useNavigate, Link } from 'react-router-dom'
+import { useServices, linesVector, getUrl } from '@kernel/common'
 
 import { loadWallet, defaultProvider, voidSigner } from 'common'
 
+import AppConfig from 'App.config'
 import Page from 'components/Page'
 
 const everyoneCards = [
   {
     title: 'Claim',
     description: 'Get set up with some test ETH',
-    url: '/home/claim',
+    url: '/portal/claim',
     active: true
   },
   {
     title: 'Transact',
     description: 'Understand how transactions work',
-    url: '/transact',
-    active: false
+    url: '/portal/transact',
+    active: true
   },
   {
     title: 'Deploy',
@@ -95,8 +96,12 @@ const memberCards = [
 
 const LinkCards = ({ cardConfig }) => {
   return cardConfig.map((card, index) => {
+    const relative = card.url.startsWith('/')
+    const Tag = relative ? Link : 'a'
+    const link = `${card.active ? card.url : '#'}`
+    const props = relative ? { to: link } : { href: link }
     return (
-      <a key={index} href={`${card.active ? card.url : '#'}`}>
+      <Tag key={index} {...props}>
         <div className={
           `${card.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
         }
@@ -104,13 +109,16 @@ const LinkCards = ({ cardConfig }) => {
           <div className='text-xl mb-2'>{card.title}</div>
           <div className='text-base mb-1'>{card.description}</div>
         </div>
-      </a>
+      </Tag>
     )
   })
 }
 
-const Home = () => {
+const Portal = () => {
   const navigate = useNavigate()
+
+  const { currentUser } = useServices()
+  const user = currentUser()
 
   const [address, setAddress] = useState('')
   const [nickname, setNickname] = useState('')
@@ -125,9 +133,12 @@ const Home = () => {
     if (!wallet) {
       return navigate('/register/create')
     }
+    if (!user || user.role > AppConfig.minRole) {
+      return navigate('/login')
+    }
     setAddress(wallet.address)
     setNickname(wallet.nickname)
-  }, [navigate, wallet])
+  }, [navigate, wallet, user])
 
   useEffect(() => {
     // TODO: pass in context
@@ -184,4 +195,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Portal

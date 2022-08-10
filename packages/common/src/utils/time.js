@@ -17,7 +17,7 @@ const humanize = (ms, dp = 0) => {
     scaledTime /= timeScalars[timeScalarIndex++]
   }
 
-  const i = scaledTime.toFixed(dp)
+  const i = scaledTime < 0 ? 0 : scaledTime.toFixed(dp)
   const unit = timeUnits[timeScalarIndex]
   const pluralize = i > 1 && unit.slice(-1) !== 's' ? 's' : ''
   return `${i} ${unit}${pluralize} ago`

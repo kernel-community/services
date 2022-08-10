@@ -49,7 +49,7 @@ const Wallet = () => {
               </span>
             </Link>
             &nbsp;or&nbsp;
-            <Link to='/home'>
+            <Link to='/portal'>
               <span className='pl-2 before:block before:absolute before:-inset-1 before:skew-y-3 before:bg-kernel-yellow-light relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>

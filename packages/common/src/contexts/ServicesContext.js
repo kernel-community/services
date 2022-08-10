@@ -17,6 +17,7 @@ import queryBuilder from '../services/query.js'
 
 const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
 const AUTH_URL = process.env[`REACT_APP_AUTH_URL_${env}`]
+const SEND_URL = process.env[`REACT_APP_SEND_URL_${env}`]
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
 const AUTH_TIMEOUT_MS = 24 * 60 * 60 * 1000
 
@@ -26,8 +27,12 @@ const rpcEndpointQuery = process.env[`REACT_APP_QUERY_ENDPOINT_${env}`]
 
 const ServicesContext = createContext()
 
+const getItem = (k) => localStorage.getItem(k)
+
 // TODO: support spread operator
 const actions = {
+  transaction: (state, transaction) => Object.assign(state, { transaction }),
+  event: (state, event) => Object.assign(state, { event }),
   jwt: (state, jwt) => Object.assign(state, { jwt }),
   pong: (state, { source, origin, event }) => Object.assign(state, { source, origin, event }),
   user: (state, user) => Object.assign(state, { user })
@@ -78,6 +83,9 @@ const handleMessage = (dispatch, messageEvent) => {
     case 'jwt':
       dispatch({ type: 'jwt', payload })
       break
+    case 'transaction':
+      dispatch({ type: 'transaction', payload })
+      break
   }
 }
 
@@ -95,6 +103,14 @@ const walletLogin = async (state, dispatch) => {
     const payload = fromCookie()
     dispatch({ type: 'user', payload })
     return payload
+  }
+
+  if (getItem('jwt')) {
+    const payload = getItem('jwt')
+    dispatch({ type: 'jwt', payload })
+    const { payload: user } = jwtService.decode(payload)
+    dispatch({ type: 'user', payload: user })
+    return user
   }
 
   const auth = window.open(AUTH_URL, '_blank')
@@ -140,7 +156,72 @@ const walletLogin = async (state, dispatch) => {
   }
 }
 
-const currentUser = (state) => state.user
+const walletSend = async (state, dispatch, transactionRequest) => {
+  dispatch({ type: 'transaction', payload: null })
+  dispatch({ type: 'event', payload: null })
+  const sign = window.open(SEND_URL, '_blank')
+  window.addEventListener('message', handleMessage.bind(null, dispatch))
+  try {
+    await new Promise((resolve, reject) => {
+      const ts = Date.now()
+      const sync = () => {
+        console.log(state)
+        if (state.event && state.event === 'pong') {
+          return resolve('synced')
+        }
+        if ((Date.now() - ts) > AUTH_TIMEOUT_MS) {
+          console.log('sync timeout', Date.now(), ts)
+          return reject(new Error('timeout'))
+        }
+        reply(sign, SEND_URL, 'ping', {})
+        setTimeout(sync, 300)
+      }
+      setTimeout(sync, 300)
+    })
+    reply(sign, SEND_URL, 'transactionRequest', transactionRequest)
+    await new Promise((resolve, reject) => {
+      const ts = Date.now()
+      const sync = () => {
+        if (state.transaction) {
+          return resolve('signed')
+        }
+        if ((Date.now() - ts) > AUTH_TIMEOUT_MS) {
+          console.log('sign timeout', Date.now(), ts)
+          return reject(new Error('timeout'))
+        }
+        setTimeout(sync, 100)
+      }
+      setTimeout(sync, 100)
+    })
+    sign.close()
+    // TODO: check signature
+    const transaction = state.transaction
+    return transaction
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const currentUser = (state, dispatch) => {
+  if (state.user) {
+    return state.user
+  }
+
+  // TODO: check exp
+  if (hasCookie()) {
+    const payload = fromCookie()
+    dispatch({ type: 'user', payload })
+    return payload
+  }
+
+  if (getItem('jwt')) {
+    const payload = getItem('jwt')
+    dispatch({ type: 'jwt', payload })
+    const { payload: user } = jwtService.decode(payload)
+    dispatch({ type: 'user', payload: user })
+    return user
+  }
+}
 
 const ServicesProvider = ({ children }) => {
   const initialState = {}
@@ -151,9 +232,10 @@ const ServicesProvider = ({ children }) => {
   const value = {
     state,
     dispatch,
-    currentUser: currentUser.bind(null, state),
+    currentUser: currentUser.bind(null, state, dispatch),
     services: services.bind(null, state),
-    walletLogin: walletLogin.bind(null, state, dispatch)
+    walletLogin: walletLogin.bind(null, state, dispatch),
+    walletSend: walletSend.bind(null, state, dispatch)
   }
   return (<ServicesContext.Provider value={value}>{children}</ServicesContext.Provider>)
 }

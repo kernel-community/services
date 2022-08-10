@@ -32,7 +32,7 @@ const defaultProvider = () => provider(4)
 
 const voidSigner = (address, provider) => new ethers.VoidSigner(address, provider)
 
-const DECIMAL_PLACES = 4
+const DECIMAL_PLACES = 8
 const humanizeEther = (bigNum) => {
   if (!ethers.BigNumber.isBigNumber(bigNum)) {
     return ''
@@ -43,4 +43,14 @@ const humanizeEther = (bigNum) => {
   return ether.substring(0, end)
 }
 
-export { loadWallet, defaultProvider, provider, voidSigner, humanizeEther }
+const humanizeGwei = (bigNum) => {
+  if (!ethers.BigNumber.isBigNumber(bigNum)) {
+    return ''
+  }
+  const gwei = ethers.utils.commify(ethers.utils.formatUnits(bigNum, 'gwei'))
+  return gwei
+}
+
+const humanizeAddress = (address) => `${address.substr(0, 4)}...${address.substr(-4)}`
+
+export { loadWallet, defaultProvider, provider, voidSigner, humanizeEther, humanizeGwei, humanizeAddress }

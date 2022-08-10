@@ -13,13 +13,15 @@ import { ServicesProvider, Loading, Login } from '@kernel/common'
 import 'App.css'
 
 const Wallet = lazy(() => import('views/Wallet'))
-const Home = lazy(() => import('views/Home'))
+const Portal = lazy(() => import('views/Portal'))
 const Claim = lazy(() => import('views/Claim'))
+const Transact = lazy(() => import('views/Transact'))
 
 const Register = lazy(() => import('views/Register'))
 const Create = lazy(() => import('components/Create'))
 const Import = lazy(() => import('components/Import'))
 const Auth = lazy(() => import('components/Auth'))
+const Send = lazy(() => import('components/Send'))
 
 const App = () => {
   return (
@@ -28,14 +30,14 @@ const App = () => {
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path='/' element={<Wallet />} />
-            <Route path='/home' element={<Home />} />
+            <Route path='/portal' element={<Portal />} />
 
-            <Route path='/home/claim' element={<Claim />} />
+            <Route path='/portal/claim' element={<Claim />} />
+            <Route path='/portal/transact' element={<Transact />} />
 
-            <Route path='/home/transactions' element={<Navigate to='/home' replace />} />
-            <Route path='/home/nfts' element={<Navigate to='/home' replace />} />
-            <Route path='/home/tokens' element={<Navigate to='/home' replace />} />
-            <Route path='/home/contracts' element={<Navigate to='/home' replace />} />
+            <Route path='/portal/nfts' element={<Navigate to='/portal' replace />} />
+            <Route path='/portal/tokens' element={<Navigate to='/portal' replace />} />
+            <Route path='/portal/contracts' element={<Navigate to='/portal' replace />} />
 
             <Route path='/register' element={<Register />}>
               <Route path='create' element={<Create />} />
@@ -43,6 +45,7 @@ const App = () => {
             </Route>
             <Route path='/auth' element={<Auth />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/send' element={<Send />} />
           </Routes>
         </Suspense>
       </ServicesProvider>

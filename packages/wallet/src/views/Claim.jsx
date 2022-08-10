@@ -64,6 +64,7 @@ const Claim = () => {
 
   const { services, currentUser } = useServices()
   const user = currentUser()
+  console.log('user', user)
 
   useEffect(() => {
     const wallet = loadWallet()
