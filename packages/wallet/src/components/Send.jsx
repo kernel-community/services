@@ -38,7 +38,14 @@ const reply = (source, target, event, payload) => source.postMessage(message(eve
 const Auth = () => {
   const navigate = useNavigate()
 
-  const { services } = useServices()
+  const { services, currentUser } = useServices()
+  const user = currentUser()
+
+  useEffect(() => {
+    if (!user || !user.role) {
+      return navigate('/auth')
+    }
+  }, [navigate, user])
 
   const [encryptedWallet, setEncryptedWallet] = useState()
   const [nickname, setNickname] = useState('')

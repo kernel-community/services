@@ -6,12 +6,11 @@
  *
  */
 
-import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useServices, linesVector, getUrl } from '@kernel/common'
 
-import { loadWallet, defaultProvider, voidSigner } from 'common'
+import { loadWallet } from 'common'
 
 import AppConfig from 'App.config'
 import Page from 'components/Page'
@@ -83,7 +82,7 @@ const memberCards = [
   {
     title: 'Explore',
     description: 'Connect with other Fellows',
-    url: getUrl('explore'),
+    url: getUrl('explorer'),
     active: true
   },
   {
@@ -120,12 +119,7 @@ const Portal = () => {
   const { currentUser } = useServices()
   const user = currentUser()
 
-  const [address, setAddress] = useState('')
   const [nickname, setNickname] = useState('')
-  /* eslint-disable no-unused-vars */
-  const [signer, setSigner] = useState(null)
-  /* eslint-disable no-unused-vars */
-  const [balance, setBalance] = useState(0)
 
   const wallet = loadWallet()
 
@@ -136,16 +130,8 @@ const Portal = () => {
     if (!user || user.role > AppConfig.minRole) {
       return navigate('/login')
     }
-    setAddress(wallet.address)
     setNickname(wallet.nickname)
   }, [navigate, wallet, user])
-
-  useEffect(() => {
-    // TODO: pass in context
-    const signer = voidSigner(address, defaultProvider())
-    setSigner(signer)
-    signer.getBalance().then((e) => setBalance(ethers.utils.formatEther(e)))
-  }, [address])
 
   return (
     <Page>

@@ -21,6 +21,11 @@ const API_ROLE = 50
 const API_NICKNAME = 'apiServer'
 const DEFAULT_GROUP_IDS = []
 
+const NONCE_PADDING = 12
+const CHAINID_PADDING = 12
+const HEIGHT_PADDING = 12
+const INDEX_PADDING = 6
+
 const now = () => Date.now()
 
 const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, authMemberId, rpcEndpoint }) => {
@@ -58,6 +63,7 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
   const profiles = await entityClient({ resource: 'profile' })
   const groups = await entityClient({ resource: 'group' })
   const proposals = await entityClient({ resource: 'proposal' })
+  const transactions = await entityClient({ resource: 'transaction' })
 
   // google services
   const googleServices = await google.build({ projectId, serviceAccount })
@@ -176,12 +182,28 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
     }
     const member = await members.get(iss)
     const memberAddress = member.data.wallet
-    const tx = await wallet.sendTransaction({
+    const transaction = await wallet.sendTransaction({
       to: memberAddress,
       value: ethers.utils.parseEther(faucetAmount)
     })
 
-    return { tx }
+    const { nonce, value } = transaction
+    console.log('waiting for transaction receipt', transaction)
+    const receipt = await transaction.wait()
+
+    Object.assign(receipt, { nonce, chainId, value })
+    const { to, from, blockNumber, transactionIndex } = receipt
+    const paddedHeight = blockNumber.toString().padStart(HEIGHT_PADDING, '0')
+    const paddedIndex = transactionIndex.toString().padStart(INDEX_PADDING, '0')
+    const paddedNonce = nonce.toString().padStart(NONCE_PADDING, '0')
+    const paddedChainId = chainId.toString().padStart(CHAINID_PADDING, '0')
+
+    const fromId = `from/${from}/${paddedChainId}-${paddedNonce}`
+    const toId = `to/${to}/${paddedChainId}-${paddedHeight}-${paddedIndex}`
+
+    await transactions.create({...receipt, id: toId}, {id: toId})
+    const savedTx = await transactions.create({...receipt, id: fromId}, {id: fromId})
+    return { savedTx }
   }
 
   return {

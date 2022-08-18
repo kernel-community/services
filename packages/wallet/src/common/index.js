@@ -13,6 +13,12 @@ const WALLET_STORE_VERSION = '1'
 const env = process.env.REACT_APP_DEPLOY_TARGET || 'PROD'
 const PROVIDER_ENDPOINT = process.env[`REACT_APP_PROVIDER_ENDPOINT_${env}`]
 
+const BLOCK_EXPLORER = {
+  1: 'https://etherscan.io',
+  4: 'https://rinkeby.etherscan.io',
+  5: 'https://goerli.etherscan.io'
+}
+
 const getItem = (k) => JSON.parse(localStorage.getItem(k))
 
 const loadWallet = () => {
@@ -53,4 +59,6 @@ const humanizeGwei = (bigNum) => {
 
 const humanizeHash = (hash, n = 4) => `${hash.substr(0, n)}...${hash.substr(-n)}`
 
-export { loadWallet, defaultProvider, provider, voidSigner, humanizeEther, humanizeGwei, humanizeHash }
+const blockExplorer = (chainId, hash) => `${BLOCK_EXPLORER[chainId]}/tx/${hash}`
+
+export { loadWallet, defaultProvider, provider, voidSigner, humanizeEther, humanizeGwei, humanizeHash, blockExplorer }

@@ -13,7 +13,7 @@ import { useServices, linesVector, timeUtils } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
-import { loadWallet, provider, voidSigner, humanizeEther, humanizeHash } from 'common'
+import { loadWallet, provider, voidSigner, humanizeEther, humanizeHash, blockExplorer } from 'common'
 import Page from 'components/Page'
 
 const RINKEBY_CHAIN_ID = 4
@@ -82,6 +82,20 @@ const send = async (chainId, walletSend, state, dispatch, e) => {
     dispatch({ type: 'error', payload: error.message })
     dispatch({ type: 'disabled', payload: false })
   }
+}
+
+const ethFlowColor = ({ wallet: { address } }, from, to) => {
+  console.log(address, to, from)
+  if (address === to && address === from) {
+    return 'text-gray-600'
+  }
+  if (address === to) {
+    return 'text-green-600'
+  }
+  if (address === from) {
+    return 'text-red-600'
+  }
+  return ''
 }
 
 const Transact = () => {
@@ -225,27 +239,41 @@ const Transact = () => {
               {state.error}
             </div>
           </label>}
-        <table className='table-fixed w-full'>
-          <thead>
-            <tr>
-              {['Age', 'From', 'To', 'Chain', 'Hash', 'Value'].map((title) => <th key={title}>{title}</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {Object.values(state.receipts)
-              .sort(({ created: a }, { created: b }) => a - b)
-              .reverse()
-              .map(({ id, created, data: { from, to, chainId, transactionHash, value } }) =>
-                <tr className='text-center' key={id}>
-                  <td>{timeUtils.humanize(Date.now() - created)}</td>
-                  <td>{humanizeHash(from)}</td>
-                  <td>{humanizeHash(to)}</td>
-                  <td>{chainId}</td>
-                  <td>{humanizeHash(transactionHash)}</td>
-                  <td>{humanizeEther(ethers.BigNumber.from(value._hex))} ETH</td>
-                </tr>)}
-          </tbody>
-        </table>
+        <div className='overflow-x-auto sm:-mx-6 lg:-mx-8'>
+          <div className='py-8 inline-block min-w-full sm:px-6 lg:px-8'>
+            <div className='overflow-x-auto'>
+              <table className='table-fixed w-full'>
+                <thead>
+                  <tr>
+                    {['Age', 'From', 'To', 'Chain', 'Hash', 'Value'].map((title) => <th key={title}>{title}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.values(state.receipts)
+                    .sort(({ created: a }, { created: b }) => a - b)
+                    .reverse()
+                    .map(({ id, created, data: { from, to, chainId, transactionHash, value } }, i) =>
+                      <tr className={'border-b text-center ' + (i % 2 ? 'bg-gray-100' : 'bg-white')} key={id}>
+                        <td className='text-sm whitespace-nowrap'>{timeUtils.humanize(Date.now() - created)}</td>
+                        <td className='text-sm whitespace-nowrap'>{humanizeHash(from)}</td>
+                        <td className='text-sm whitespace-nowrap'>{humanizeHash(to)}</td>
+                        <td className='text-sm whitespace-nowrap'>{chainId}</td>
+                        <td className='text-sm whitespace-nowrap'>
+                          <a
+                            className='no-underline hover:underline' rel='noreferrer' target='_blank'
+                            href={blockExplorer(chainId, transactionHash)}
+                          >{humanizeHash(transactionHash)}
+                          </a>
+                        </td>
+                        <td className={'text-left text-sm whitespace-nowrap ' + ethFlowColor(state, from, to)}>
+                          {humanizeEther(ethers.BigNumber.from(value._hex || value.hex))} ETH
+                        </td>
+                      </tr>)}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </Page>
   )
