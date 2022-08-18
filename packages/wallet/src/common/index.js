@@ -51,6 +51,6 @@ const humanizeGwei = (bigNum) => {
   return gwei
 }
 
-const humanizeAddress = (address) => `${address.substr(0, 4)}...${address.substr(-4)}`
+const humanizeHash = (hash, n = 4) => `${hash.substr(0, n)}...${hash.substr(-n)}`
 
-export { loadWallet, defaultProvider, provider, voidSigner, humanizeEther, humanizeGwei, humanizeAddress }
+export { loadWallet, defaultProvider, provider, voidSigner, humanizeEther, humanizeGwei, humanizeHash }

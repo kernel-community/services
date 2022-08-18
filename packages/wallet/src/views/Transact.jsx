@@ -13,7 +13,7 @@ import { useServices, linesVector, timeUtils } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
-import { loadWallet, provider, voidSigner, humanizeEther, humanizeAddress } from 'common'
+import { loadWallet, provider, voidSigner, humanizeEther, humanizeHash } from 'common'
 import Page from 'components/Page'
 
 const RINKEBY_CHAIN_ID = 4
@@ -228,18 +228,20 @@ const Transact = () => {
         <table className='table-fixed w-full'>
           <thead>
             <tr>
-              {['Age', 'From', 'To', 'Chain', 'Value'].map((title) => <th key={title}>{title}</th>)}
+              {['Age', 'From', 'To', 'Chain', 'Hash', 'Value'].map((title) => <th key={title}>{title}</th>)}
             </tr>
           </thead>
           <tbody>
             {Object.values(state.receipts)
-              .sort(({ created }) => created)
-              .map(({ id, created, data: { from, to, chainId, value } }) =>
+              .sort(({created: a}, {created: b}) => a - b)
+              .reverse()
+              .map(({ id, created, data: { from, to, chainId, transactionHash, value } }) =>
                 <tr className='text-center' key={id}>
                   <td>{timeUtils.humanize(Date.now() - created)}</td>
-                  <td>{humanizeAddress(from)}</td>
-                  <td>{humanizeAddress(to)}</td>
+                  <td>{humanizeHash(from)}</td>
+                  <td>{humanizeHash(to)}</td>
                   <td>{chainId}</td>
+                  <td>{humanizeHash(transactionHash)}</td>
                   <td>{humanizeEther(ethers.BigNumber.from(value._hex))} ETH</td>
                 </tr>)}
           </tbody>

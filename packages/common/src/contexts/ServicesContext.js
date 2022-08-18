@@ -91,26 +91,31 @@ const handleMessage = (dispatch, messageEvent) => {
 
 const hasCookie = () => document.cookie.includes('stagingUser')
 const fromCookie = () => JSON.parse(decodeURIComponent(document.cookie.split('=')[1]))
+const expired = (exp) => Date.now() - exp > 0
 
 const walletLogin = async (state, dispatch) => {
   // TODO: check exp
-  if (state.user) {
+  if (state.user && !expired(state.user.exp)) {
     return state.user
   }
 
   // TODO: check exp
   if (hasCookie()) {
     const payload = fromCookie()
-    dispatch({ type: 'user', payload })
-    return payload
+    if (!expired(payload.exp)) {
+      dispatch({ type: 'user', payload })
+      return payload
+    }
   }
 
   if (getItem('jwt')) {
     const payload = getItem('jwt')
-    dispatch({ type: 'jwt', payload })
     const { payload: user } = jwtService.decode(payload)
-    dispatch({ type: 'user', payload: user })
-    return user
+    if (!expired(user.exp)) {
+      dispatch({ type: 'jwt', payload })
+      dispatch({ type: 'user', payload: user })
+      return user
+    }
   }
 
   const auth = window.open(AUTH_URL, '_blank')
@@ -203,23 +208,27 @@ const walletSend = async (state, dispatch, transactionRequest) => {
 }
 
 const currentUser = (state, dispatch) => {
-  if (state.user) {
+  if (state.user && !expired(state.user.exp)) {
     return state.user
   }
 
   // TODO: check exp
   if (hasCookie()) {
     const payload = fromCookie()
-    dispatch({ type: 'user', payload })
-    return payload
+    if (!expired(payload.exp)) {
+      dispatch({ type: 'user', payload })
+      return payload
+    }
   }
 
   if (getItem('jwt')) {
     const payload = getItem('jwt')
-    dispatch({ type: 'jwt', payload })
     const { payload: user } = jwtService.decode(payload)
-    dispatch({ type: 'user', payload: user })
-    return user
+    if (!expired(user.exp)) {
+      dispatch({ type: 'jwt', payload })
+      dispatch({ type: 'user', payload: user })
+      return user
+    }
   }
 }
 
