@@ -233,7 +233,7 @@ const Transact = () => {
           </thead>
           <tbody>
             {Object.values(state.receipts)
-              .sort(({created: a}, {created: b}) => a - b)
+              .sort(({ created: a }, { created: b }) => a - b)
               .reverse()
               .map(({ id, created, data: { from, to, chainId, transactionHash, value } }) =>
                 <tr className='text-center' key={id}>
