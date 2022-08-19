@@ -22,6 +22,10 @@ handlers:
   static_files: build/\1
   upload: build/(.*)
 
+- url: /(worker.js)
+  static_files: build/\1
+  upload: build/(.*)
+
 - url: /(robots.txt)
   static_files: build/\1
   upload: build/(.*)
