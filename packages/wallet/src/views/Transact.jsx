@@ -85,7 +85,6 @@ const send = async (chainId, walletSend, state, dispatch, e) => {
 }
 
 const ethFlowColor = ({ wallet: { address } }, from, to) => {
-  console.log(address, to, from)
   if (address === to && address === from) {
     return 'text-gray-600'
   }
@@ -266,7 +265,7 @@ const Transact = () => {
                           </a>
                         </td>
                         <td className={'text-left text-sm whitespace-nowrap ' + ethFlowColor(state, from, to)}>
-                          {humanizeEther(ethers.BigNumber.from(value._hex || value.hex))} ETH
+                          {value ? humanizeEther(ethers.BigNumber.from(value._hex || value.hex || 0)) : '0'} ETH
                         </td>
                       </tr>)}
                 </tbody>

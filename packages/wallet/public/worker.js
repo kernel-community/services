@@ -32,7 +32,7 @@ self.addEventListener('message', (e) => {
     alloc = soljson.cwrap('solidity_alloc', 'number', ['number'])
     reset = soljson.cwrap('solidity_reset', null, [])
     solidityCompile = soljson.cwrap('solidity_compile', 'string', ['string', 'number'])
-
+    self.postMessage({ cmd: 'init', payload: `Solidity compiler ${version()} loaded` })
     console.log(version())
   }
 
@@ -56,6 +56,7 @@ self.addEventListener('message', (e) => {
         .then((contents) => Object.assign(cache, { [data]: contents }))
       return { error: `not cached: ${data}` }
     })
+    const now = Date.now()
     const compile = () => {
       const cb = soljson.addFunction(fn, 'viiiii')
       const output = JSON.parse(solidityCompile(JSON.stringify(input), cb))
@@ -63,10 +64,12 @@ self.addEventListener('message', (e) => {
       reset()
       console.log(output)
       if (output.errors) {
+        self.postMessage({ cmd: 'compiling', payload: `compiling ${Math.round((Date.now() - now) / 1000)}s` })
         return setTimeout(compile, 1000)
       }
       self.postMessage({ cmd: 'compiled', payload: output })
     }
+    self.postMessage({ cmd: 'compiling', payload: 'compiling' })
     compile()
   }
 })

@@ -228,7 +228,7 @@ const Auth = () => {
           >
             Data
           </label>
-          <p className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
+          <p className='break-all border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
             {transactionRequest.data}
           </p>
         </div>

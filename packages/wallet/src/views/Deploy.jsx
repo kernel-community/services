@@ -6,7 +6,6 @@
  *
  */
 
-import { ethers } from 'ethers'
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useServices, linesVector } from '@kernel/common'
@@ -23,7 +22,7 @@ const ERC20_TEMPLATE = `// Copyright (c) Kernel
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "https://raw.githubusercontent.com/openzeppelin/openzeppelin-contracts/master/contracts/token/ERC20/ERC20.sol";
+import "https://raw.githubusercontent.com/openzeppelin/openzeppelin-contracts/v4.7.2/contracts/token/ERC20/ERC20.sol";
 
 contract KernelToken is ERC20 {
     constructor() ERC20("KernelToken", "SEED") {
@@ -31,7 +30,7 @@ contract KernelToken is ERC20 {
     }
 }
 `
-const STATE_KEYS = ['error', 'status', 'disabled', 'wallet', 'transactions', 'worker', 'code', 'output']
+const STATE_KEYS = ['error', 'status', 'disabled', 'wallet', 'transactions', 'worker', 'code', 'output', 'evm']
 const INITIAL_STATE = STATE_KEYS
   .reduce((acc, k) => Object.assign(acc, { [k]: '' }), {})
 INITIAL_STATE.disabled = false
@@ -69,25 +68,18 @@ const value = (state, type) => state[type]
 const send = async (chainId, walletSend, state, dispatch, e) => {
   e.preventDefault()
   dispatch({ type: 'error', payload: '' })
-  dispatch({ type: 'status', payload: 'submitting' })
+  dispatch({ type: 'status', payload: '' })
   dispatch({ type: 'disabled', payload: true })
   // TODO: clean up
-  const {
-    rinkebyAmount, goerliAmount,
-    rinkebyAddress, goerliAddress,
-    receipts
-  } = state
-  const to = chainId === RINKEBY_CHAIN_ID ? rinkebyAddress : goerliAddress
-  const value = chainId === RINKEBY_CHAIN_ID
-    ? ethers.utils.parseEther(rinkebyAmount)
-    : ethers.utils.parseEther(goerliAmount)
-  const transactionRequest = { to, value, chainId }
+  const { evm } = state
+  const compiler = evm
+  const solidity = Object.values(compiler.contracts['contract.sol'])[0]
+  const data = '0x' + solidity.evm.bytecode.object
+  const transactionRequest = { chainId, data }
   try {
     const transaction = await walletSend(transactionRequest)
     console.log(transaction)
-    dispatch({ type: 'status', payload: `Transaction confirmed: ${transaction.transactionHash}` })
-    Object.assign(receipts, { [transaction.id]: transaction })
-    dispatch({ type: 'receipts', payload: receipts })
+    dispatch({ type: 'status', payload: `Transaction confirmed: ${transaction.data.transactionHash}` })
   } catch (error) {
     dispatch({ type: 'error', payload: error.message })
     dispatch({ type: 'disabled', payload: false })
@@ -97,7 +89,7 @@ const send = async (chainId, walletSend, state, dispatch, e) => {
 const compile = async (state, dispatch, e) => {
   e.preventDefault()
   dispatch({ type: 'error', payload: '' })
-  dispatch({ type: 'status', payload: 'compiling' })
+  dispatch({ type: 'status', payload: '' })
   dispatch({ type: 'output', payload: '' })
   // dispatch({ type: 'disabled', payload: true })
   // TODO: clean up
@@ -134,9 +126,12 @@ const Deploy = () => {
   useEffect(() => {
     const worker = new Worker('/worker.js')
     worker.addEventListener('message', (e) => {
-      console.log('worker', e)
-      dispatch({ type: 'output', payload: JSON.stringify(e.data.payload, null, 2) })
-      // dispatch({ type: 'output', payload: e.data.payload })
+      console.log('worker', e.data.cmd)
+      if (e.data.cmd === 'compiled') {
+        dispatch({ type: 'output', payload: 'compiled' })
+        return dispatch({ type: 'evm', payload: e.data.payload })
+      }
+      dispatch({ type: 'output', payload: e.data.payload })
     })
     dispatch({ type: 'worker', payload: worker })
     worker.postMessage({ cmd: 'load', payload: COMPILER_URL })
@@ -188,9 +183,9 @@ const Deploy = () => {
             <h3 className='font-heading text-center text-3xl text-primary py-5'>Soldity</h3>
             <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 border-kernel-grey md:pr-12'>
               <form className='form-control w-full'>
-                <label className='label block mb-1'>Compiler</label>
+                <label className='label block mb-1'>Smart Contract</label>
                 <textarea
-                  rows='10'
+                  rows='15'
                   value={value(state, 'code')}
                   onChange={change.bind(null, dispatch, 'code')}
                   placeholder='Input'
@@ -204,12 +199,12 @@ const Deploy = () => {
                 </button>
                 <button
                   disabled={state.disabled}
-                  onClick={send.bind(null, walletSend, state, dispatch)}
+                  onClick={send.bind(null, RINKEBY_CHAIN_ID, walletSend, state, dispatch)}
                   className='mt-6 mb-0 px-6 py-4 text-kernel-white bg-kernel-green-dark w-full rounded font-bold capitalize'
                 >Deploy
                 </button>
               </form>
-              <label className='label block mb-1'>Solidity</label>
+              <label className='label block mb-1'>Status</label>
               <pre className='mb-6 border-1 rounded w-full'>{value(state, 'output')}</pre>
             </div>
           </div>

@@ -57,7 +57,7 @@ const humanizeGwei = (bigNum) => {
   return gwei
 }
 
-const humanizeHash = (hash, n = 4) => `${hash.substr(0, n)}...${hash.substr(-n)}`
+const humanizeHash = (hash, n = 4) => hash ? `${hash.substr(0, n)}...${hash.substr(-n)}` : 'null'
 
 const blockExplorer = (chainId, hash) => `${BLOCK_EXPLORER[chainId]}/tx/${hash}`
 
