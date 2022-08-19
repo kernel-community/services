@@ -31,8 +31,8 @@ const everyoneCards = [
   {
     title: 'Deploy',
     description: 'Create your own token now',
-    url: '/deploy',
-    active: false
+    url: '/portal/deploy',
+    active: true
   },
   {
     title: 'Mint',

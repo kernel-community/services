@@ -14,7 +14,9 @@ import 'App.css'
 
 const Wallet = lazy(() => import('views/Wallet'))
 const Portal = lazy(() => import('views/Portal'))
+
 const Claim = lazy(() => import('views/Claim'))
+const Deploy = lazy(() => import('views/Deploy'))
 const Transact = lazy(() => import('views/Transact'))
 
 const Register = lazy(() => import('views/Register'))
@@ -33,6 +35,7 @@ const App = () => {
             <Route path='/portal' element={<Portal />} />
 
             <Route path='/portal/claim' element={<Claim />} />
+            <Route path='/portal/deploy' element={<Deploy />} />
             <Route path='/portal/transact' element={<Transact />} />
 
             <Route path='/portal/nfts' element={<Navigate to='/portal' replace />} />
