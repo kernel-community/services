@@ -86,6 +86,36 @@ const memberCards = [
     active: true
   },
   {
+    title: 'Groups',
+    description: 'Create and manage groups',
+    url: getUrl('groups'),
+    active: true
+  },
+  {
+    title: 'Proposals',
+    description: 'Create and vote on Proposals',
+    url: getUrl('proposals'),
+    active: true
+  },
+  {
+    title: 'Applications',
+    description: 'Apply to the Kernel Community',
+    url: getUrl('applications'),
+    active: true
+  },
+  {
+    title: 'Events',
+    description: 'Create and register for Events',
+    url: getUrl('events'),
+    active: true
+  },
+  {
+    title: 'Pages',
+    description: 'Create and manage Knowledge',
+    url: getUrl('www'),
+    active: true
+  },
+  {
     title: 'Chat',
     description: 'Horizontal conversations',
     url: getUrl('chat'),

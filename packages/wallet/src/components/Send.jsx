@@ -181,6 +181,16 @@ const Auth = () => {
     }
   }
 
+  const cancelTransaction = async (e) => {
+    e.preventDefault()
+    setErrorMessage(null)
+    setProgress(0)
+    if (source) {
+      console.log('canceling transaction')
+      reply(source, website, 'transaction', {})
+    }
+  }
+
   return (
     <div className='rounded-t mb-0 px-6 py-6'>
       <div className='btn-wrapper text-center' />
@@ -353,6 +363,14 @@ const Auth = () => {
           <div className='w-full bg-gray-200 h-1'>
             <div className='bg-blue-600 h-1' style={{ width: `${progress}%` }} />
           </div>
+        </div>
+        <div className='text-center mt-6'>
+          <button
+            className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
+            onClick={cancelTransaction}
+            style={{ transition: 'all .15s ease' }}
+          >Cancel
+          </button>
         </div>
       </form>
     </div>

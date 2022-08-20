@@ -16,8 +16,7 @@ import { loadWallet } from 'common'
 import Page from 'components/Page'
 
 const COMPILER_URL = 'https://binaries.soliditylang.org/bin/soljson-latest.js'
-const RINKEBY_CHAIN_ID = 4
-// const GOERLI_CHAIN_ID = 5
+const GOERLI_CHAIN_ID = 5
 const ERC20_TEMPLATE = `// Copyright (c) Kernel
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
@@ -199,9 +198,9 @@ const Deploy = () => {
                 </button>
                 <button
                   disabled={state.disabled}
-                  onClick={send.bind(null, RINKEBY_CHAIN_ID, walletSend, state, dispatch)}
+                  onClick={send.bind(null, GOERLI_CHAIN_ID, walletSend, state, dispatch)}
                   className='mt-6 mb-0 px-6 py-4 text-kernel-white bg-kernel-green-dark w-full rounded font-bold capitalize'
-                >Deploy
+                >Deploy to Goerli
                 </button>
               </form>
               <label className='label block mb-1'>Status</label>
