@@ -26,7 +26,7 @@ module.exports = {
       // https://github.com/facebook/create-react-app/discussions/11782
       const fallback = {
         stream: require.resolve('stream-browserify'),
-        buffer: require.resolve('buffer'),
+        buffer: require.resolve('buffer/'),
         fs: false,
         path: require.resolve('path-browserify'),
         crypto: require.resolve('crypto-browserify')

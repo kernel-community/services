@@ -7,8 +7,9 @@
  */
 
 import { ethers } from 'ethers'
-import { Buffer } from 'buffer'
+// import { Buffer } from 'buffer/'
 /* eslint-disable */
+import 'buffer/'
 import { default as VM } from '@ethereumjs/vm'
 import { default as Common, Chain } from '@ethereumjs/common'
 /* eslint-enable */
