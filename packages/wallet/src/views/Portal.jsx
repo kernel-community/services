@@ -37,31 +37,31 @@ const everyoneCards = [
   {
     title: 'Mint',
     description: 'Create an NFT in one go',
-    url: '/mint',
-    active: false
+    url: '/portal/mint',
+    active: true
   },
   {
     title: 'Contact',
     description: 'Keep your friends\' addresses safe',
-    url: '/contact',
+    url: '/portal/contact',
     active: false
   },
   {
     title: 'Contribute',
     description: 'Learn how to improve this with us',
-    url: '/contribute',
+    url: '/portal/contribute',
     active: false
   },
   {
     title: 'Interact',
     description: 'Explore all the best contracts',
-    url: '/interact',
+    url: '/portal/interact',
     active: false
   },
   {
     title: 'Develop',
     description: 'Write your own code!',
-    url: '/develop',
+    url: '/portal/develop',
     active: false
   }
 ]
