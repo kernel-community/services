@@ -124,13 +124,17 @@ const Deploy = () => {
 
   useEffect(() => {
     const worker = new Worker('/worker.js')
-    worker.addEventListener('message', (e) => {
-      console.log('worker', e.data.cmd)
-      if (e.data.cmd === 'compiled') {
-        dispatch({ type: 'output', payload: 'compiled' })
-        return dispatch({ type: 'evm', payload: e.data.payload })
+    worker.addEventListener('message', ({ data: { cmd, payload } }) => {
+      console.log('worker', cmd)
+      if (cmd === 'compiled') {
+        const errors = payload.errors
+          ? payload.errors
+            .map(({ formattedMessage }) => formattedMessage).join('\n')
+          : ''
+        dispatch({ type: 'output', payload: 'compiled\n' + errors })
+        return dispatch({ type: 'solidity', payload })
       }
-      dispatch({ type: 'output', payload: e.data.payload })
+      dispatch({ type: 'output', payload })
     })
     dispatch({ type: 'worker', payload: worker })
     worker.postMessage({ cmd: 'load', payload: COMPILER_URL })

@@ -63,7 +63,7 @@ self.addEventListener('message', (e) => {
       soljson.removeFunction(cb)
       reset()
       console.log(output)
-      if (output.errors) {
+      if (output.errors && output.errors.filter(({ errorCode }) => errorCode === '6275').length) {
         self.postMessage({ cmd: 'compiling', payload: `compiling ${Math.round((Date.now() - now) / 1000)}s` })
         return setTimeout(compile, 1000)
       }

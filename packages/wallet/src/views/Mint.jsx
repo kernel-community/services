@@ -194,13 +194,17 @@ const Mint = () => {
   useEffect(() => {
     // solidity compiler
     const worker = new Worker('/worker.js')
-    worker.addEventListener('message', (e) => {
-      console.log('worker', e.data.cmd)
-      if (e.data.cmd === 'compiled') {
-        dispatch({ type: 'output', payload: 'compiled' })
-        return dispatch({ type: 'solidity', payload: e.data.payload })
+    worker.addEventListener('message', ({ data: { cmd, payload } }) => {
+      console.log('worker', cmd)
+      if (cmd === 'compiled') {
+        const errors = payload.errors
+          ? payload.errors
+            .map(({ formattedMessage }) => formattedMessage).join('\n')
+          : ''
+        dispatch({ type: 'output', payload: 'compiled\n' + errors })
+        return dispatch({ type: 'solidity', payload })
       }
-      dispatch({ type: 'output', payload: e.data.payload })
+      dispatch({ type: 'output', payload })
     })
     dispatch({ type: 'worker', payload: worker })
     worker.postMessage({ cmd: 'load', payload: COMPILER_URL })
@@ -249,7 +253,7 @@ const Mint = () => {
 
         <div className='mb-auto py-20 px-20'>
           <div>
-            <h3 className='font-heading text-center text-3xl text-primary py-5'>Soldity</h3>
+            <h3 className='font-heading text-center text-3xl text-primary py-5'>NFT Contract</h3>
             <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 border-kernel-grey md:pr-12'>
               <form className='form-control w-full'>
                 <label className='label block mb-1'>Smart Contract</label>
@@ -281,13 +285,15 @@ const Mint = () => {
               </form>
               <label className='label block mb-1'>Status</label>
               <pre className='mb-6 border-1 rounded w-full'>{value(state, 'output')}</pre>
+              {state && state.svg &&
+                <div className='w-full'>
+                  <div className='mx-auto'>
+                    <img className='mx-auto' alt='preview' src={`data:image/svg+xml;utf8,${encodeURIComponent(state.svg)}`} />
+                  </div>
+                </div>}
             </div>
           </div>
         </div>
-        {state && state.svg &&
-          <div className='block'>
-            <img className='' alt='preview' src={`data:image/svg+xml;utf8,${encodeURIComponent(state.svg)}`} />
-          </div>}
         {state && state.status &&
           <label className='block'>
             <span className='text-gray-700'>Status</span>
