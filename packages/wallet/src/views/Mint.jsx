@@ -7,16 +7,6 @@
  */
 
 import { ethers } from 'ethers'
-import { Buffer } from 'safe-buffer'
-// import Buffer from 'buffer/'
-// import 'buffer/'
-/* eslint-disable */
-import { default as VM } from '@ethereumjs/vm'
-import { default as Common, Chain } from '@ethereumjs/common'
-/* eslint-enable */
-import { Transaction } from '@ethereumjs/tx'
-import { Block } from '@ethereumjs/block'
-import { Account, Address } from '@ethereumjs/util'
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -166,33 +156,13 @@ const run = async (state, dispatch, e) => {
   const compiler = solidity
   const contract = Object.values(compiler.contracts['contract.sol'])[0]
 
-  const common = new Common({ chain: Chain.Goerli })
-  const hardforkByBlockNumber = true
-  const vm = new VM({ common, hardforkByBlockNumber })
+  const context = await window.evm.init()
+  const { createdAddress } = await window.evm.deploy(context, contract.evm.bytecode.object)
 
-  const accountPk = Buffer.from('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
-  const account = Account.fromAccountData({ nonce: 0, balance: window.BigInt(100) ** window.BigInt(18) })
-  const accountAddress = Address.fromPrivateKey(accountPk)
-  await vm.stateManager.putAccount(accountAddress, account)
-
-  const txData = {
-    value: 0,
-    gasLimit: 200_000_000_000,
-    gasPrice: 1,
-    data: '0x' + contract.evm.bytecode.object,
-    nounce: account.nonce
-  }
-  const tx = Transaction.fromTxData(txData, { common }).sign(accountPk)
-  const deployment = await vm.runTx({ tx })
-  const contractAddress = deployment.createdAddress
   const sighash = new ethers.utils.Interface(['function example()']).getSighash('example')
-  const result = await vm.runCall({
-    to: contractAddress,
-    caller: accountAddress,
-    origin: accountAddress,
-    data: Buffer.from(sighash.slice(2), 'hex')
-  })
-  const svg = ethers.utils.defaultAbiCoder.decode(['string'], result.execResult.returnValue)
+  const { execResult: { returnValue } } = await window.evm.call(context, createdAddress, sighash)
+
+  const svg = ethers.utils.defaultAbiCoder.decode(['string'], returnValue)
 
   dispatch({ type: 'svg', payload: svg[0] })
 
@@ -209,16 +179,19 @@ const Mint = () => {
   const user = currentUser()
 
   useEffect(() => {
-    // vm
-    window.ethers = ethers
-    window.Buffer = Buffer
-    window.Account = Account
-    window.Address = Address
-    window.Common = Common
-    window.Chain = Chain
-    window.VM = VM
-    window.Transaction = Transaction
-    window.Block = Block
+    if (!window.evm) {
+      const script = document.createElement('script')
+      script.src = '/evm@0.0.1.js'
+      script.async = true
+      document.body.appendChild(script)
+
+      return () => {
+        document.body.removeChild(script)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
     // solidity compiler
     const worker = new Worker('/worker.js')
     worker.addEventListener('message', (e) => {

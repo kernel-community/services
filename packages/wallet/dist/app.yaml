@@ -26,6 +26,10 @@ handlers:
   static_files: build/\1
   upload: build/(.*)
 
+- url: /(evm.*.js)
+  static_files: build/\1
+  upload: build/(.*)
+
 - url: /(robots.txt)
   static_files: build/\1
   upload: build/(.*)
