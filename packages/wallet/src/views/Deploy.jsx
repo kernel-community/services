@@ -19,7 +19,7 @@ const COMPILER_URL = 'https://binaries.soliditylang.org/bin/soljson-latest.js'
 const GOERLI_CHAIN_ID = 5
 const ERC20_TEMPLATE = `// Copyright (c) Kernel
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.16;
 
 import "https://raw.githubusercontent.com/openzeppelin/openzeppelin-contracts/v4.7.2/contracts/token/ERC20/ERC20.sol";
 
@@ -29,7 +29,7 @@ contract KernelToken is ERC20 {
     }
 }
 `
-const STATE_KEYS = ['error', 'status', 'disabled', 'wallet', 'transactions', 'worker', 'code', 'output', 'evm']
+const STATE_KEYS = ['error', 'status', 'disabled', 'wallet', 'transactions', 'worker', 'code', 'output', 'solidity']
 const INITIAL_STATE = STATE_KEYS
   .reduce((acc, k) => Object.assign(acc, { [k]: '' }), {})
 INITIAL_STATE.disabled = false
@@ -70,10 +70,10 @@ const send = async (chainId, walletSend, state, dispatch, e) => {
   dispatch({ type: 'status', payload: '' })
   dispatch({ type: 'disabled', payload: true })
   // TODO: clean up
-  const { evm } = state
-  const compiler = evm
-  const solidity = Object.values(compiler.contracts['contract.sol'])[0]
-  const data = '0x' + solidity.evm.bytecode.object
+  const { solidity } = state
+  const compiler = solidity
+  const contract = Object.values(compiler.contracts['contract.sol'])[0]
+  const data = '0x' + contract.evm.bytecode.object
   const transactionRequest = { chainId, data }
   try {
     const transaction = await walletSend(transactionRequest)

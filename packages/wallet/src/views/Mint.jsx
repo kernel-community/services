@@ -19,14 +19,34 @@ import Page from 'components/Page'
 
 const COMPILER_URL = 'https://binaries.soliditylang.org/bin/soljson-latest.js'
 const GOERLI_CHAIN_ID = 5
-const ERC20_TEMPLATE = `// Copyright (c) Kernel
+const ERC721_TEMPLATE = `// Copyright (c) Kernel
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.11;
+pragma solidity ^0.8.16;
 
 import 'https://raw.githubusercontent.com/w1nt3r-eth/hot-chain-svg/main/contracts/SVG.sol';
 import 'https://raw.githubusercontent.com/w1nt3r-eth/hot-chain-svg/main/contracts/Utils.sol';
+import 'https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.7.2/contracts/utils/Base64.sol';
+import 'https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.7.2/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 
-contract Renderer {
+contract SeedNFT is ERC721Enumerable {
+    string constant nftName = 'Kernel Greeting';
+    string constant nftSymbol = 'HI';
+
+    constructor() ERC721(nftName, nftSymbol) payable {}
+
+    function mint() public payable {
+     require(msg.value >= (0.014 ether), 'Ether value sent is not correct');
+     uint256 tokenId = totalSupply();
+     _safeMint(msg.sender, tokenId);
+    }
+
+    function tokenURI(uint256 tokenId) override public pure returns (string memory) {
+      string memory svgImage = render(tokenId);
+      string memory metadata = string.concat('{"name":"', nftName, ' #', Strings.toString(tokenId), '","attributes":[],"image":"data:svg+xml;base64,', Base64.encode(bytes(svgImage)), '"}');
+
+      return string.concat('data:application/json;base64,', Base64.encode(bytes(metadata)));
+    }
+
     function render(uint256 _tokenId) public pure returns (string memory) {
         return
             string.concat(
@@ -57,7 +77,7 @@ contract Renderer {
             );
     }
 
-    function example() external pure returns (string memory) {
+    function debug() external pure returns (string memory) {
         return render(10);
     }
 }
@@ -66,7 +86,7 @@ const STATE_KEYS = ['error', 'status', 'disabled', 'wallet', 'transactions', 'wo
 const INITIAL_STATE = STATE_KEYS
   .reduce((acc, k) => Object.assign(acc, { [k]: '' }), {})
 INITIAL_STATE.disabled = false
-INITIAL_STATE.code = ERC20_TEMPLATE
+INITIAL_STATE.code = ERC721_TEMPLATE
 
 const actions = {}
 Object.keys(INITIAL_STATE)
@@ -159,7 +179,7 @@ const run = async (state, dispatch, e) => {
   const context = await window.evm.init()
   const { createdAddress } = await window.evm.deploy(context, contract.evm.bytecode.object)
 
-  const sighash = new ethers.utils.Interface(['function example()']).getSighash('example')
+  const sighash = new ethers.utils.Interface(['function debug()']).getSighash('debug')
   const { execResult: { returnValue } } = await window.evm.call(context, createdAddress, sighash)
 
   const svg = ethers.utils.defaultAbiCoder.decode(['string'], returnValue)
@@ -288,7 +308,7 @@ const Mint = () => {
               {state && state.svg &&
                 <div className='w-full'>
                   <div className='mx-auto'>
-                    <img className='mx-auto' alt='preview' src={`data:image/svg+xml;utf8,${encodeURIComponent(state.svg)}`} />
+                    <div className='mx-auto' dangerouslySetInnerHTML={{ __html: state.svg }} />
                   </div>
                 </div>}
             </div>
