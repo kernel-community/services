@@ -10,7 +10,8 @@
     "build": "CI=true yarn workspaces run build",
     "lint": "CI=true yarn workspaces run lint",
     "test": "CI=true yarn workspaces run test",
-    "deploy:staging": "yarn workspaces run deploy:staging"
+    "deploy:staging": "yarn workspaces run deploy:staging",
+    "deploy:prod": "yarn workspaces run deploy:prod"
   },
   "license": "MIT"
 }
