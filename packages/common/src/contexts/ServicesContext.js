@@ -91,15 +91,9 @@ const handleMessage = (dispatch, messageEvent) => {
   }
 }
 
-const group = (acc, e, i) => {
-  const chunkIndex = Math.floor(i / 2)
-  i % 2 === 0 ? acc[chunkIndex] = [e] : acc[chunkIndex].push(e)
-  return acc
-}
-const cookies = (cookie) => Object.fromEntries(cookie.split('=').reduce(group, []))
-
 const hasCookie = () => document.cookie.includes(COOKIE_USER)
-const fromCookie = () => JSON.parse(decodeURIComponent(cookies(document.cookie)[COOKIE_USER]))
+const cookies = () => Object.fromEntries(document.cookie.split(';').map(s => s.split('=').map(s => s.trim())))
+const fromCookie = () => JSON.parse(decodeURIComponent(cookies()[COOKIE_USER]))
 const expired = (exp) => Date.now() - exp > 0
 
 const walletLogin = async (state, dispatch) => {
