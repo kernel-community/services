@@ -92,7 +92,7 @@ const handleMessage = (dispatch, messageEvent) => {
 }
 
 const group = (acc, e, i) => {
-  i % 2 == 0 ? acc[Math.floor(i/2)] = [e] : acc[Math.floor(i/2)].push(e)
+  i % 2 === 0 ? acc[Math.floor(i / 2)] = [e] : acc[Math.floor(i / 2)].push(e)
   return acc
 }
 const cookies = (cookie) => Object.fromEntries(cookie.split('=').reduce(group))
