@@ -92,10 +92,11 @@ const handleMessage = (dispatch, messageEvent) => {
 }
 
 const group = (acc, e, i) => {
-  i % 2 === 0 ? acc[Math.floor(i / 2)] = [e] : acc[Math.floor(i / 2)].push(e)
+  const chunkIndex = Math.floor(i / 2)
+  i % 2 === 0 ? acc[chunkIndex] = [e] : acc[chunkIndex].push(e)
   return acc
 }
-const cookies = (cookie) => Object.fromEntries(cookie.split('=').reduce(group))
+const cookies = (cookie) => Object.fromEntries(cookie.split('=').reduce(group, []))
 
 const hasCookie = () => document.cookie.includes(COOKIE_USER)
 const fromCookie = () => JSON.parse(decodeURIComponent(cookies(document.cookie)[COOKIE_USER]))

@@ -12,7 +12,7 @@ import { useServices, linesVector } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
-import { loadWallet, provider, voidSigner, humanizeEther } from 'common'
+import { AUTH_WALLET_ADDRESS, loadWallet, provider, voidSigner, humanizeEther } from 'common'
 import Page from 'components/Page'
 
 const RINKEBY_CHAIN_ID = 4
@@ -87,7 +87,7 @@ const Claim = () => {
       const rinkebyBalance = await rinkebySigner.getBalance()
       dispatch({ type: 'rinkebyBalance', payload: rinkebyBalance })
 
-      const rinkebyFaucet = voidSigner(AppConfig.servicesWallet, rinkebyProvider)
+      const rinkebyFaucet = voidSigner(AUTH_WALLET_ADDRESS, rinkebyProvider)
       const rinkebyFaucetBalance = await rinkebyFaucet.getBalance()
       dispatch({ type: 'rinkebyFaucet', payload: rinkebyFaucetBalance })
 
@@ -99,7 +99,7 @@ const Claim = () => {
       const goerliBalance = await goerliSigner.getBalance()
       dispatch({ type: 'goerliBalance', payload: goerliBalance })
 
-      const goerliFaucet = voidSigner(AppConfig.servicesWallet, goerliProvider)
+      const goerliFaucet = voidSigner(AUTH_WALLET_ADDRESS, goerliProvider)
       const goerliFaucetBalance = await goerliFaucet.getBalance()
       dispatch({ type: 'goerliFaucet', payload: goerliFaucetBalance })
     })()
