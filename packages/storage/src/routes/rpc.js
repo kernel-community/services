@@ -61,8 +61,8 @@ const SERVICE_POLICY = {
   }
 }
 
-const LOCAL = process.env.ENV === 'DEV'
-const DOMAIN = LOCAL ? 'localhost:3003' : 'kernel.community'
+const PROD = process.env.ENV === 'PROD'
+const COOKIE_JWT = PROD ? 'prodJWT' : 'stagingJWT'
 
 const register = async (server, rpcPath, { projectId, bucket, rpcEndpoint }) => {
 
@@ -88,8 +88,8 @@ const register = async (server, rpcPath, { projectId, bucket, rpcEndpoint }) => 
   const getJWT = (request) => {
     // Try to get JWT from headers or cookie
     const header = request.raw.headers.authorization
-    const cookie = request.cookies.stagingJWT
-    console.log(header, cookie)
+    const cookie = request.cookies[COOKIE_JWT]
+    // console.log(header, cookie)
     if (!header && !cookie) {
       return
     }

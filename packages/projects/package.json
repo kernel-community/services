@@ -43,6 +43,7 @@
     "lint": "npx standard",
     "format": "npx standard --fix",
     "deploy:staging": "gcloud app deploy dist/app.yaml --project kernel-projects-staging",
+    "deploy:prod": "gcloud app deploy dist/app.yaml --project kernel-projects-prod",
     "eject": "craco eject"
   },
   "standard": {

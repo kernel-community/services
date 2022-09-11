@@ -16,7 +16,8 @@
     "lint": "echo \"tbd\"",
     "format": "npx standard --fix",
     "test": "echo \"tbd\"",
-    "deploy:staging": "gcloud app deploy dist/app_staging.yaml --project kernel-services-staging"
+    "deploy:staging": "gcloud app deploy dist/app_staging.yaml --project kernel-services-staging",
+    "deploy:prod": "gcloud app deploy dist/app_prod.yaml --project kernel-community"
   },
   "standard": {
     "ignore": [

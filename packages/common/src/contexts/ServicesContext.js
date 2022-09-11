@@ -21,6 +21,8 @@ const SEND_URL = process.env[`REACT_APP_SEND_URL_${env}`]
 const AUTH_MESSAGE_TYPE = 'kernel.auth'
 const AUTH_TIMEOUT_MS = 24 * 60 * 60 * 1000
 
+const COOKIE_USER = env === 'PROD' ? 'prodUser' : 'stagingUser'
+
 const rpcEndpointStorage = process.env[`REACT_APP_STORAGE_ENDPOINT_${env}`]
 const rpcEndpointTask = process.env[`REACT_APP_TASK_ENDPOINT_${env}`]
 const rpcEndpointQuery = process.env[`REACT_APP_QUERY_ENDPOINT_${env}`]
@@ -89,17 +91,21 @@ const handleMessage = (dispatch, messageEvent) => {
   }
 }
 
-const hasCookie = () => document.cookie.includes('stagingUser')
-const fromCookie = () => JSON.parse(decodeURIComponent(document.cookie.split('=')[1]))
+const group = (acc, e, i) => {
+  i % 2 == 0 ? acc[Math.floor(i/2)] = [e] : acc[Math.floor(i/2)].push(e)
+  return acc
+}
+const cookies = (cookie) => Object.fromEntries(cookie.split('=').reduce(group))
+
+const hasCookie = () => document.cookie.includes(COOKIE_USER)
+const fromCookie = () => JSON.parse(decodeURIComponent(cookies(document.cookie)[COOKIE_USER]))
 const expired = (exp) => Date.now() - exp > 0
 
 const walletLogin = async (state, dispatch) => {
-  // TODO: check exp
   if (state.user && !expired(state.user.exp)) {
     return state.user
   }
 
-  // TODO: check exp
   if (hasCookie()) {
     const payload = fromCookie()
     if (!expired(payload.exp)) {

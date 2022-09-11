@@ -15,7 +15,8 @@
     "upgrade": "yarn upgrade",
     "format": "npx standard --fix",
     "test": "echo \"tbd\"",
-    "deploy:staging": "echo \"tbd\""
+    "deploy:staging": "echo \"tbd\"",
+    "deploy:prod": "echo \"tbd\""
   },
   "standard": {
     "ignore": [

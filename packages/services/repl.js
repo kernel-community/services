@@ -16,6 +16,8 @@ Promise.all([
       var secret = await client.access({secretId: 'taskService'})
       var serviceAccount = JSON.parse(secret.payload.data.toString())
       global.service = await googleService.build({projectId, serviceAccount})
+      global.secretClient = secretClient
+      global.client = client
     } catch (error) {
       console.log(error)
     }

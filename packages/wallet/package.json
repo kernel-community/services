@@ -28,6 +28,7 @@
     "format": "npx standard --fix",
     "test": "craco test",
     "deploy:staging": "gcloud app deploy dist/app.yaml --project kernel-wallet-staging",
+    "deploy:prod": "gcloud app deploy dist/app.yaml --project kernel-wallet-prod",
     "eject": "craco eject"
   },
   "standard": {

@@ -27,6 +27,10 @@ const SERVICE_POLICY = {
 const LOCAL = process.env.ENV === 'DEV'
 const DOMAIN = LOCAL ? '.app.localhost' : 'kernel.community'
 
+const PROD = process.env.ENV === 'PROD'
+const COOKIE_JWT = PROD ? 'prodJWT' : 'stagingJWT'
+const COOKIE_USER = PROD ? 'prodUser' : 'stagingUser'
+
 const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) => {
 
   const authService = await authBuilder.build({ seed, authMemberId, rpcEndpoint })
@@ -62,7 +66,7 @@ const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) =>
     try {
       const { authPayload, jwt, persist } = await rpcService.call(service, fn, params)
       if (persist) {
-        // TODO: set expires, set env properly
+        // TODO: set expires properly
         //const maxAge = authPayload.exp - Date.now()
         const opts = {
           domain: DOMAIN,
@@ -72,12 +76,12 @@ const register = async (server, rpcPath, { seed, authMemberId, rpcEndpoint }) =>
           httpOnly: true,
           path: '/'
         }
-        reply.setCookie('stagingJWT', jwt, opts)
-        reply.setCookie('stagingUser', JSON.stringify(authPayload), {
+        reply.setCookie(COOKIE_JWT, jwt, opts)
+        reply.setCookie(COOKIE_USER, JSON.stringify(authPayload), {
           domain: DOMAIN,
           maxAge: 60 * 60 * 20,
-          secure: true,
           sameSite: 'none',
+          secure: true,
           path: '/'
         })
       }

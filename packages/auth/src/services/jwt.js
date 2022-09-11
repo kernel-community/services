@@ -65,10 +65,6 @@ const encode = ({ header = HEADER, payload, signature }) =>
 const decode = (jwt) => {
   const parts = jwt.split('.')
     .map((e) => fromBase64Url(e))
-  console.log(parts
-    .slice(0, 2)
-    .map((e) => e.toString())
-  )
   const obj = parts
     .slice(0, 2)
     .map((e) => JSON.parse(e.toString()))
@@ -76,7 +72,6 @@ const decode = (jwt) => {
       acc[Object.keys(e)[0]] = Object.values(e)[0];
       return acc;
     }, {})
-  console.log(obj)
   return Object.assign(obj, { signature: parts[2] }) 
 }
 
