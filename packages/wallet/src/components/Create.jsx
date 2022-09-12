@@ -65,7 +65,7 @@ const Create = () => {
       wallet = null
 
       // TODO: retry?
-      await client.call({ method: 'authService.register', params: [jwt] })
+      await client.call({ method: 'authService.accessToken', params: [jwt, true] })
     } catch (error) {
       console.error(error)
       setErrorMessage(error.message)

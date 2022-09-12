@@ -102,8 +102,8 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
       throw new Error('already registered')
     }
     //TODO: change member owner to API
-    const { id: member_id, data: { role } } = await members.create({ wallet: iss, role: NEW_ROLE })
-    const registered = await wallets.create({ member_id, nickname }, { id: iss, owner: member_id })
+    const { id: memberId, data: { role } } = await members.create({ wallet: iss, role: NEW_ROLE })
+    const registered = await wallets.create({ memberId, nickname }, { id: iss, owner: memberId })
 
     const authPayload = jwtService.authPayload({ iss, nickname, role })
     return jwtService.createJwt(wallet, jwtService.AUTH_JWT, authPayload)
@@ -117,11 +117,12 @@ const build = async ({ seed, authMemberId, rpcEndpoint }) => {
     if (!exists) {
       member = await members.create({ wallet: iss, role: NEW_ROLE, groupIds: DEFAULT_GROUP_IDS })
       await members.updateMeta(member.id, { owner: member.id })
-      const { id: member_id, data: { role } } = member
-      await wallets.create({ member_id, nickname }, { id: iss, owner: member_id })
+      const { id: memberId, data: { role } } = member
+      await wallets.create({ memberId, nickname }, { id: iss, owner: memberId })
     } else {
-      const { data: { member_id } } = await wallets.get(iss)
-      member = await members.get(member_id)
+      // TODO: migrate entities from member_id to memberId
+      const { data: { member_id, memberId } } = await wallets.get(iss)
+      member = await members.get(memberId || member_id)
       // TODO: quick fix to migrate legacy member entities
       await members.updateMeta(member.id, { owner: member.id })
     }

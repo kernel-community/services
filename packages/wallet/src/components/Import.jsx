@@ -66,7 +66,7 @@ const Import = () => {
       wallet = null
 
       // TODO: retry?
-      await client.call({ method: 'authService.register', params: [jwt] })
+      await client.call({ method: 'authService.accessToken', params: [jwt, true] })
     } catch (error) {
       setErrorMessage(error.message)
       console.error(error)
