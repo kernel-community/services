@@ -44,6 +44,9 @@ const SERVICE_POLICY = {
   }
 }
 
+const PROD = process.env.ENV === 'PROD'
+const COOKIE_JWT = PROD ? 'prodJWT' : 'stagingJWT'
+
 const register = async (server, rpcPath, tasksPath, { seed, serviceAccount, faucetAmount, infuraId, authMemberId, rpcEndpoint, projectId }) => {
 
   const taskService = await taskBuilder.build({ projectId, relativeUri: tasksPath })
@@ -56,7 +59,7 @@ const register = async (server, rpcPath, tasksPath, { seed, serviceAccount, fauc
   const getJWT = (request) => {
     // Try to get JWT from headers or cookie
     const header = request.raw.headers.authorization
-    const cookie = request.cookies.stagingJWT
+    const cookie = request.cookies[COOKIE_JWT]
     if (!header && !cookie) {
       return
     }
