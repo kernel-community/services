@@ -15,54 +15,65 @@ import { loadWallet } from 'common'
 import AppConfig from 'App.config'
 import Page from 'components/Page'
 
+const EXTERNAL_ROLE = 2000
+const MEMBER_ROLE = 1000
+
 const everyoneCards = [
   {
     title: 'Claim',
     description: 'Get set up with some test ETH',
     url: '/portal/claim',
-    active: true
+    active: true,
+    minRole: EXTERNAL_ROLE
   },
   {
     title: 'Transact',
     description: 'Understand how transactions work',
     url: '/portal/transact',
-    active: true
+    active: true,
+    minRole: EXTERNAL_ROLE
   },
   {
     title: 'Deploy',
     description: 'Create your own token now',
     url: '/portal/deploy',
-    active: true
+    active: true,
+    minRole: EXTERNAL_ROLE
   },
   {
     title: 'Mint',
     description: 'Create an NFT in one go',
     url: '/portal/mint',
-    active: true
+    active: true,
+    minRole: EXTERNAL_ROLE
   },
   {
     title: 'Contact',
     description: 'Keep your friends\' addresses safe',
     url: '/portal/contact',
-    active: false
+    active: false,
+    minRole: EXTERNAL_ROLE
   },
   {
     title: 'Contribute',
     description: 'Learn how to improve this with us',
     url: '/portal/contribute',
-    active: false
+    active: false,
+    minRole: EXTERNAL_ROLE
   },
   {
     title: 'Interact',
     description: 'Explore all the best contracts',
     url: '/portal/interact',
-    active: false
+    active: false,
+    minRole: EXTERNAL_ROLE
   },
   {
     title: 'Develop',
     description: 'Write your own code!',
     url: '/portal/develop',
-    active: false
+    active: false,
+    minRole: EXTERNAL_ROLE
   }
 ]
 
@@ -71,76 +82,87 @@ const memberCards = [
     title: 'UnProfile',
     description: 'Unprofile yourself',
     url: getUrl('unprofile'),
-    active: true
+    active: true,
+    minRole: MEMBER_ROLE
   },
   {
     title: 'Adventure',
     description: 'Heed the call to adventure',
     url: getUrl('adventures'),
-    active: true
+    active: true,
+    minRole: MEMBER_ROLE
   },
   {
     title: 'Explore',
     description: 'Connect with other Fellows',
     url: getUrl('explorer'),
-    active: true
+    active: true,
+    minRole: MEMBER_ROLE
   },
   {
     title: 'Groups',
     description: 'Create and manage groups',
     url: getUrl('groups'),
-    active: true
+    active: true,
+    minRole: MEMBER_ROLE
   },
   {
     title: 'Proposals',
     description: 'Create and vote on Proposals',
     url: getUrl('proposals'),
-    active: true
+    active: true,
+    minRole: MEMBER_ROLE
   },
   {
-    title: 'Applications',
+    title: 'Apply',
     description: 'Apply to the Kernel Community',
-    url: getUrl('applications'),
-    active: true
+    url: getUrl('apply'),
+    active: true,
+    minRole: EXTERNAL_ROLE
   },
   {
     title: 'Events',
     description: 'Create and register for Events',
     url: getUrl('events'),
-    active: true
+    active: true,
+    minRole: MEMBER_ROLE
   },
   {
     title: 'Pages',
     description: 'Create and manage Knowledge',
     url: getUrl('www'),
-    active: true
+    active: true,
+    minRole: MEMBER_ROLE
   },
   {
     title: 'Chat',
     description: 'Horizontal conversations',
     url: getUrl('chat'),
-    active: true
+    active: false,
+    minRole: MEMBER_ROLE
   }
 ]
 
-const LinkCards = ({ cardConfig }) => {
-  return cardConfig.map((card, index) => {
-    const relative = card.url.startsWith('/')
-    const Tag = relative ? Link : 'a'
-    const link = `${card.active ? card.url : '#'}`
-    const props = relative ? { to: link } : { href: link }
-    return (
-      <Tag key={index} {...props}>
-        <div className={
-          `${card.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
-        }
-        >
-          <div className='text-xl mb-2'>{card.title}</div>
-          <div className='text-base mb-1'>{card.description}</div>
-        </div>
-      </Tag>
-    )
-  })
+const LinkCards = ({ user: { role }, cardConfig }) => {
+  return cardConfig
+    .filter(({ minRole }) => role <= minRole)
+    .map((card, index) => {
+      const relative = card.url.startsWith('/')
+      const Tag = relative ? Link : 'a'
+      const link = `${card.active ? card.url : '#'}`
+      const props = relative ? { to: link } : { href: link }
+      return (
+        <Tag key={index} {...props}>
+          <div className={
+            `${card.active ? 'bg-kernel-dark text-kernel-white' : 'bg-kernel-grey'} p-5 rounded shadow-md`
+          }
+          >
+            <div className='text-xl mb-2'>{card.title}</div>
+            <div className='text-base mb-1'>{card.description}</div>
+          </div>
+        </Tag>
+      )
+    })
 }
 
 const Portal = () => {
@@ -192,17 +214,13 @@ const Portal = () => {
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>For Everyone</h3>
             <div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-8 border-0 md:border-r border-kernel-grey md:pr-12'>
-              <LinkCards
-                cardConfig={everyoneCards}
-              />
+              <LinkCards user={user} cardConfig={everyoneCards} />
             </div>
           </div>
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>Kernel Additions</h3>
             <div className='grid grid-cols-1 md:grid-cols-2 md:gap-x-8 gap-y-8 md:pl-12'>
-              <LinkCards
-                cardConfig={memberCards}
-              />
+              <LinkCards user={user} cardConfig={memberCards} />
             </div>
           </div>
         </div>

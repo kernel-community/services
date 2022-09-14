@@ -155,7 +155,8 @@ const Claim = () => {
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>Mainnet</h3>
             <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 md:pl-12'>
-              <p>Sponsor our community</p>
+              <p>Sponsor our community by sending any spare ETH, Goerli, tokens, NFTs to</p>
+              <p>{AUTH_WALLET_ADDRESS}</p>
             </div>
           </div>
         </div>

@@ -20,7 +20,7 @@ const KERNEL_AUD = 'kernel.community'
 
 const API_ROLE = 50
 const API_NICKNAME = 'apiServer'
-const NEW_ROLE = 1000
+const NEW_ROLE = 2000
 const DEFAULT_GROUP_IDS = []
 
 const header = jwtService.HEADER

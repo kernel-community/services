@@ -21,7 +21,7 @@ const FORM_INPUT = ['email', 'name', 'pronouns', 'twitter', 'city', 'company', '
 const INITIAL_FORM_KEYS = ['wallet'].concat(FORM_INPUT)
 const INITIAL_FORM_FIELDS_STATE = INITIAL_FORM_KEYS
   .reduce((acc, key) => Object.assign(acc, { [key]: '' }), {})
-INITIAL_FORM_FIELDS_STATE.scholarship = true
+INITIAL_FORM_FIELDS_STATE.scholarship = false
 
 const INITIAL_FORM_SUBMISSION_STATE = {
   formStatus: 'clean',
@@ -82,24 +82,20 @@ const save = async (state, dispatch, e) => {
   const data = Object.keys(state)
     .filter(key => !keysToExclude.includes(key))
     .reduce((acc, key) => Object.assign(acc, { [key]: state[key] }), {})
-  console.log(data)
 
   try {
     if (applicationId && memberId) {
       const patched = await applications.patch(applicationId, data)
-      console.log('patched', patched)
       dispatch({ type: 'formStatus', payload: 'success' })
       return patched
     }
 
     const application = await applications.create(data)
-    console.log('new', application)
     dispatch({ type: 'applicationId', payload: application.id })
 
     const member = await members.patch(application.data.memberId, { applicationId: application.id })
     console.log(member)
     dispatch({ type: 'formStatus', payload: 'success' })
-    // dispatch({ type: 'created', payload: updated })
   } catch (error) {
     dispatch({ type: 'formStatus', payload: 'error' })
     dispatch({ type: 'errorMessage', payload: error.message })

@@ -13,7 +13,7 @@ import rpcBuilder from './../services/rpc.js'
 
 const VERSION = '2.0'
 
-const ROLE_ALL = 1000
+const ROLE_ALL = 2000
 const ROLE_CORE = 100
 const SERVICE_POLICY = {
   authService: {
