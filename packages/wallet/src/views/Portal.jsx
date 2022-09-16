@@ -143,7 +143,8 @@ const memberCards = [
   }
 ]
 
-const LinkCards = ({ user: { role }, cardConfig }) => {
+const LinkCards = ({ user, cardConfig }) => {
+  const role = user ? user.role : EXTERNAL_ROLE
   return cardConfig
     .filter(({ minRole }) => role <= minRole)
     .map((card, index) => {
