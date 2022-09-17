@@ -64,6 +64,8 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
   const groups = await entityClient({ resource: 'group' })
   const proposals = await entityClient({ resource: 'proposal' })
   const transactions = await entityClient({ resource: 'transaction' })
+  const applications = await entityClient({ resource: 'application' })
+  const reviews = await entityClient({ resource: 'review' })
 
   // google services
   const googleServices = await google.build({ projectId, serviceAccount })
@@ -174,6 +176,25 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
     return { proposal }
   }
 
+  const voteReview = async ({ iss, role }, { reviewId, choice }) => {
+    const review = await reviews.patch(reviewId, { votes: { [iss]: choice }})
+    return { review }
+  }
+
+  // External
+  const submitApplication = async ({ iss, role }, { data }) => {
+    const { data: { applicationId } } = await members.get(iss)
+    if (applicationId) {
+      const patched = await applications.patch(applicationId, data)
+      return { application: patched }
+    }
+    const application = await applications.create(data, { owner: iss })
+    const review = await reviews.create({ applicationId: application.id, status: 'new' })
+    const member = await members.patch(iss, { applicationId: application.id })
+
+    return { application }
+  }
+
   const ethereumFaucet = async ({ iss, role }, { chainId }) => {
     const wallet = wallets[chainId]
     if (!wallet) {
@@ -208,7 +229,7 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
 
   return {
     sendEmail, emailMember, emailMembers, rsvpCalendarEvent, followProject, syncGroupMembers, voteProposal,
-    ethereumFaucet
+    submitApplication, voteReview, ethereumFaucet
   }
 }
 

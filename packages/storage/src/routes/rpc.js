@@ -21,7 +21,8 @@ const BEARER_TYPE = 'Bearer'
 
 const authServiceAddress = process.env.AUTH_ADDRESS
 
-const ROLE_ALL = 1000
+const ROLE_EXTERNAL = 2000
+const ROLE_ALL = 2000
 const ROLE_CORE = 100
 const SERVICE_POLICY = {
   storageService: {
@@ -47,17 +48,17 @@ const SERVICE_POLICY = {
     setup: ROLE_CORE
   },
   entityService: {
-    resources: ROLE_ALL,
-    list: ROLE_ALL,
-    create: ROLE_ALL,
-    get: ROLE_ALL,
-    getAll: ROLE_ALL,
-    patch: ROLE_ALL,
-    update: ROLE_ALL,
-    updateMeta: ROLE_ALL,
-    remove: ROLE_ALL,
-    exists: ROLE_ALL,
-    setup: ROLE_ALL
+    resources: ROLE_EXTERNAL,
+    list: ROLE_EXTERNAL,
+    create: ROLE_EXTERNAL,
+    get: ROLE_EXTERNAL,
+    getAll: ROLE_EXTERNAL,
+    patch: ROLE_EXTERNAL,
+    update: ROLE_EXTERNAL,
+    updateMeta: ROLE_EXTERNAL,
+    remove: ROLE_EXTERNAL,
+    exists: ROLE_EXTERNAL,
+    setup: ROLE_EXTERNAL
   }
 }
 

@@ -21,6 +21,7 @@ const BEARER_TYPE = 'Bearer'
 
 const authServiceAddress = process.env.AUTH_ADDRESS
 
+const ROLE_EXTERNAL = 2000
 const ROLE_ALL = 1000
 const ROLE_CORE = 100
 
@@ -30,17 +31,22 @@ const SERVICE_POLICY = {
     createQueue: ROLE_CORE,
     listTasks: ROLE_CORE,
     createTask: ROLE_CORE,
-    enqueueTask: ROLE_ALL
+    enqueueTask: ROLE_EXTERNAL
   },
   taskQueueService: {
+    // Core
     sendEmail: ROLE_CORE,
     emailMember: ROLE_CORE,
     emailMembers: ROLE_CORE,
+    // Members
     rsvpCalendarEvent: ROLE_ALL,
     followProject: ROLE_ALL,
     syncGroupMembers: ROLE_ALL,
     voteProposal: ROLE_ALL,
-    ethereumFaucet: ROLE_ALL
+    voteReview: ROLE_ALL,
+    // External
+    submitApplication: ROLE_EXTERNAL,
+    ethereumFaucet: ROLE_EXTERNAL
   }
 }
 

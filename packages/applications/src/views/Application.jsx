@@ -37,7 +37,7 @@ const actions = {}
 // { bio: (state, value) => Object.assign({}, state, bio: value}) }
 // each field's action updates the state with the given value
 Object.keys(INITIAL_STATE)
-  .concat(['scholarship', 'groupIds', 'referralId', 'members', 'memberId', 'applications', 'applicationId'])
+  .concat(['scholarship', 'groupIds', 'referralId', 'members', 'memberId', 'applications', 'applicationId', 'taskService'])
   .forEach((key) => {
     actions[key] = (state, value) => Object.assign({}, state, { [key]: value })
   })
@@ -75,10 +75,11 @@ const save = async (state, dispatch, e) => {
     'applications',
     'members',
     'applicationId',
-    'wallet'
+    'wallet',
+    'taskService'
   ].concat(Object.keys(INITIAL_FORM_SUBMISSION_STATE))
 
-  const { applications, members, memberId, applicationId } = state
+  const { taskService, applications, memberId, applicationId } = state
   const data = Object.keys(state)
     .filter(key => !keysToExclude.includes(key))
     .reduce((acc, key) => Object.assign(acc, { [key]: state[key] }), {})
@@ -90,11 +91,7 @@ const save = async (state, dispatch, e) => {
       return patched
     }
 
-    const application = await applications.create(data)
-    dispatch({ type: 'applicationId', payload: application.id })
-
-    const member = await members.patch(application.data.memberId, { applicationId: application.id })
-    console.log(member)
+    await taskService.submitApplication({ data })
     dispatch({ type: 'formStatus', payload: 'success' })
   } catch (error) {
     dispatch({ type: 'formStatus', payload: 'error' })
@@ -152,7 +149,8 @@ const Application = () => {
       const groupIds = user.groupIds
       dispatch({ type: 'groupIds', payload: groupIds.join(', ') })
 
-      const { entityFactory } = await services()
+      const { entityFactory, taskService } = await services()
+      dispatch({ type: 'taskService', payload: taskService })
 
       const applications = await entityFactory({ resource: 'application' })
       dispatch({ type: 'applications', payload: applications })
