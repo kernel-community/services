@@ -1,6 +1,6 @@
 {
   "appTitle": "Kernel",
-  "minRole": 1000,
+  "minRole": 2000,
   "logoUrl": "/icon-192x192.png",
   "homeUrl": "/portal",
   "navbar": {
