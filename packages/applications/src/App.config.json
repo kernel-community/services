@@ -2,7 +2,7 @@
   "appTitle": "Kernel Application",
   "logoUrl": "/icon-192x192.png",
   "homeUrl": "/apply",
-  "minRole": 1000,
+  "minRole": 2000,
   "navbar": {
     "links": []
   }
