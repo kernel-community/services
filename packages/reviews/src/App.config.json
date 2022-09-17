@@ -1,0 +1,13 @@
+{
+  "appTitle": "Kernel Reviews",
+  "homeUrl": "/browse",
+  "minRole": 1000,
+  "navbar": {
+    "links": [
+      {
+        "url": "/browse",
+        "title": "Browse"
+      }
+    ]
+  }
+}
