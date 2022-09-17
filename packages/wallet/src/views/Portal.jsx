@@ -121,6 +121,13 @@ const memberCards = [
     minRole: EXTERNAL_ROLE
   },
   {
+    title: 'Review',
+    description: 'Review applications and help expand the Kernel Community',
+    url: getUrl('review'),
+    active: true,
+    minRole: MEMBER_ROLE
+  },
+  {
     title: 'Events',
     description: 'Create and register for Events',
     url: getUrl('events'),
