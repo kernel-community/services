@@ -66,10 +66,16 @@ const change = (dispatch, type, e) => {
 
 const value = (state, type) => state[type]
 
-const save = async (state, dispatch, e) => {
+const save = async (user, state, dispatch, e) => {
   e.preventDefault()
   dispatch({ type: 'formStatus', payload: 'submitting' })
   dispatch({ type: 'errorMessage', payload: null })
+
+  if (user.role < AppConfig.minRole) {
+    dispatch({ type: 'formStatus', payload: 'error' })
+    dispatch({ type: 'errorMessage', payload: 'You are already a member.' })
+    return
+  }
 
   const keysToExclude = [
     'applications',
@@ -226,7 +232,7 @@ const Application = () => {
           </div>
           <button
             disabled={state.formStatus === 'submitting'}
-            onClick={save.bind(null, state, dispatch)}
+            onClick={save.bind(null, user, state, dispatch)}
             className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
           >
             Submit
