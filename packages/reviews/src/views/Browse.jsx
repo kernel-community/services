@@ -51,7 +51,7 @@ const Browse = () => {
       const items = await reviews.getAll()
       dispatch({ type: 'items', payload: items })
     })()
-  }, [services, user.iss])
+  }, [services, user])
 
   return (
     <Page>

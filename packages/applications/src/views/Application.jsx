@@ -140,6 +140,11 @@ const Application = () => {
     if (!user || user.role > AppConfig.minRole) {
       return navigate('/')
     }
+    // already a member
+    if (user.role < AppConfig.minRole) {
+      dispatch({ type: 'formStatus', payload: 'error' })
+      dispatch({ type: 'errorMessage', payload: 'You are already a member.' })
+    }
   }, [navigate, user])
 
   useEffect(() => {

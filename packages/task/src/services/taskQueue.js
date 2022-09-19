@@ -15,6 +15,9 @@ import jwtService from './../../../auth/src/services/jwt.js'
 import entityBuilder from './../../../auth/src/services/entity.js'
 import rpcClientBuilder from './../../../auth/src/services/rpcClient.js'
 
+const EXTERNAL_ROLE = 2000
+const MEMBER_ROLE = 1000
+
 const RINKEBY_CHAIN_ID = 4
 const GOERLI_CHAIN_ID = 5
 const API_ROLE = 50
@@ -183,6 +186,10 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
 
   // External
   const submitApplication = async ({ iss, role }, { data }) => {
+    if (role < EXTERNAL_ROLE) {
+      console.debug(`Already a member ${iss}, ${role}`)
+      return
+    }
     const { data: { applicationId } } = await members.get(iss)
     if (applicationId) {
       const patched = await applications.patch(applicationId, data)
