@@ -36,24 +36,24 @@ const Wallet = () => {
         </div>
         <div className='lg:px-64 md:px-12 px-12 py-20'>
           <div className='font-heading lg:text-7xl text-5xl text-primary lg:py-5'>
-            Portal.
+            Welcome to Kernel.
           </div>
-          <div className='font-secondary text-lg text-kernel pt-12'>
+          <div className='font-secondary text-3xl text-kernel pt-12'>
             <Link to='/register'>
               <span className='pr-2 before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-kernel-highlight relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>
-                    Start your adventure
+                    Setup your account
                   </span>
                 </span>
               </span>
             </Link>
-            &nbsp;or&nbsp;
+            &nbsp;then&nbsp;
             <Link to='/portal'>
               <span className='pl-2 before:block before:absolute before:-inset-1 before:skew-y-3 before:bg-kernel-yellow-light relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>
-                    continue connecting
+                     jump in
                   </span>.
                 </span>
               </span>
