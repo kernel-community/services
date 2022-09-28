@@ -78,15 +78,12 @@ const Wallet = () => {
               <p className='pb-10'>
                 Non-custodial means that you care for your keys, no-one else. Caring for our own keys empowers us, and it makes us <strong>responsible</strong>. That can be a lot to handle on your own, which is why we create open tools for communities of care. Our <strong>portal</strong> will help you:
               </p>
-              <ol className='list-decimal pl-10 pb-10 underline underline-offset-4 decoration-kernel-dark'>
+              <ol className='list-decimal pl-10 pb-10 decoration-kernel-dark'>
                 <li className='p-2'>
                   <strong>learn</strong> about blockchains and "web3"
                 </li>
                 <li className='p-2'>
                   <strong>understand</strong> how cryptocurrency works
-                </li>
-                <li className='p-2'>
-                  <strong>find play</strong> money to help you experiment with more magical parts of our internet
                 </li>
                 <li className='p-2'>
                   <strong>connect</strong> with others who can help you learn even more.
