@@ -22,7 +22,7 @@ This is a [monorepo](https://danluu.com/monorepo/) using `yarn workspaces` with 
 
 ### Setup
 
-Go to our [staging site](https://staging.wallet.kernel.community) and create a new wallet. Use this staging wallet for local development, as your local environment will default to using to the staging auth and storage services. This means you have less to set up and can get going with two commands.
+Go to our [staging site](https://staging.wallet.kernel.community) and create a new wallet. Use this staging wallet for local development, as your local environment will default to using the staging auth and storage services. This means you have less to set up and can get going with two commands.
 
 Fork the repo to your GitHub account, check it out locally and run:
 
@@ -36,7 +36,7 @@ This repo uses `workspaces` to manage local dependencies. From the root of the r
 yarn workspace @kernel/admin start
 ```
 
-If you wanted to start the walelt, you would run:
+If you wanted to start the wallet, you would run:
 
 ```
 yarn workspace @kernel/wallet start
