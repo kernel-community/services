@@ -11,9 +11,8 @@ import { Link } from 'react-router-dom'
 import { Footer, Navbar, linesVector } from '@kernel/common'
 import AppConfig from 'App.config'
 
-import ethLogo from 'assets/images/ethereum.png'
+import celoLogo from 'assets/images/celo.png'
 import ipfsLogo from 'assets/images/ipfs.png'
-import uniswapLogo from 'assets/images/uniswap.png'
 import graphLogo from 'assets/images/the-graph.jpg'
 
 const Wallet = () => {
@@ -43,7 +42,7 @@ const Wallet = () => {
               <span className='pr-2 before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-kernel-highlight relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>
-                    Start your adventure
+                    Create an account
                   </span>
                 </span>
               </span>
@@ -64,41 +63,38 @@ const Wallet = () => {
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                 <h2 className='font-heading text-3xl text-primary pb-6'>Learn</h2>
                 <p>
-                  What lies before you is a <strong>non-custodial wallet</strong>. Don't stress if you're not sure what that means. Kernel is an open source learning community, and we're here to help each other <strong>understand</strong> and use our own <strong>keys</strong> to unlock doors to ever richer, <strong>shared</strong> truths.
+                  This is a <strong>non-custodial wallet</strong>. Don't stress if you're not sure what that means. Kernel is an open source learning community, and we're here to help each other <strong>understand</strong> and use our own <strong>keys</strong> to unlock doors to ever richer, <strong>shared</strong> truths.
                 </p>
               </div>
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                 <h2 className='font-heading text-3xl text-primary pb-6'>Play</h2>
                 <p>
-                  We call this a <strong>portal</strong> because it can do so much more than hodl money. When we set out to learn together, rather than represent your "worth" with one number, we can discover much more <strong>wholesome</strong> ways of seeing and being.
+                  We call this a <strong>portal</strong> because it is about so much more than money. When we set out to learn together, rather than represent your "worth" with one number, we can discover much more <strong>wholesome</strong> ways of seeing and being.
                 </p>
               </div>
             </div>
             <div className='pt-20'>
               <h1 className='font-heading text-5xl text-primary pb-6'>Help Us Help Each Other</h1>
               <p className='pb-10'>
-                Non-custodial means that you care for your keys, no-one else. Caring for our own keys empowers us, and it makes us <strong>responsible</strong>. That can be a lot to handle on your own, which is why we create open tools for communities of care. Shared learning enhances individual agency. As a part of this process, our <strong>portal</strong> will help you:
+                Non-custodial means that you care for your keys, no-one else. Caring for our own keys empowers us, and it makes us <strong>responsible</strong>. That can be a lot to handle on your own, which is why we create open tools for communities of care. Our <strong>portal</strong> will help you:
               </p>
-              <ol className='list-decimal pl-10 pb-10 underline underline-offset-4 decoration-kernel-dark'>
+              <ol className='list-decimal pl-10 pb-10 decoration-kernel-dark'>
                 <li className='p-2'>
-                  <strong>connect</strong> with other humans worthy of your trust
+                  <strong>learn</strong> about blockchains and "web3"
                 </li>
                 <li className='p-2'>
-                  <strong>understand</strong> why we call the protocols by which that happens "trustless"
+                  <strong>understand</strong> how cryptocurrency works
                 </li>
                 <li className='p-2'>
-                  <strong>find play</strong> money to help you experiment with more magical parts of our internet
-                </li>
-                <li className='p-2'>
-                  <strong>decode</strong> transactions, write and deploy your own contracts, and mint your own tokens
+                  <strong>connect</strong> with others who can help you learn even more.
                 </li>
               </ol>
               <p>
-                Finally, it will show you how to free money and extend your quest, giving back to the community who have made this gift possible.
+                Finally, it will show you how to free money, giving back to the community who have made this gift possible.
               </p>
             </div>
             <div className='pt-20'>
-              <h1 className='font-heading text-5xl text-primary pb-6'>Plural Goods</h1>
+              <h1 className='font-heading text-5xl text-primary pb-6'>Good For The Public</h1>
               <div className='font-secondary'>
                 <div className='columns-1 mb-20 md:columns-2'>
                   <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
@@ -117,7 +113,7 @@ const Wallet = () => {
               </div>
             </div>
             <div className='pt-20'>
-              <h1 className='font-heading text-5xl text-primary pb-6'>Supporting Supporters</h1>
+              <h1 className='font-heading text-5xl text-primary pb-6'>A Community of Care</h1>
               <div className='font-secondary'>
                 <p className='pb-10'>
                   At Kernel, we really care about
@@ -136,13 +132,10 @@ const Wallet = () => {
                 </p>
                 <div className='columns-1 mb-20 sm:columns-2 md:columns-3 lg:columns-4'>
                   <div className='py-10 float-left sm:pr-2'>
-                    <img className='max-h-[100px]' alt='supporter-logo' src={ethLogo} />
-                  </div>
-                  <div className='py-10 float-left sm:pr-2'>
                     <img className='max-h-[100px]' alt='supporter-logo' src={ipfsLogo} />
                   </div>
                   <div className='py-10 float-left sm:pr-2'>
-                    <img className='max-h-[100px]' alt='supporter-logo' src={uniswapLogo} />
+                    <img className='max-h-[100px]' alt='supporter-logo' src={celoLogo} />
                   </div>
                   <div className='py-10 float-left sm:pr-2'>
                     <img className='max-h-[100px]' alt='supporter-logo' src={graphLogo} />
