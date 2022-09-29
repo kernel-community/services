@@ -131,7 +131,7 @@ const Create = () => {
             </div>
             <div className='realtive w-full text-center m-8'>
               <input
-                className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
+                className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-2/3'
                 type='submit'
                 style={{ transition: 'all .15s ease' }}
                 value='Generate Keys'
@@ -149,6 +149,7 @@ const Create = () => {
                 <div className='w-full bg-gray-200 h-1'>
                   <div className='bg-blue-600 h-1' style={{ width: `${progress}%` }} />
                 </div>
+                <p className='mt-4'>INFO: This is storing your new Wallet on this device in a secure manner.</p>
               </div>
             </div>
             <div className={progress >= 100 ? '' : 'hidden'}>
@@ -162,9 +163,9 @@ const Create = () => {
                 <p className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
                   {address}
                 </p>
-                <p className='mt-4'>TIP: This is your public key and you can share it with anyone you would like.</p>
+                <p className='mt-4'>TIP: This is your address and you can share it with anyone you would like.</p>
               </div>
-              <div className='relative w-full m-8'>
+              <div className='relative w-full m-8 hidden'>
                 <label
                   className='block uppercase text-gray-700 text-xs font-bold mb-2'
                   htmlFor='grid-password'
@@ -180,11 +181,11 @@ const Create = () => {
                   onChange={(e) => setMnemonic(e.target.value)}
                   value={mnemonic}
                 />
-                <p className='mt-4'>TIP: This is your private key and you should write it down somewhere save.</p>
+                <p className='mt-4'>TIP: This is private information and you should never share it with anyone.</p>
               </div>
-              <div className='relative w-full m-8'>
+              <div className='relative w-1/3 m-8'>
                 <label className='block uppercase text-gray-700 text-xs font-bold mb-2'>
-                  Encrypted Wallet
+                  4. Encrypted Wallet
                 </label>
                 <a
                   download={`${address}-wallet.json`}
@@ -198,10 +199,7 @@ const Create = () => {
                 </a>
                 <p className='mt-4'>TIP: Download your encrypted Wallet and store it in your Dropbox.</p>
               </div>
-              <div className='relative w-full m-8'>
-                <label className='block uppercase text-gray-700 text-xs font-bold mb-2'>
-                  Encrypted Wallet
-                </label>
+              <div className='relative w-1/3 m-8'>
                 <a
                   href={`mailto:?subject=Kernel Wallet&body=${encryptedData}`}
                 >
@@ -213,7 +211,10 @@ const Create = () => {
                 </a>
                 <p className='mt-4'>TIP: Email your encrypted Wallet to yourself.</p>
               </div>
-              <div className='text-center m-8'>
+              <div className='relative w-full m-8'>
+                <label className='block uppercase text-gray-700 text-xs font-bold mb-2'>
+                  5. Login
+                </label>
                 <Link
                   className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
                   style={{ transition: 'all .15s ease' }}
@@ -221,6 +222,7 @@ const Create = () => {
                 >
                   Login to your new Wallet
                 </Link>
+                <p className='mt-4'>TIP: Download your encrypted Wallet and store it in your Dropbox.</p>
               </div>
             </div>
           </form>
