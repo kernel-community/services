@@ -33,16 +33,16 @@ const Login = () => {
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
       <main>
+        <div class="relative">
+          <div class="hidden lg:block lg:fixed lg:-top-24 lg:-left-52 lg:z-0">
+            <img alt="kernel fingerprint" src="/static/media/lines.751bbe2cb37a19445646.png" width="383" height="412" />
+          </div>
+          <div class="hidden lg:block lg:fixed lg:-top-12 lg:-right-52 lg:z-0">
+            <img alt="kernel fingerprint" src="/static/media/lines.751bbe2cb37a19445646.png" width="442" height="476" />
+          </div>
+        </div>
         <section className='absolute md:pt-32 pb-32 w-full h-full'>
-          <div
-            className='absolute top-0 w-full h-full bg-gray-900'
-            style={{
-              backgroundImage: `url(${bgImage})`,
-              backgroundSize: '100%',
-              backgroundRepeat: 'no-repeat'
-            }}
-          />
-          <div className='container mx-auto px-4 h-full'>
+         <div className='container mx-auto px-4 h-full'>
             <div className='flex content-center items-center justify-center h-full'>
               <div className='w-full lg:w-4/12 px-4'>
                 <div className='relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0'>
@@ -53,7 +53,7 @@ const Login = () => {
                         onClick={handleLogin}
                         type='button'
                       >
-                        Login with Kernel
+                        Login with your Kernel account
                       </button>
                     </div>
                   </div>
