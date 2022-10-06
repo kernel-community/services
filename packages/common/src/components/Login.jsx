@@ -49,7 +49,7 @@ const Login = () => {
                   <div className='rounded-t mb-0 px-6 py-6'>
                     <div className='text-center'>
                       <button
-                        className='bg-gray-900 text-white bg-gray-300 active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
+                        className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
                         onClick={handleLogin}
                         type='button'
                       >
