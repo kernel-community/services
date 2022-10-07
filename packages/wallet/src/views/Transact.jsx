@@ -16,11 +16,9 @@ import AppConfig from 'App.config'
 import { loadWallet, provider, voidSigner, humanizeEther, humanizeHash, blockExplorer } from 'common'
 import Page from 'components/Page'
 
-const RINKEBY_CHAIN_ID = 4
 const GOERLI_CHAIN_ID = 5
 
 const STATE_KEYS = ['error', 'status', 'disabled', 'wallet', 'transactions', 'receipts',
-  'rinkebyProvider', 'rinkebySigner', 'rinkebyBalance', 'rinkebyAmount', 'rinkebyAddress',
   'goerliProvider', 'goerliSigner', 'goerliBalance', 'goerliAmount', 'goerliAddress'
 ]
 const INITIAL_STATE = STATE_KEYS
@@ -63,14 +61,12 @@ const send = async (chainId, walletSend, state, dispatch, e) => {
   dispatch({ type: 'disabled', payload: true })
   // TODO: clean up
   const {
-    rinkebyAmount, goerliAmount,
-    rinkebyAddress, goerliAddress,
+    goerliAmount,
+    goerliAddress,
     receipts
   } = state
-  const to = chainId === RINKEBY_CHAIN_ID ? rinkebyAddress : goerliAddress
-  const value = chainId === RINKEBY_CHAIN_ID
-    ? ethers.utils.parseEther(rinkebyAmount)
-    : ethers.utils.parseEther(goerliAmount)
+  const to = goerliAddress
+  const value = ethers.utils.parseEther(goerliAmount)
   const transactionRequest = { to, value, chainId }
   try {
     const transaction = await walletSend(transactionRequest)
@@ -120,14 +116,6 @@ const Transact = () => {
       dispatch({ type: 'transactions', payload: transactions })
 
       // TODO: generalize
-      const rinkebyProvider = provider(RINKEBY_CHAIN_ID)
-      dispatch({ type: 'rinkebyProvider', payload: rinkebyProvider })
-
-      const rinkebySigner = voidSigner(wallet.address, rinkebyProvider)
-      dispatch({ type: 'rinkebySigner', payload: rinkebySigner })
-      const rinkebyBalance = await rinkebySigner.getBalance()
-      dispatch({ type: 'rinkebyBalance', payload: rinkebyBalance })
-
       const goerliProvider = provider(GOERLI_CHAIN_ID)
       dispatch({ type: 'goerliProvider', payload: goerliProvider })
 
@@ -166,35 +154,7 @@ const Transact = () => {
           </div>
         </div>
 
-        <div className='my-4 px-4 grid grid-cols-1 md:grid-cols-2 md:my-16 md:px-16'>
-          <div>
-            <h3 className='font-heading text-center text-3xl text-primary py-5'>Rinkeby</h3>
-            <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 border-0 md:border-r border-kernel-grey md:pr-12'>
-              <form className='form-control w-full'>
-                <input
-                  type='text'
-                  value={value(state, 'rinkebyAddress')}
-                  onChange={change.bind(null, dispatch, 'rinkebyAddress')}
-                  placeholder='Address'
-                  className='mb-6 border-1 rounded w-full'
-                />
-                <input
-                  type='text'
-                  value={value(state, 'rinkebyAmount')}
-                  onChange={change.bind(null, dispatch, 'rinkebyAmount')}
-                  placeholder='Amount ETH'
-                  className='mb-6 border-1 rounded w-full'
-                />
-                <button
-                  disabled={state.disabled}
-                  onClick={send.bind(null, RINKEBY_CHAIN_ID, walletSend, state, dispatch)}
-                  className='mt-6 mb-0 px-6 py-4 text-kernel-white bg-kernel-green-dark w-full rounded font-bold capitalize'
-                >Send Rinkeby
-                </button>
-                <label className='label block mb-1'>Rinkeby balance: {humanizeEther(state.rinkebyBalance)} rinkETH</label>
-              </form>
-            </div>
-          </div>
+        <div className='my-4 px-4 grid grid-cols-1 md:grid-cols-1 md:my-16 md:px-16'>
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>Goerli</h3>
             <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 md:pl-12'>
