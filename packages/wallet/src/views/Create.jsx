@@ -139,13 +139,13 @@ const Create = () => {
                 </label>
                 <input
                   type='text'
-                  className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
+                  className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-lg shadow focus:outline-none focus:ring w-full'
                   placeholder='Nickname'
                   style={{ transition: 'all .15s ease' }}
                   onChange={(e) => setNickname(e.target.value)}
                   value={nickname}
                 />
-                <p className='mt-4'>TIP: Choose a memorable Nickname for your Wallet.</p>
+                <p className='mt-4'><b>TIP:</b> Choose a memorable Nickname for your Wallet.</p>
               </div>
               <div className='relative w-full m-8'>
                 <label
@@ -156,13 +156,14 @@ const Create = () => {
                 </label>
                 <input
                   type='password'
-                  className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'
+                  className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-lg shadow focus:outline-none focus:ring w-full'
                   placeholder='Password'
                   style={{ transition: 'all .15s ease' }}
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                 />
-                <p className='mt-4'>TIP: Use a Password Manager to generate and store a strong password.</p>
+                <p className='mt-4'><b>INFO:</b> The password securely encrypts your Wallet on this device.</p>
+                <p className='mt-4'><b>TIP:</b> Use a Password Manager to generate and store a strong password.</p>
               </div>
               <div className='relative w-full text-center m-8'>
                 {errorMessage &&
@@ -172,7 +173,7 @@ const Create = () => {
               </div>
               <div className='realtive w-full text-center m-8'>
                 <input
-                  className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-2/3'
+                  className='bg-gray-900 text-white active:bg-gray-700 text-lg font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-2/3'
                   type='submit'
                   style={{ transition: 'all .15s ease' }}
                   value='Generate Keys'
@@ -206,6 +207,7 @@ const Create = () => {
                   {address}
                 </p>
                 <p className='mt-4'><b>TIP:</b> This is your address and you can share it with anyone you would like.</p>
+                <p className='mt-4'><b>INFO:</b> Don't worry, you can look up your address again at a later time.</p>
               </div>
               <div className='relative w-full m-8 hidden'>
                 <label
@@ -235,7 +237,7 @@ const Create = () => {
                   onClick={(e) => forward()}
                 >
                   <div
-                    className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center'
+                    className='bg-gray-900 text-white active:bg-gray-700 text-lg font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center'
                   >
                     Backup
                   </div>
@@ -247,7 +249,7 @@ const Create = () => {
                   href={`mailto:?subject=Kernel Wallet&body=${encryptedData}`}
                 >
                   <div
-                    className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center'
+                    className='bg-gray-900 text-white active:bg-gray-700 text-lg font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center'
                   >
                     Email
                   </div>
@@ -258,7 +260,7 @@ const Create = () => {
             <div className={isHidden(3)}>
               <div className='relative w-full m-8'>
                 <label className='block uppercase text-gray-700 text-xm font-bold mb-2'>
-                  5. Login
+                  5. Done
                 </label>
                 <Link
                   className=''
@@ -266,9 +268,9 @@ const Create = () => {
                   to={SUCCESS_TO}
                 >
                   <div
-                    className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center'
+                    className='bg-gray-900 text-white active:bg-gray-700 text-lg font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full text-center'
                   >
-                    Login to your new Wallet
+                    Explore your new Wallet
                   </div>
                 </Link>
                 <p className='mt-4'><b>TIP:</b> You are all set, no need to install anything to use your Wallet right away.</p>

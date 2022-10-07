@@ -35,7 +35,7 @@ const Wallet = () => {
         </div>
         <div className='lg:px-64 md:px-12 px-12 py-20'>
           <div className='font-heading lg:text-7xl text-5xl text-primary lg:py-5'>
-            Portal.
+            Welcome to Kernel.
           </div>
           <div className='font-secondary text-lg text-kernel pt-12'>
             <Link to='/register'>
