@@ -15,11 +15,9 @@ import AppConfig from 'App.config'
 import { AUTH_WALLET_ADDRESS, loadWallet, provider, voidSigner, humanizeEther } from 'common'
 import Page from 'components/Page'
 
-const RINKEBY_CHAIN_ID = 4
 const GOERLI_CHAIN_ID = 5
 
 const STATE_KEYS = ['taskService', 'error', 'status', 'disabled', 'wallet',
-  'rinkebyProvider', 'rinkebySigner', 'rinkebyBalance', 'rinkebyFaucet',
   'goerliProvider', 'goerliSigner', 'goerliBalance', 'goerliFaucet'
 ]
 const INITIAL_STATE = STATE_KEYS
@@ -79,18 +77,6 @@ const Claim = () => {
       const { taskService } = await services()
       dispatch({ type: 'taskService', payload: taskService })
 
-      const rinkebyProvider = provider(RINKEBY_CHAIN_ID)
-      dispatch({ type: 'rinkebyProvider', payload: rinkebyProvider })
-
-      const rinkebySigner = voidSigner(wallet.address, rinkebyProvider)
-      dispatch({ type: 'rinkebySigner', payload: rinkebySigner })
-      const rinkebyBalance = await rinkebySigner.getBalance()
-      dispatch({ type: 'rinkebyBalance', payload: rinkebyBalance })
-
-      const rinkebyFaucet = voidSigner(AUTH_WALLET_ADDRESS, rinkebyProvider)
-      const rinkebyFaucetBalance = await rinkebyFaucet.getBalance()
-      dispatch({ type: 'rinkebyFaucet', payload: rinkebyFaucetBalance })
-
       const goerliProvider = provider(GOERLI_CHAIN_ID)
       dispatch({ type: 'goerliProvider', payload: goerliProvider })
 
@@ -125,7 +111,6 @@ const Claim = () => {
           <div className='my-4 text-secondary'>
             {state.wallet && state.wallet.address &&
               <p><b>Address:</b> {state.wallet.address}</p>}
-            <p><b>Rinkeby balance:</b> {humanizeEther(state.rinkebyBalance)} rinkETH</p>
             <p><b>Goerli balance:</b> {humanizeEther(state.goerliBalance)} goeETH</p>
           </div>
         </div>
@@ -133,15 +118,6 @@ const Claim = () => {
         <div className='my-4 px-4 grid grid-cols-1 md:grid-cols-2 md:my-16 md:px-16'>
           <div>
             <h3 className='font-heading text-center text-3xl text-primary py-5'>Testnet</h3>
-            <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 border-0 md:border-r border-kernel-grey md:pr-12'>
-              <button
-                disabled={state.disabled}
-                onClick={claim.bind(null, RINKEBY_CHAIN_ID, state, dispatch)}
-                className='mt-6 mb-0 px-6 py-4 text-kernel-white bg-kernel-green-dark w-full rounded font-bold capitalize'
-              >Rinkeby
-              </button>
-              <label>Faucet balance: {humanizeEther(state.rinkebyFaucet)} ETH</label>
-            </div>
             <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 border-0 md:border-r border-kernel-grey md:pr-12'>
               <button
                 disabled={state.disabled}

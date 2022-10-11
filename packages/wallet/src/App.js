@@ -21,8 +21,8 @@ const Mint = lazy(() => import('views/Mint'))
 const Transact = lazy(() => import('views/Transact'))
 
 const Register = lazy(() => import('views/Register'))
-const Create = lazy(() => import('components/Create'))
-const Import = lazy(() => import('components/Import'))
+const Create = lazy(() => import('views/Create'))
+const Import = lazy(() => import('views/Import'))
 const Auth = lazy(() => import('components/Auth'))
 const Send = lazy(() => import('components/Send'))
 
@@ -44,10 +44,10 @@ const App = () => {
             <Route path='/portal/tokens' element={<Navigate to='/portal' replace />} />
             <Route path='/portal/contracts' element={<Navigate to='/portal' replace />} />
 
-            <Route path='/register' element={<Register />}>
-              <Route path='create' element={<Create />} />
-              <Route path='import' element={<Import />} />
-            </Route>
+            <Route path='/register' element={<Register />} />
+            <Route path='/register/create' element={<Create />} />
+            <Route path='/register/import' element={<Import />} />
+
             <Route path='/auth' element={<Auth />} />
             <Route path='/login' element={<Login />} />
             <Route path='/send' element={<Send />} />

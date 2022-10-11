@@ -6,62 +6,51 @@
  *
  */
 
-import { Outlet, Link } from 'react-router-dom'
-import { Footer, Navbar, linesVector } from '@kernel/common'
-import AppConfig from 'App.config'
+import { Link } from 'react-router-dom'
+
+import Page from 'components/Page'
+import Fingerprints from 'components/Fingerprints'
 
 const Register = () => {
   return (
-    <div>
-      <Navbar
-        title={AppConfig.appTitle}
-        logoUrl={AppConfig.logoUrl}
-        menuLinks={AppConfig.navbar?.links}
-        backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
-      />
-      <main>
-        <div className='hidden lg:block lg:absolute lg:-top-24 lg:-left-52 lg:z-0'>
-          <img alt='kernel fingerprint' src={linesVector} width={383} height={412} />
-        </div>
-        <div className='hidden lg:block lg:absolute lg:-top-12 lg:-right-52 lg:z-0'>
-          <img alt='kernel fingerprint' src={linesVector} width={442} height={476} />
-        </div>
-        <div className='container mx-auto px-4 py-[300px] h-full overflow-y-auto'>
-          <div className='flex content-center items-center justify-center'>
-            <div className='w-full lg:w-4/12 px-4'>
-              <div className='relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0'>
-                <div className='rounded-t mb-0 px-6 py-6'>
-                  <div className='text-center mt-6'>
-                    <Link to='/register/create'>
-                      <div
-                        className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
-                        type='button'
-                        style={{ transition: 'all .15s ease' }}
-                      >
-                        Create
-                      </div>
-                    </Link>
-                  </div>
-                  <div className='text-center mt-6'>
-                    <Link to='/register/import'>
-                      <div
-                        className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full'
-                        type='button'
-                        style={{ transition: 'all .15s ease' }}
-                      >
-                        Import
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-                <Outlet />
-              </div>
-            </div>
+    <Page>
+      <Fingerprints />
+      <div className='mt-32 mx-8 sm:mx-24 xl:mx-48'>
+        <div className='text-center'>
+          <div className='font-heading lg:text-5xl text-5xl text-primary lg:py-5'>
+            Welcome
+          </div>
+          <hr />
+          <div className='text-2xl my-4 text-secondary'>
+            We are greatful you are here.
+          </div>
+          <div className='my-4 text-secondary'>
+            <p className='m-4'>Here you can create or import your very own non-custodial Kernel Wallet.</p>
           </div>
         </div>
-      </main>
-      <Footer />
-    </div>
+        <div className='my-4 px-4 grid grid-cols-1 md:grid-cols-2 md:my-16 md:px-16'>
+          <div>
+            <h3 className='text-center font-heading text-center text-3xl text-primary py-5'>First Time User</h3>
+            <div className='text-center m-8 p-5'>
+              <Link className='bg-kernel-dark text-kernel-white text-center w-full p-5 rounded shadow-md' to='/register/create'>
+                Create
+              </Link>
+            </div>
+            <p className='text-center m-4'>If this is the first time visiting us, you should first <strong>Create</strong> a new Kernel Wallet.</p>
+          </div>
+          <div>
+            <h3 className='text-center font-heading text-center text-3xl text-primary py-5'>Returning User</h3>
+            <div className='text-center m-8 p-5'>
+              <Link className='bg-kernel-dark text-kernel-white text-center w-full p-5 rounded shadow-md' to='/register/import'>Import</Link>
+            </div>
+            <p className='text-center m-4'>
+              You should <strong>Import</strong> an existing Kernel Wallet on a different devices such
+              as Mobile phones, Laptops, etc.
+            </p>
+          </div>
+        </div>
+      </div>
+    </Page>
   )
 }
 
