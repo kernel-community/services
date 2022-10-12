@@ -8,17 +8,22 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Switch } from '@headlessui/react'
 import { useServices, Navbar, Footer, Alert } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import Intro from 'components/Intro'
 
-const FORM_INPUT = ['email', 'name', 'pronouns', 'twitter', 'city', 'company', 'bio', 'project', 'urls', 'interests']
+const FORM_INPUT = {
+  name: { label: 'Name', tip: 'What can we call you?', tag: 'input' },
+  email: { label: 'Email', tip: 'So we can send you status updates.', tag: 'input' },
+  reason: { label: 'Reason', tip: 'Why do you want to be in Kernel?', tag: 'textarea' },
+  interests: { label: 'Interests', tip: 'What are you most passionate about?', tag: 'textarea' },
+  urls: { label: 'Links', tip: 'Please share any links which best represent you (can be a song you like, a project you work on, or anything else between.', tag: 'textarea' }
+}
 
 // initializes state in the form:
 // { wallet: '', email: '', scholarship: true }
-const INITIAL_FORM_KEYS = ['wallet'].concat(FORM_INPUT)
+const INITIAL_FORM_KEYS = ['wallet'].concat(Object.keys(FORM_INPUT))
 const INITIAL_FORM_FIELDS_STATE = INITIAL_FORM_KEYS
   .reduce((acc, key) => Object.assign(acc, { [key]: '' }), {})
 INITIAL_FORM_FIELDS_STATE.scholarship = false
@@ -105,19 +110,21 @@ const save = async (user, state, dispatch, e) => {
   }
 }
 
-const Input = ({ fieldName, editable = true, state, dispatch }) => {
+const Input = ({ fieldName, label, tip, tag, editable = true, state, dispatch }) => {
   const disabled = !editable
   const bgColorClass = disabled ? 'bg-gray-200' : ''
+  const InputField = tag
 
   return (
     <div className='mb-6'>
       <label className='label block mb-1'>
-        <span className='label-text text-gray-700 capitalize'>{fieldName}</span>
+        <span className='label-text text-gray-700 capitalize'>{label}</span>
       </label>
-      <input
+      <InputField
         type='text' disabled={!editable} className={`border-1 rounded w-full ${bgColorClass}`}
         value={value(state, fieldName)} onChange={change.bind(null, dispatch, fieldName)}
       />
+      <p>{tip || ''}</p>
     </div>
   )
 }
@@ -185,16 +192,6 @@ const Application = () => {
     })()
   }, [services, user])
 
-  const changeConsentToggle = (enabled) => {
-    dispatch({ type: 'scholarshipToggleEnabled', payload: enabled })
-
-    try {
-      dispatch({ type: 'scholarship', payload: enabled })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   return (
     <div className='flex flex-col h-screen justify-between'>
       <Navbar
@@ -206,30 +203,11 @@ const Application = () => {
       <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
         <Intro />
         <form className='form-control w-full'>
-          <Input fieldName='wallet' editable={false} state={state} dispatch={dispatch} />
-          <Input fieldName='memberId' editable={false} state={state} dispatch={dispatch} />
-          <Input fieldName='referralId' editable={false} state={state} dispatch={dispatch} />
-          {FORM_INPUT.map((fieldName) => {
+          {Object.entries(FORM_INPUT).map(([fieldName, { label, tag, tip }]) => {
             return (
-              <Input key={fieldName} fieldName={fieldName} state={state} dispatch={dispatch} />
+              <Input key={fieldName} fieldName={fieldName} label={label} tag={tag} tip={tip} state={state} dispatch={dispatch} />
             )
           })}
-          <div className='mt-8 mb-2'>
-            <Switch.Group>
-              <Switch
-                checked={state.scholarshipToggleEnabled}
-                onChange={changeConsentToggle}
-                className={`${state.scholarshipToggleEnabled ? 'bg-kernel-green-dark' : 'bg-gray-200'
-                  } relative inline-flex h-6 w-9 items-center rounded-full`}
-              >
-                <span
-                  className={`transform transition ease-in-out duration-200 ${state.scholarshipToggleEnabled ? 'translate-x-4' : 'translate-x-1'
-                    } inline-block h-4 w-4 transform rounded-full bg-white`}
-                />
-              </Switch>
-              <Switch.Label passive className='ml-2 align-top'>I represent a minority group and am looking for financial support</Switch.Label>
-            </Switch.Group>
-          </div>
           <button
             disabled={state.formStatus === 'submitting'}
             onClick={save.bind(null, user, state, dispatch)}
