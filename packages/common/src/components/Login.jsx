@@ -32,19 +32,19 @@ const Login = () => {
         logoUrl={AppConfig.logoUrl}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
-      <main>
-        <section className='absolute md:pt-32 pb-32 w-full h-full'>
+      <main className='overflow-hidden'>
+        <section className='absolute w-full h-screen'>
           <div
-            className='absolute top-0 w-full h-full bg-gray-900'
+            className='absolute top-0 w-full h-screen bg-gray-900'
             style={{
               backgroundImage: `url(${bgImage})`,
-              backgroundSize: '100%',
+              backgroundPosition: 'top 10px center',
               backgroundRepeat: 'no-repeat'
             }}
           />
           <div className='container mx-auto px-4 h-full'>
-            <div className='flex content-center items-center justify-center h-full'>
-              <div className='w-full lg:w-4/12 px-4'>
+            <div className='flex content-center items-center justify-center h-screen'>
+              <div className='w-full lg:w-5/12 px-4'>
                 <div className='relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-gray-300 border-0'>
                   <div className='rounded-t mb-0 px-6 py-6'>
                     <div className='text-center'>
@@ -53,7 +53,7 @@ const Login = () => {
                         onClick={handleLogin}
                         type='button'
                       >
-                        Login with Kernel
+                        Login with your Kernel Wallet
                       </button>
                     </div>
                   </div>
