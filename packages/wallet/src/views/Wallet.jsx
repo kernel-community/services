@@ -63,7 +63,7 @@ const Wallet = () => {
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                 <h2 className='font-heading text-3xl text-primary pb-6'>Learn</h2>
                 <p>
-                  This is a <strong>non-custodial wallet</strong>. Don't stress if you're not sure what that means. Kernel is an open source learning community, and we're here to help each other <strong>understand</strong> and use our own <strong>keys</strong> to unlock doors to ever richer, <strong>shared</strong> truths.
+                  This is a <strong>non-custodial wallet</strong>. It's OK if you're not sure what that means. Kernel is an open source learning community, and we're here to help each other <strong>understand</strong> and use our own <strong>keys</strong> to unlock doors to ever richer, <strong>shared</strong> truths.
                 </p>
               </div>
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
