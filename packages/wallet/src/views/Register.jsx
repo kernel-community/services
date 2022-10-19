@@ -22,7 +22,7 @@ const Register = () => {
           </div>
           <hr />
           <div className='text-2xl my-4 text-secondary'>
-            We are greatful you are here.
+            We are grateful you are here.
           </div>
           <div className='my-4 text-secondary'>
             <p className='m-4'>Here you can create or import your very own non-custodial Kernel Wallet.</p>

@@ -15,10 +15,11 @@ import Intro from 'components/Intro'
 
 const FORM_INPUT = {
   name: { label: 'Name', tip: 'What can we call you?', tag: 'input' },
-  email: { label: 'Email', tip: 'So we can send you status updates.', tag: 'input' },
+  email: { label: 'Email', tip: 'So we can send you updates.', tag: 'input' },
   reason: { label: 'Reason', tip: 'Why do you want to be in Kernel?', tag: 'textarea' },
-  interests: { label: 'Interests', tip: 'What are you most passionate about?', tag: 'textarea' },
-  urls: { label: 'Links', tip: 'Please share any links which best represent you (can be a song you like, a project you work on, or anything else between.', tag: 'textarea' }
+  interests: { label: 'Interests', tip: 'At Kernel, we learn through conversations oganised by any fellow. What topics most inspire you to talk and listen? What are you really passionate about?', tag: 'textarea' },
+  activities: { label: 'Activities', tip: 'What do you love doing? What makes you grateful to be alive?', tag: 'textarea' },
+  urls: { label: 'Links', tip: 'Please share any links which best represent you (can be a song you like, a project you work on, or anything else between).', tag: 'textarea' }
 }
 
 const INITIAL_FORM_KEYS = ['wallet'].concat(Object.keys(FORM_INPUT))
@@ -113,9 +114,9 @@ const Input = ({ fieldName, label, tip, tag, editable = true, state, dispatch })
   return (
     <div className='mb-6'>
       <label className='label block mb-1'>
-        <span className='label-text text-gray-700 capitalize'>{label}</span>
+        <span className='label-text text-lg text-gray-700 capitalize'>{label}</span>
       </label>
-      <p>{tip || ''}</p>
+      <p className='text-sm italic'>{tip || ''}</p>
       <InputField
         type='text' disabled={!editable} className={`border-1 rounded w-full ${bgColorClass}`}
         value={value(state, fieldName)} onChange={change.bind(null, dispatch, fieldName)}
