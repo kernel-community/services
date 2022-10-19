@@ -21,17 +21,13 @@ const FORM_INPUT = {
   urls: { label: 'Links', tip: 'Please share any links which best represent you (can be a song you like, a project you work on, or anything else between.', tag: 'textarea' }
 }
 
-// initializes state in the form:
-// { wallet: '', email: '', scholarship: true }
 const INITIAL_FORM_KEYS = ['wallet'].concat(Object.keys(FORM_INPUT))
 const INITIAL_FORM_FIELDS_STATE = INITIAL_FORM_KEYS
   .reduce((acc, key) => Object.assign(acc, { [key]: '' }), {})
-INITIAL_FORM_FIELDS_STATE.scholarship = false
 
 const INITIAL_FORM_SUBMISSION_STATE = {
   formStatus: 'clean',
-  errorMessage: null,
-  scholarshipToggleEnabled: INITIAL_FORM_FIELDS_STATE.scholarship
+  errorMessage: null
 }
 
 const INITIAL_STATE = { ...INITIAL_FORM_FIELDS_STATE, ...INITIAL_FORM_SUBMISSION_STATE }
@@ -42,7 +38,7 @@ const actions = {}
 // { bio: (state, value) => Object.assign({}, state, bio: value}) }
 // each field's action updates the state with the given value
 Object.keys(INITIAL_STATE)
-  .concat(['scholarship', 'groupIds', 'referralId', 'members', 'memberId', 'applications', 'applicationId', 'taskService'])
+  .concat(['referralId', 'members', 'memberId', 'applications', 'applicationId', 'taskService'])
   .forEach((key) => {
     actions[key] = (state, value) => Object.assign({}, state, { [key]: value })
   })
@@ -50,7 +46,6 @@ Object.keys(INITIAL_STATE)
 // tries to call the given action
 const reducer = (state, action) => {
   try {
-    // console.log(action.type, action.payload, state)
     return actions[action.type](state, action.payload)
   } catch (error) {
     console.log(error)
@@ -120,11 +115,11 @@ const Input = ({ fieldName, label, tip, tag, editable = true, state, dispatch })
       <label className='label block mb-1'>
         <span className='label-text text-gray-700 capitalize'>{label}</span>
       </label>
+      <p>{tip || ''}</p>
       <InputField
         type='text' disabled={!editable} className={`border-1 rounded w-full ${bgColorClass}`}
         value={value(state, fieldName)} onChange={change.bind(null, dispatch, fieldName)}
       />
-      <p>{tip || ''}</p>
     </div>
   )
 }
@@ -164,8 +159,6 @@ const Application = () => {
     (async () => {
       const memberId = user.iss
       dispatch({ type: 'memberId', payload: memberId })
-      const groupIds = user.groupIds
-      dispatch({ type: 'groupIds', payload: groupIds.join(', ') })
 
       const { entityFactory, taskService } = await services()
       dispatch({ type: 'taskService', payload: taskService })
@@ -183,10 +176,9 @@ const Application = () => {
       if (applicationId) {
         dispatch({ type: 'applicationId', payload: applicationId })
         const application = await applications.get(applicationId)
-        console.log(application)
-        // TODO: parse application into state
         const data = application.data
         Object.entries(data)
+          .filter(([key, value]) => Object.keys(INITIAL_STATE).includes(key))
           .forEach(([key, value]) => dispatch({ type: key, payload: value }))
       }
     })()

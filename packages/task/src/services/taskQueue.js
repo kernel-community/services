@@ -179,8 +179,47 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
     return { proposal }
   }
 
+  // TODO: DRY
+  const CHOICES = [
+    { emoji: 'unicorn', code: '129412', weight: 5 },
+    { emoji: 'ok_hand', code: '128076', weight: 4 },
+    { emoji: 'clap', code: '128079', weight: 3 },
+    { emoji: 'thumbs up', code: '128077', weight: 2 },
+    { emoji: 'thumbs down', code: '128078', weight: 1 }
+  ]
+
+  const WEIGHTS = CHOICES.reduce((acc, { code, weight }) => ({ ...acc, [code]: weight }), {})
+
+  const MIN_SCORE = 15
+
+  const promote = (votes) => {
+    const init = CHOICES.reduce((acc, { code, weight }) => ({ ...acc, [code]: 0 }), {})
+    const sum = !votes
+      ? init
+      : Object.values(votes).reduce((acc, e) => {
+        return { ...acc, [e]: (acc[e] + 1) }
+      }, init)
+    const score = Object.entries(sum)
+      .reduce((acc, [code, cnt]) => acc + WEIGHTS[code] * cnt, 0)
+    return score >= MIN_SCORE ? true : false
+  }
+
   const voteReview = async ({ iss, role }, { reviewId, choice }) => {
     const review = await reviews.patch(reviewId, { votes: { [iss]: choice }})
+    if (!promote(review.data.votes)) {
+      return { review }
+    }
+    // upgrade to member status
+    await reviews.patch(reviewId, { status: 'accepted' })
+    const { owner, data: { email, name }} = await applications.get(review.data.applicationId)
+    await members.patch(owner, { role: MEMBER_ROLE })
+
+    // send email
+    if (email) {
+      const subject = `${name}, welcome to the Kernel Community`
+      const message = `The family of Kernel apps are now available through your Kernel Wallet.`
+      await googleServices.sendEmail(generateEmail(email, subject, message))
+    }
     return { review }
   }
 

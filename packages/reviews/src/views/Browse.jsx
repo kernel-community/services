@@ -8,7 +8,7 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useServices } from '@kernel/common'
+import { useServices, timeUtils } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import Page from 'components/Page'
@@ -23,7 +23,6 @@ const actions = {
 
 const reducer = (state, action) => {
   try {
-    console.log(action.type, action.payload, state)
     return actions[action.type](state, action.payload)
   } catch (error) {
     console.log(error)
@@ -58,17 +57,25 @@ const Browse = () => {
       <div className='px-2 sm:px-8 lg:px-16'>
         <div className='py-4 text-4xl'>All Reviews</div>
         <ul>
-          {state && state.items && Object.keys(state.items).sort().reverse().map((e) => {
-            const meta = state.items[e]
-            const item = state.items[e].data
-            return (
-              <li key={e} className='text-gray-700'>
-                <Link to={`/review/${meta.id}`}>
-                  {meta.id} <small> {item.status}</small>
-                </Link>
-              </li>
-            )
-          })}
+          {state && state.items && Object.keys(state.items)
+            .sort()
+            .reverse()
+            .filter((e) => state.items[e].data.status === 'new')
+            .map((e) => {
+              const meta = state.items[e]
+              const item = state.items[e].data
+              return (
+                <li key={e} className='text-gray-700 my-4'>
+                  <Link to={`/review/${meta.id}`}>
+                    {meta.id} <small> {item.status}</small>
+                  </Link>
+                  <p>
+                    {timeUtils.humanize(meta.created / 1000)} -&nbsp;
+                    {Object.keys(item.votes || {}).reduce((acc, _) => acc + 1, 0)} votes
+                  </p>
+                </li>
+              )
+            })}
         </ul>
         {(!Object.keys(state.items).length &&
           <p key='none' className='text-gray-700'>No reviews</p>)}

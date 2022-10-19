@@ -22,6 +22,8 @@ const CHOICES = [
 ]
 const WEIGHTS = CHOICES.reduce((acc, { code, weight }) => ({ ...acc, [code]: weight }), {})
 
+const MIN_SCORE = 15
+
 const VOTED = 'Voted'
 
 const vote = async (setStatus, setError, taskService, entity, choice, e) => {
@@ -47,10 +49,12 @@ const Tally = ({ votes }) => {
     }, init)
   const score = Object.entries(sum)
     .reduce((acc, [code, cnt]) => acc + WEIGHTS[code] * cnt, 0)
+  const futureMember = score >= MIN_SCORE
   return (
     <div>
       {CHOICES.map(({ code }) => (<p key={code}><b>{String.fromCodePoint(code)}: </b>{sum[code]}</p>))}
       <p><b>Total: </b>{score}</p>
+      {futureMember && <p>Will get accepted!</p>}
     </div>
   )
 }
