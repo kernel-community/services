@@ -16,13 +16,9 @@ _Node_: Check that Node is [installed](https://nodejs.org/en/download/) with ver
 
 _Yarn_: Make sure that Yarn 1 is [installed](https://classic.yarnpkg.com/en/docs/install) with version >= `1.22.0`.
 
-### Code organization
-
-This is a [monorepo](https://danluu.com/monorepo/) using `yarn workspaces` with each workspace in the customary `packages` folder. 
-
 ### Setup
 
-Go to our [staging site](https://staging.wallet.kernel.community) and create a new wallet. Use this staging wallet for local development, as your local environment will default to using the staging auth and storage services. This means you have less to set up and can get going with two commands.
+Go to our [staging site](https://staging.wallet.kernel.community) and create a new wallet. Use this staging wallet for local development, as your local environment will default to using the staging auth and storage services. It may feel weird at first, but it means you have less to set up and worry about.
 
 Fork the repo to your GitHub account, check it out locally and run:
 
@@ -30,17 +26,29 @@ Fork the repo to your GitHub account, check it out locally and run:
 
 ### Running an app
 
-This repo uses `workspaces` to manage local dependencies. From the root of the repo, this is how you start, for instance, the `admin` app:
+This repo uses workspaces to manage local dependencies. From the root of the repo, this is how you start the `applications` app:
 
 ```
-yarn workspace @kernel/admin start
+yarn workspace @kernel/applications start
 ```
 
-If you wanted to start the wallet, you would run:
+If you want to start the Kernel Explorer, run:
 
 ```
-yarn workspace @kernel/wallet start
+yarn workspace @kernel/explorer start
 ```
+
+If you want to work on the Kernel Adventures application, run:
+
+```
+yarn workspace @kernel/projects start
+```
+
+(The name differs because "Adventures" is Kernel-specific nomenclature, and we'd like any community to be able to fork and use this software without having to figure out our terms. We chose agnostic names for each workspace, and then apply our own community-specific names within them).
+
+### Code organization
+
+This is a [monorepo](https://danluu.com/monorepo/), where each `yarn workspace` is kept in the customary `packages` folder. 
 
 ### Creating a new app
 
