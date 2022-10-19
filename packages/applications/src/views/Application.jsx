@@ -17,34 +17,33 @@ const FORM_INPUT = {
   name: { label: 'Name', tip: 'What can we call you?', tag: 'input' },
   email: { label: 'Email', tip: 'So we can send you updates.', tag: 'input' },
   reason: { label: 'Reason', tip: 'Why do you want to be in Kernel?', tag: 'textarea' },
-  interests: { label: 'Interests', tip: 'At Kernel, we learn through conversations oganised by any fellow. What topics most inspire you to talk and listen? What are you really passionate about?', tag: 'textarea' },
+  interests: { label: 'Interests', tip: 'At Kernel, we learn through conversations organised by any fellow. What topics most inspire you to talk and listen? What are you really passionate about?', tag: 'textarea' },
   activities: { label: 'Activities', tip: 'What do you love doing? What makes you grateful to be alive?', tag: 'textarea' },
   urls: { label: 'Links', tip: 'Please share any links which best represent you (can be a song you like, a project you work on, or anything else between).', tag: 'textarea' }
 }
 
-const INITIAL_FORM_KEYS = ['wallet'].concat(Object.keys(FORM_INPUT))
+const INITIAL_FORM_KEYS = [].concat(Object.keys(FORM_INPUT))
 const INITIAL_FORM_FIELDS_STATE = INITIAL_FORM_KEYS
   .reduce((acc, key) => Object.assign(acc, { [key]: '' }), {})
 
 const INITIAL_FORM_SUBMISSION_STATE = {
   formStatus: 'clean',
-  errorMessage: null
+  errorMessage: null,
+  editable: true
 }
 
 const INITIAL_STATE = { ...INITIAL_FORM_FIELDS_STATE, ...INITIAL_FORM_SUBMISSION_STATE }
 
 const actions = {}
 
-// initializes an actions object in the form:
-// { bio: (state, value) => Object.assign({}, state, bio: value}) }
-// each field's action updates the state with the given value
+const LOGICAL_STATE = ['referralId', 'member', 'members', 'memberId', 'applications', 'applicationId', 'taskService', 'editable']
+
 Object.keys(INITIAL_STATE)
-  .concat(['referralId', 'members', 'memberId', 'applications', 'applicationId', 'taskService'])
+  .concat(LOGICAL_STATE)
   .forEach((key) => {
     actions[key] = (state, value) => Object.assign({}, state, { [key]: value })
   })
 
-// tries to call the given action
 const reducer = (state, action) => {
   try {
     return actions[action.type](state, action.payload)
@@ -54,7 +53,6 @@ const reducer = (state, action) => {
   }
 }
 
-// tries to get the payload out of the event and dispatch it
 const change = (dispatch, type, e) => {
   try {
     const target = e.target
@@ -69,6 +67,49 @@ const value = (state, type) => state[type]
 
 const save = async (user, state, dispatch, e) => {
   e.preventDefault()
+  dispatch({ type: 'formStatus', payload: 'saving' })
+  dispatch({ type: 'errorMessage', payload: null })
+
+  if (user.role < AppConfig.minRole) {
+    dispatch({ type: 'formStatus', payload: 'error' })
+    dispatch({ type: 'errorMessage', payload: 'You are already a member.' })
+    return
+  }
+
+  const { applications, member, members, memberId, applicationId } = state
+
+  if (member.data.reviewId) {
+    dispatch({ type: 'formStatus', payload: 'error' })
+    dispatch({ type: 'errorMessage', payload: 'You have already submitted your application.' })
+    return
+  }
+
+  const keysToExclude = LOGICAL_STATE.concat(Object.keys(INITIAL_FORM_SUBMISSION_STATE))
+  const data = Object.keys(state)
+    .filter(key => !keysToExclude.includes(key))
+    .reduce((acc, key) => Object.assign(acc, { [key]: state[key] }), {})
+
+  try {
+    if (applicationId) {
+      const patched = await applications.patch(applicationId, data)
+      dispatch({ type: 'formStatus', payload: 'saved' })
+      return patched
+    }
+
+    const application = await applications.create(data)
+    dispatch({ type: 'applicationId', payload: application.id })
+
+    const member = await members.patch(memberId, { applicationId: application.id })
+    dispatch({ type: 'member', payload: member })
+    dispatch({ type: 'formStatus', payload: 'saved' })
+  } catch (error) {
+    dispatch({ type: 'formStatus', payload: 'error' })
+    dispatch({ type: 'errorMessage', payload: error.message })
+  }
+}
+
+const submit = async (user, state, dispatch, e) => {
+  e.preventDefault()
   dispatch({ type: 'formStatus', payload: 'submitting' })
   dispatch({ type: 'errorMessage', payload: null })
 
@@ -78,27 +119,17 @@ const save = async (user, state, dispatch, e) => {
     return
   }
 
-  const keysToExclude = [
-    'applications',
-    'members',
-    'applicationId',
-    'wallet',
-    'taskService'
-  ].concat(Object.keys(INITIAL_FORM_SUBMISSION_STATE))
+  const { taskService, member, applicationId } = state
 
-  const { taskService, applications, memberId, applicationId } = state
-  const data = Object.keys(state)
-    .filter(key => !keysToExclude.includes(key))
-    .reduce((acc, key) => Object.assign(acc, { [key]: state[key] }), {})
+  if (member.data.reviewId) {
+    dispatch({ type: 'formStatus', payload: 'error' })
+    dispatch({ type: 'errorMessage', payload: 'You have already submitted an application.' })
+    return
+  }
 
   try {
-    if (applicationId && memberId) {
-      const patched = await applications.patch(applicationId, data)
-      dispatch({ type: 'formStatus', payload: 'success' })
-      return patched
-    }
-
-    await taskService.submitApplication({ data })
+    await taskService.submitApplication({ applicationId })
+    dispatch({ type: 'editable', payload: false })
     dispatch({ type: 'formStatus', payload: 'success' })
   } catch (error) {
     dispatch({ type: 'formStatus', payload: 'error' })
@@ -106,8 +137,8 @@ const save = async (user, state, dispatch, e) => {
   }
 }
 
-const Input = ({ fieldName, label, tip, tag, editable = true, state, dispatch }) => {
-  const disabled = !editable
+const Input = ({ fieldName, label, tip, tag, state, dispatch }) => {
+  const disabled = !state.editable
   const bgColorClass = disabled ? 'bg-gray-200' : ''
   const InputField = tag
 
@@ -118,7 +149,7 @@ const Input = ({ fieldName, label, tip, tag, editable = true, state, dispatch })
       </label>
       <p className='text-sm italic'>{tip || ''}</p>
       <InputField
-        type='text' disabled={!editable} className={`border-1 rounded w-full ${bgColorClass}`}
+        type='text' disabled={disabled} className={`border-1 rounded w-full ${bgColorClass}`}
         value={value(state, fieldName)} onChange={change.bind(null, dispatch, fieldName)}
       />
     </div>
@@ -127,12 +158,16 @@ const Input = ({ fieldName, label, tip, tag, editable = true, state, dispatch })
 
 const PageAlert = ({ formStatus, errorMessage }) => {
   switch (formStatus) {
-    case 'submitting':
+    case 'saving':
       return <Alert type='transparent'>Saving your changes...</Alert>
+    case 'submitting':
+      return <Alert type='transparent'>Submitting your application...</Alert>
+    case 'saved':
+      return <Alert type='success'>Saved</Alert>
     case 'success':
-      return <Alert type='success'>Your changes have been saved!</Alert>
+      return <Alert type='success'>Your application has been submitted! We will reach out with information about next steps.</Alert>
     case 'error':
-      return <Alert type='danger'>Something went wrong. {errorMessage}</Alert>
+      return <Alert type='danger'>{errorMessage}</Alert>
     default:
       return <Alert type='transparent' />
   }
@@ -158,6 +193,8 @@ const Application = () => {
 
   useEffect(() => {
     (async () => {
+      dispatch({ type: 'formStatus', payload: 'clean' })
+
       const memberId = user.iss
       dispatch({ type: 'memberId', payload: memberId })
 
@@ -171,9 +208,12 @@ const Application = () => {
       dispatch({ type: 'members', payload: members })
 
       const member = await members.get(memberId)
-      dispatch({ type: 'wallet', payload: member.data.wallet })
+      dispatch({ type: 'member', payload: member })
 
-      const { data: { applicationId } } = member
+      const { data: { applicationId, reviewId } } = member
+      if (reviewId) {
+        dispatch({ type: 'editable', payload: false })
+      }
       if (applicationId) {
         dispatch({ type: 'applicationId', payload: applicationId })
         const application = await applications.get(applicationId)
@@ -202,9 +242,16 @@ const Application = () => {
             )
           })}
           <button
-            disabled={state.formStatus === 'submitting'}
+            disabled={state.formStatus === 'submitting' || !state.editable}
             onClick={save.bind(null, user, state, dispatch)}
-            className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
+            className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
+          >
+            Save
+          </button>
+          <button
+            disabled={state.formStatus === 'submitting'}
+            onClick={submit.bind(null, user, state, dispatch)}
+            className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
           >
             Submit
           </button>

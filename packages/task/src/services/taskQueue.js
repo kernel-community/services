@@ -185,7 +185,7 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
     { emoji: 'ok_hand', code: '128076', weight: 4 },
     { emoji: 'clap', code: '128079', weight: 3 },
     { emoji: 'thumbs up', code: '128077', weight: 2 },
-    { emoji: 'thumbs down', code: '128078', weight: 1 }
+    { emoji: 'thumbs down', code: '128078', weight: -1 }
   ]
 
   const WEIGHTS = CHOICES.reduce((acc, { code, weight }) => ({ ...acc, [code]: weight }), {})
@@ -224,19 +224,40 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
   }
 
   // External
-  const submitApplication = async ({ iss, role }, { data }) => {
+  const submitApplication = async ({ iss, role }, { applicationId }) => {
     if (role < EXTERNAL_ROLE) {
       console.debug(`Already a member ${iss}, ${role}`)
       return
     }
-    const { data: { applicationId } } = await members.get(iss)
-    if (applicationId) {
-      const patched = await applications.patch(applicationId, data)
-      return { application: patched }
+    const member = await members.get(iss)
+    if (member.data.applicationId !== applicationId) {
+      console.debug(`Application mismatch ${iss}, ${applicationId}`)
+			return
     }
-    const application = await applications.create(data, { owner: iss })
+    if (member.data.reviewId) {
+      console.debug(`Already submitted an application ${iss}, ${applicationId}`)
+			return
+    }
+    const application = await applications.get(applicationId)
     const review = await reviews.create({ applicationId: application.id, status: 'new' })
-    const member = await members.patch(iss, { applicationId: application.id })
+    await members.patch(iss, { reviewId: review.id })
+
+    const { data: { email, name }} = application
+    if (email) {
+      const subject = `${name}'s Kernel Community Application Confirmation`
+      // TODO: move to separate content package
+      const message = `Hi ${name},
+
+Thank you for applying to the KERNEL Community! We’ve received your application and are reviewing it on a rolling basis.
+
+You can always visit the application app to see the latest status and we will also notify you via email when your status changes.
+
+If you have any questions, you can just respond to this email.
+
+Our Best,
+The KERNEL Stewards`
+      await googleServices.sendEmail(generateEmail(email, subject, message))
+    }
 
     return { application }
   }

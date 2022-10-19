@@ -18,7 +18,7 @@ const CHOICES = [
   { emoji: 'ok_hand', code: '128076', weight: 4 },
   { emoji: 'clap', code: '128079', weight: 3 },
   { emoji: 'thumbs up', code: '128077', weight: 2 },
-  { emoji: 'thumbs down', code: '128078', weight: 1 }
+  { emoji: 'thumbs down', code: '128078', weight: -1 }
 ]
 const WEIGHTS = CHOICES.reduce((acc, { code, weight }) => ({ ...acc, [code]: weight }), {})
 
@@ -103,9 +103,12 @@ const View = () => {
         <div>
           {entity &&
             <>
+              <p><b>Status: </b>{entity.data.status}</p>
+              <hr className='my-4' />
               {Object.entries(application.data)
                 .filter(([key, _]) => !key.includes('Id'))
                 .map(([key, value]) => (<p key={key}><b>{key}: </b>{value}</p>))}
+              <hr className='my-4' />
               <p>{CHOICES.map(({ code, weight }, i) =>
                 <button
                   key={i}
@@ -116,6 +119,7 @@ const View = () => {
                   {String.fromCodePoint(code)}
                 </button>)}
               </p>
+              <hr className='my-4' />
               <Tally votes={entity.data.votes} />
               <p />
               <hr />

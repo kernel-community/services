@@ -25,7 +25,7 @@ const build = async ({ rpcClient }) => {
   const voteProposal = async ({ proposalId, choice }) => call('voteProposal', { proposalId, choice })
   const voteReview = async ({ reviewId, choice }) => call('voteReview', { reviewId, choice })
   // External
-  const submitApplication = async ({ data }) => call('submitApplication', { data })
+  const submitApplication = async ({ applicationId }) => call('submitApplication', { applicationId })
   const ethereumFaucet = async ({ chainId }) => call('ethereumFaucet', { chainId })
 
   return {
