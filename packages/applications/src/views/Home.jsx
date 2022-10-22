@@ -60,7 +60,7 @@ const Home = () => {
                     </p>
                     <ol className='list-decimal px-12'>
                       <li className='my-4'>
-                        Create an account. This 'account' is really a <strong>key-pair</strong>, rather than the usual username + password combination. Being given control of your 'private key' in a safe, educational environment means you can start your learning journey right now.
+                        Create your keys. Keys are different to a username + password combination. Keys imply cryptography, which sounds complicated, but its really just here to help you. Being given control of your 'private key' in a safe, educational environment means you can start your learning journey right now.
                       </li>
                       <li className='my-4'>
                         It's OK if you don't understand what creating your own keys means, or how to keep them safe. We're here to <strong>learn together</strong>. Follow along as best you can, and continue to the application form when prompted. Though you are the only one who can see your keys, we can help you make new ones while keeping your data safe, private, and under your control.
@@ -82,7 +82,7 @@ const Home = () => {
                       onClick={handleLogin}
                       type='button'
                     >
-                      Create your Kernel Account
+                      Create your keys
                     </button>
                   </div>
                 </div>
