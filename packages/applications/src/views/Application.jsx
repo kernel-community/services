@@ -16,7 +16,7 @@ import Intro from 'components/Intro'
 const FORM_INPUT = {
   name: { label: 'Name', tip: 'What can we call you?', tag: 'input' },
   email: { label: 'Email', tip: 'So we can send you updates.', tag: 'input' },
-  purpose: { label: 'Purpose', tip: 'Why do you want to be in Kernel?', tag: 'textarea' },
+  reason: { label: 'Reason', tip: 'Why do you want to be in Kernel?', tag: 'textarea' },
   interests: { label: 'Interests', tip: 'At Kernel, we learn through conversations organised by any fellow. What topics most inspire you to talk and listen? What are you really passionate about?', tag: 'textarea' },
   activities: { label: 'Activities', tip: 'What do you love doing? What makes you grateful to be alive?', tag: 'textarea' },
   urls: { label: 'Links', tip: 'Please share any links which best represent you (can be a song you like, a project you work on, or anything else between).', tag: 'textarea' }
@@ -163,7 +163,7 @@ const PageAlert = ({ formStatus, errorMessage }) => {
     case 'submitting':
       return <Alert type='transparent'>Submitting your application...</Alert>
     case 'saved':
-      return <Alert type='success'>Saved</Alert>
+      return <Alert type='success'>Your application has been saved! Feel free to leave and come back later before submitting.</Alert>
     case 'success':
       return <Alert type='success'>Your application has been submitted! We will reach out with information about next steps.</Alert>
     case 'error':
