@@ -64,14 +64,19 @@ const Browse = () => {
             .map((e) => {
               const meta = state.items[e]
               const item = state.items[e].data
+              const created = Date.now() - meta.created
+              const voteCount = Object.keys(item.votes || {}).reduce((acc, _) => acc + 1, 0)
+              const voted = Object.keys(item.votes || {}).includes(user.iss)
               return (
                 <li key={e} className='text-gray-700 my-4'>
                   <Link to={`/review/${meta.id}`}>
                     {meta.id} <small> {item.status}</small>
                   </Link>
                   <p>
-                    {timeUtils.humanize(meta.created / 1000)} -&nbsp;
-                    {Object.keys(item.votes || {}).reduce((acc, _) => acc + 1, 0)} votes
+                    {timeUtils.humanize(created)} -&nbsp;
+                    {voteCount} {voteCount === 1 ? 'vote' : 'votes'}
+                    {voted && ' - already voted'}
+
                   </p>
                 </li>
               )
