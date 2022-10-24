@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useServices, Navbar, linesVector } from '@kernel/common'
 
@@ -25,6 +25,16 @@ const Home = () => {
   const { walletLogin } = useServices()
 
   const [homeState, setHomeState] = useState(HOMESTATE.INTRO)
+  const [fade, setFade] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => setFade(false), 50)
+  }, [homeState])
+
+  const updateHomeState = (newHomeState) => {
+    setFade(true)
+    setHomeState(newHomeState)
+  }
 
   const handleLogin = async () => {
     const user = await walletLogin()
@@ -60,7 +70,7 @@ const Home = () => {
                     You found us! Welcome.
                   </p>
                   <div className='text-lg'>
-                    <div key={homeState} className='opacity-0'>
+                    <div key={homeState} className={`transition-all duration-400 ${fade ? "opacity-0" : "opacity-100"}`}>
                       { homeState === HOMESTATE.INTRO && <AppIntro onLogin={handleLogin} /> }  
                       { homeState === HOMESTATE.PROCESS && <Process /> }
                       { homeState === HOMESTATE.ASSURANCE && <Assurance /> }
@@ -70,14 +80,14 @@ const Home = () => {
                       {homeState > HOMESTATE.INTRO && <button
                         className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1'
                         type='button'
-                        onClick={() => setHomeState(homeState-1)}
+                        onClick={() => updateHomeState(homeState-1)}
                       >
                         Back
                       </button>}
                       {homeState < HOMESTATE.ASSURANCE && <button
                         className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1'
                         type='button'
-                        onClick={() => setHomeState(homeState+1)}
+                        onClick={() => updateHomeState(homeState+1)}
                       >
                         { homeState === HOMESTATE.INTRO ? "Begin" : "Next" }
                       </button>}
