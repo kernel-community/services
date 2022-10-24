@@ -34,7 +34,7 @@ const Home = () => {
     }
     navigate('/')
   }
-  console.log('pageState => ', homeState)
+
   return (
     <div>
       <Navbar
@@ -60,7 +60,7 @@ const Home = () => {
                     You found us! Welcome.
                   </p>
                   <div className='text-lg'>
-                    <div>
+                    <div key={homeState} className='opacity-0'>
                       { homeState === HOMESTATE.INTRO && <AppIntro onLogin={handleLogin} /> }  
                       { homeState === HOMESTATE.PROCESS && <Process /> }
                       { homeState === HOMESTATE.ASSURANCE && <Assurance /> }
