@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom'
 import { useServices, Navbar, linesVector } from '@kernel/common'
 
 import AppConfig from 'App.config'
+import Process from 'components/Process'
+import Assurance from 'components/Assurance'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -40,12 +42,12 @@ const Home = () => {
             <img alt='kernel fingerprint' src={linesVector} width={442} height={476} />
           </div>
         </div>
-        <section className='absolute w-full h-screen'>
-          <div className='container mx-auto px-4 h-full'>
-            <div className='flex content-center items-center justify-center h-screen'>
+        <section className='absolute w-full'>
+          <div className='container mx-auto px-4'>
+            <div className='flex content-center items-center justify-center'>
               <div className='w-full lg:w-3/4 px-4'>
-                <div className='relative flex flex-col min-w-0 break-words w-full mb-6'>
-                  <p className='text-center text-4xl md:text-6xl my-6'>
+                <div className='relative flex flex-col min-w-0 break-words w-full my-20'>
+                  <p className='text-center text-4xl md:text-6xl my-10'>
                     You found us! Welcome.
                   </p>
                   <div className='text-lg'>
@@ -56,25 +58,13 @@ const Home = () => {
                       Our goal is to <strong>learn together</strong>. Our principles are <strong>do no harm</strong> and <strong>play, infinitely</strong>. Our primary method of learning is conversation. Together, this enables us to cultivate a culture of care.
                     </p>
                     <p className='my-4'>
-                      There are a few steps to our application process. We encourage you to <strong>set aside ~30 minutes for this</strong>. Taking your time will help us get to know each other in a more wholesome way.
+                      There are a few steps to our application process. We encourage you to <strong>set aside ~20 minutes for this</strong>. Taking your time will help us get to know each other in a more wholesome way.
                     </p>
-                    <ol className='list-decimal px-12'>
-                      <li className='my-4'>
-                        Create your keys. Keys are different to a username + password combination. Keys imply cryptography, which sounds complicated, but its really just here to help you. Being given control of your 'private key' in a safe, educational environment means you can start your learning journey right now.
-                      </li>
-                      <li className='my-4'>
-                        It's OK if you don't understand what creating your own keys means, or how to keep them safe. We're here to <strong>learn together</strong>. Follow along as best you can, and continue to the application form when prompted. Though you are the only one who can see your keys, we can help you make new ones while keeping your data safe, private, and under your control.
-                      </li>
-                      <li className='my-4'>
-                        Once you have created your keys, you will be redirected to an application form. Respond to the questions as best you can and click 'Submit' once you are happy.
-                      </li>
-                      <li className='my-4'>
-                        Come back here whenever you like, login with your new account, and check your status. We review applications on a rolling basis and will update you here and via email about any changes.
-                      </li>
-                    </ol>
-                    <p className='my-12'>
-                      Even if you don't get in to Kernel immediately, you are free to read <a className='text-blue-600 visited:text-purple-600' href='https://kernel.community/en/learn/' target='_blank' rel='noreferrer'>the syllabus</a>, learn from<a className='text-blue-600 visited:text-purple-600' href='https://kernel.community/en/build' target='_blank' rel='noreferrer'> everything we build</a>, watch <a className='text-blue-600 visited:text-purple-600' href='https://www.youtube.com/channel/UC2kUaSgR0L-uzGkNsOxSxzw' target='_blank' rel='noreferrer'>all our recordings</a>, and use or adapt <a className='text-blue-600 visited:text-purple-600' href='https://github.com/kernel-community/' target='_blank' rel='noreferrer'>all our code </a>. Even better: creating your own, personal key-pair enables you to use many of our best tools right now. Your new account will help you learn how to mint tokens, deploy your own contracts, decode transactions on a blockchain and much more. You do not need our permission to use it, and you can start right now...
+                    <p className='my-4'>
+                      If you have already gone through the process, you can check your status by <button className='text-blue-600 visited:text-purple-600 cursor-pointer' onClick={handleLogin}>clicking here</button>.
                     </p>
+                    <Process />
+                    <Assurance />
                   </div>
                   <div className='text-center mx-auto shadow-lg rounded-lg bg-gray-300 border-0 lg:w-80'>
                     <button
