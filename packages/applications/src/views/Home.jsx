@@ -60,11 +60,13 @@ const Home = () => {
                     You found us! Welcome.
                   </p>
                   <div className='text-lg'>
-                    { homeState === HOMESTATE.INTRO && <AppIntro onLogin={handleLogin} /> }  
-                    { homeState === HOMESTATE.PROCESS && <Process /> }
-                    { homeState === HOMESTATE.ASSURANCE && <Assurance /> }
+                    <div>
+                      { homeState === HOMESTATE.INTRO && <AppIntro onLogin={handleLogin} /> }  
+                      { homeState === HOMESTATE.PROCESS && <Process /> }
+                      { homeState === HOMESTATE.ASSURANCE && <Assurance /> }
+                    </div>
                     {/** Navigation Buttons */}
-                    <div className='flex flex-row flex-end justify-between'>
+                    <div className='flex flex-row flex-end justify-center align-center'>
                       {homeState > HOMESTATE.INTRO && <button
                         className='bg-gray-900 text-white active:bg-gray-700 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1'
                         type='button'
