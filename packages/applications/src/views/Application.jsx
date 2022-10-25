@@ -120,6 +120,11 @@ const submit = async (user, state, dispatch, e) => {
 
   const { taskService, member, applicationId } = state
 
+  if (!applicationId) {
+    dispatch({ type: 'formStatus', payload: 'error' })
+    dispatch({ type: 'errorMessage', payload: 'You need to save your application first.' })
+  }
+
   if (member.data.reviewId) {
     dispatch({ type: 'formStatus', payload: 'error' })
     dispatch({ type: 'errorMessage', payload: 'You have already submitted an application.' })

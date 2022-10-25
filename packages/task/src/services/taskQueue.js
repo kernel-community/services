@@ -229,6 +229,10 @@ const build = async ({ projectId, seed, serviceAccount, infuraId, faucetAmount, 
       console.debug(`Already a member ${iss}, ${role}`)
       return
     }
+    if (!applicationId) {
+      console.debug(`Application id missing ${applicationId}`)
+			return
+    }
     const member = await members.get(iss)
     if (member.data.applicationId !== applicationId) {
       console.debug(`Application mismatch ${iss}, ${applicationId}`)
