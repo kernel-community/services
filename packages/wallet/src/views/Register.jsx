@@ -30,22 +30,21 @@ const Register = () => {
         </div>
         <div className='my-4 px-4 grid grid-cols-1 md:grid-cols-2 md:my-16 md:px-16'>
           <div>
-            <h3 className='text-center font-heading text-center text-3xl text-primary py-5'>First Time User</h3>
+            <h3 className='text-center font-heading text-center text-3xl text-primary py-5'>This is my first time</h3>
             <div className='text-center m-8 p-5'>
               <Link className='bg-kernel-dark text-kernel-white text-center w-full p-5 rounded shadow-md' to='/register/create'>
                 Create
               </Link>
             </div>
-            <p className='text-center m-4'>If this is the first time visiting us, you should first <strong>Create</strong> a new Kernel Wallet.</p>
+            <p className='text-center m-4'>If this is your first time visiting us, you should first <strong>Create</strong> a new Kernel Account.</p>
           </div>
           <div>
-            <h3 className='text-center font-heading text-center text-3xl text-primary py-5'>Returning User</h3>
+            <h3 className='text-center font-heading text-center text-3xl text-primary py-5'>I've done this before</h3>
             <div className='text-center m-8 p-5'>
               <Link className='bg-kernel-dark text-kernel-white text-center w-full p-5 rounded shadow-md' to='/register/import'>Import</Link>
             </div>
             <p className='text-center m-4'>
-              You should <strong>Import</strong> an existing Kernel Wallet on a different devices such
-              as Mobile phones, Laptops, etc.
+              You can <strong>Import</strong> an existing Kernel Account. This is useful if you want to use the same account on different devices like phones, laptops, etc.
             </p>
           </div>
         </div>

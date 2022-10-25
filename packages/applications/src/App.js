@@ -8,10 +8,11 @@
 
 import React, { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { ServicesProvider, Loading, Login } from '@kernel/common'
+import { ServicesProvider, Loading } from '@kernel/common'
 
 import 'App.css'
 
+const Home = lazy(() => import('views/Home'))
 const Application = lazy(() => import('views/Application'))
 
 const App = () => {
@@ -20,7 +21,7 @@ const App = () => {
       <ServicesProvider>
         <Suspense fallback={<Loading />}>
           <Routes>
-            <Route path='/' element={<Login />} />
+            <Route path='/' element={<Home />} />
             <Route path='/apply' element={<Application />} />
           </Routes>
         </Suspense>

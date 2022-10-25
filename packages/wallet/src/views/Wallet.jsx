@@ -42,7 +42,7 @@ const Wallet = () => {
               <span className='pr-2 before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-kernel-highlight relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>
-                    Create an account
+                    Create a wallet
                   </span>
                 </span>
               </span>
@@ -52,7 +52,7 @@ const Wallet = () => {
               <span className='pl-2 before:block before:absolute before:-inset-1 before:skew-y-3 before:bg-kernel-yellow-light relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>
-                    continue connecting
+                    log back in
                   </span>.
                 </span>
               </span>
