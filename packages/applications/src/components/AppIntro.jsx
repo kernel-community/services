@@ -21,8 +21,7 @@ const AppIntro = ({ onLogin }) => {
         Taking your time will help us get to know each other in a more wholesome way.
       </p>
       <p className='my-4'>
-        If you have already gone through the process, you can check your status by
-        <button className='text-blue-600 visited:text-purple-600 cursor-pointer' onClick={onLogin}>clicking here</button>.
+        If you have already gone through the process, you can check your status by <button className='text-blue-600 visited:text-purple-600 cursor-pointer' onClick={onLogin}>clicking here</button>.
       </p>
     </>
   )
