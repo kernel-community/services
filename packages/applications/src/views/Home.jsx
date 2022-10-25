@@ -70,7 +70,7 @@ const Home = () => {
                     You found us! Welcome.
                   </p>
                   <div className='text-lg'>
-                    <div key={homeState} className={`transition-all duration-400 ${fade ? 'opacity-0' : 'opacity-100'}`}>
+                    <div key={homeState} className={`transition-opacity duration-700 ease-in-out ${fade ? 'opacity-0' : 'opacity-100'}`}>
                       {homeState === HOMESTATE.INTRO && <AppIntro onLogin={handleLogin} />}
                       {homeState === HOMESTATE.PROCESS && <Process />}
                       {homeState === HOMESTATE.ASSURANCE && <Assurance />}
