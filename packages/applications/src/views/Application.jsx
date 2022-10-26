@@ -17,7 +17,7 @@ const FORM_INPUT = {
   name: { label: 'Name', tip: 'What can we call you?', tag: 'input' },
   email: { label: 'Email', tip: 'So we can send you updates.', tag: 'input' },
   reason: { label: 'Reason', tip: 'Why do you want to be in Kernel?', tag: 'textarea' },
-  interests: { label: 'Interests', tip: 'At Kernel, we learn through conversations organised by any fellow. What topics most inspire you to talk and listen? What are you really passionate about?', tag: 'textarea' },
+  interests: { label: 'Interests', tip: 'What are you, personally, passionate about? What do you love doing? What makes you grateful to be alive?', tag: 'textarea' },
   urls: { label: 'Links', tip: 'Please share any links which best represent you (can be a song you like, a project you work on, or anything else between).', tag: 'textarea' }
 }
 
