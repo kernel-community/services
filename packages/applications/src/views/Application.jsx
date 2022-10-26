@@ -123,6 +123,7 @@ const submit = async (user, state, dispatch, e) => {
   if (!applicationId) {
     dispatch({ type: 'formStatus', payload: 'error' })
     dispatch({ type: 'errorMessage', payload: 'You need to save your application first.' })
+    return
   }
 
   if (member.data.reviewId) {
