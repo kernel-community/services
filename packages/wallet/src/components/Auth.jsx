@@ -50,9 +50,9 @@ const Auth = () => {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [address, setAddress] = useState('')
-  const [session, setSession] = useState(SESSION_TTL.short)
+  const [session, setSession] = useState(SESSION_TTL.long)
   const [errorMessage, setErrorMessage] = useState('')
-  const [persist, setPersist] = useState(false)
+  const [persist, setPersist] = useState(true)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -97,7 +97,6 @@ const Auth = () => {
     try {
       const authToken = getItem('jwt')
       const { payload: { exp } } = authToken ? jwtService.decode(authToken) : { payload: { exp: 0 } }
-      console.log('jwt exp', exp)
       if (exp < (now() + SESSION_TTL.short)) {
         return localStorage.removeItem('jwt')
       }
@@ -123,15 +122,10 @@ const Auth = () => {
     try {
       const wallet = await ethers.Wallet.fromEncryptedJson(encryptedWallet, password, (i) => setProgress(Math.round(i * 100)))
 
-      console.log(session)
       const exp = tokenExp(session)
-      console.log(exp, session)
       const authJwt = jwtService.clientPayload({ iss: wallet.address, nickname, exp })
       const jwt = await jwtService.createJwt(wallet, jwtService.CLIENT_JWT, authJwt)
       const client = await authClient(() => '')
-
-      window.client = client
-      window.jwt = jwt
 
       const authToken = await client.call({ method: 'authService.accessToken', params: [jwt, persist] })
 
@@ -199,8 +193,8 @@ const Auth = () => {
             Auto Authorize future requests
           </label>
           <div className='border-0 px-3 py-3 placeholder-gray-400 text-gray-700 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full'>
-            <input className='px-4' id='persist' type='checkbox' value={persist} onChange={(e) => setPersist(e.target.value)} />
-            <label className='px-4' htmlFor='persist'>This device is secure</label>
+            <input className='px-4' id='persist' type='checkbox' checked={persist} onChange={(e) => setPersist(e.target.checked)} />
+            <label className='px-4' htmlFor='persist'>I'm not sharing this device with anyone else</label>
           </div>
         </div>
         <div className='relative w-full mb-3'>

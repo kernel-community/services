@@ -11,8 +11,11 @@
 import { Base64 } from 'js-base64'
 import { ethers } from 'ethers'
 
-// 20min
-const TOKEN_TTL = 20 * 60 * 1000
+const SESSION_TTL = {
+  short: 20 * 60 * 1000, // 20min
+  medium: 2 * 60 * 60 * 1000, // 2h
+  long: 24 * 60 * 60 * 1000 // 1day
+}
 const AUD = 'kernel.community'
 const HEADER = { alg: 'ES256K', typ: 'JWT' }
 const DOMAIN = {
@@ -49,7 +52,7 @@ const JWK = {
 const SignatureError = () => {}
 
 const now = () => Date.now()
-const tokenExp = (ttl = TOKEN_TTL) => now() + ttl
+const tokenExp = (ttl = SESSION_TTL.short) => now() + ttl
 
 const toBuffer = (hexData) => new Uint8Array(ethers.utils.arrayify(hexData))
 const toBase64Url = (buf) => Base64.fromUint8Array(buf, true)
@@ -104,6 +107,7 @@ const jwt = {
   CLIENT_JWT,
   AUTH_JWT,
   JWK,
+  SESSION_TTL,
   SignatureError,
   defaultProvider,
   walletFromSeed,
@@ -117,7 +121,8 @@ const jwt = {
   sign,
   createJwt,
   authPayload,
-  clientPayload
+  clientPayload,
+  tokenExp
 }
 
 export default jwt

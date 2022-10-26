@@ -6,6 +6,7 @@
  *
  */
 
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useServices, Navbar, Footer } from '@kernel/common'
 import AppConfig from 'App.config'
@@ -14,7 +15,16 @@ import bgImage from '../assets/images/admin_bg.png'
 
 const Login = () => {
   const navigate = useNavigate()
-  const { walletLogin } = useServices()
+  const { currentUser, walletLogin } = useServices()
+
+  const user = currentUser()
+
+  useEffect(() => {
+    if (user && user.role <= AppConfig.minRole) {
+      const homeUrl = AppConfig.homeUrl || '/'
+      return navigate(homeUrl)
+    }
+  }, [navigate, user])
 
   const handleLogin = async () => {
     const user = await walletLogin()

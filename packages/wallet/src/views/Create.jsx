@@ -67,12 +67,8 @@ const Create = () => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE)
 
   const forward = () => dispatch({ type: 'step', payload: state.step + 1 })
-  const backward = () => dispatch({ type: 'step', payload: state.step - 1 })
+  // const backward = () => dispatch({ type: 'step', payload: state.step - 1 })
   const isHidden = hidden.bind(null, state)
-
-  global.state = state
-  global.forward = forward
-  global.backward = backward
 
   const createWallet = async (e) => {
     e.preventDefault()
@@ -92,7 +88,8 @@ const Create = () => {
       let wallet = ethers.Wallet.createRandom()
       const encryptedWallet = await wallet.encrypt(password, (i) => setProgress(Math.round(i * 0.95 * 100)))
 
-      const authJwt = jwtService.clientPayload({ iss: wallet.address, nickname })
+      const exp = jwtService.tokenExp(jwtService.SESSION_TTL.long)
+      const authJwt = jwtService.clientPayload({ iss: wallet.address, nickname, exp })
       const jwt = await jwtService.createJwt(wallet, jwtService.CLIENT_JWT, authJwt)
       const client = await authClient(() => '')
 
