@@ -7,6 +7,10 @@
       {
         "url": "/browse",
         "title": "Browse"
+      },
+      {
+        "url": "/criteria",
+        "title": "Criteria"
       }
     ]
   }
