@@ -8,7 +8,7 @@
 
 import { Link, useParams } from 'react-router-dom'
 
-import { Footer, Navbar } from '@kernel/common'
+import { Footer, Navbar, linesVector } from '@kernel/common'
 
 import AppConfig from 'App.config'
 
@@ -38,6 +38,14 @@ const Page = ({ children }) => {
         additionalMenuItems={additionalMenuItems}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
+      <div className='relative'>
+        <div className='hidden lg:block lg:fixed lg:-top-24 lg:-left-52 lg:z-0'>
+          <img alt='kernel fingerprint' src={linesVector} width={383} height={412} />
+        </div>
+        <div className='hidden lg:block lg:fixed lg:-top-12 lg:-right-52 lg:z-0'>
+          <img alt='kernel fingerprint' src={linesVector} width={442} height={476} />
+        </div>
+      </div>
       <div className='mb-auto mx-24 py-24'>
         {children}
       </div>

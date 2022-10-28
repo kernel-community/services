@@ -14,6 +14,7 @@ import 'App.css'
 
 const Review = lazy(() => import('views/Review'))
 const Browse = lazy(() => import('views/Browse'))
+const Criteria = lazy(() => import('views/Criteria'))
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           <Routes>
             <Route path='/' element={<Login />} />
             <Route path='/browse' element={<Browse />} />
+            <Route path='/criteria' element={<Criteria />} />
             <Route path='/review/:id' element={<Review />} />
           </Routes>
         </Suspense>
