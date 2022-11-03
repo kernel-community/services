@@ -183,7 +183,7 @@ const Deploy = () => {
 
         <div className='mb-auto py-20 px-20'>
           <div>
-            <h3 className='font-heading text-center text-3xl text-primary py-5'>Soldity</h3>
+            <h3 className='font-heading text-center text-3xl text-primary py-5'>Solidity</h3>
             <div className='grid grid-cols-1 md:grid-cols-1 md:gap-x-8 gap-y-8 border-kernel-grey md:pr-12'>
               <form className='form-control w-full'>
                 <label className='label block mb-1'>Smart Contract</label>
