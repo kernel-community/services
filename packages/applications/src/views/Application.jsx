@@ -18,7 +18,7 @@ const FORM_INPUT = {
   email: { label: 'Email', tip: 'So we can send you updates.', tag: 'input' },
   reason: { label: 'Reason', tip: 'Why do you want to be in Kernel?', tag: 'textarea' },
   interests: { label: 'Interests', tip: 'What are you, personally, passionate about? What do you love doing? What makes you grateful to be alive?', tag: 'textarea' },
-  urls: { label: 'Links', tip: 'Please share any links which best represent you (can be a song you like, a project you work on, or anything else between).', tag: 'textarea' }
+  urls: { label: 'Life is', tip: 'A puzzle to be solved, a garden to be cultivated, a game to be played? All, none, or something else? Tell us why. How do you lead your life?', tag: 'textarea' }
 }
 
 const INITIAL_FORM_KEYS = [].concat(Object.keys(FORM_INPUT))
