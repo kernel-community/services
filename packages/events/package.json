@@ -1,7 +1,7 @@
 {
-  "name": "@kernel/meet",
+  "name": "@kernel/events",
   "version": "0.1.0",
-  "homepage": "https://meet.kernel.community",
+  "homepage": "https://events.kernel.community",
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.4.3",
