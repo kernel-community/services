@@ -9,6 +9,7 @@
 import { useEffect, useReducer } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useServices, timeUtils, Navbar, Footer, Alert } from '@kernel/common'
+import EventCard from 'components/EventCard'
 
 import AppConfig from 'App.config'
 
@@ -67,19 +68,23 @@ const Page = () => {
         <div className='md:basis-1/2 px-8'>
           <div className='grid grid-cols-1 gap-6'>
             <div className='block'>
-              <ul>
+
+            <div class="flex flex-wrap -m-4">
                 {state && state.items && Object.keys(state.items).map((e) => {
                   const meta = state.items[e]
-                  const event = state.items[e].data
-                  const updated = Date.now() - meta.updated
+                  const eventData = state.items[e].data
+                  const updated = humanize(Date.now() - meta.updated)
+                  const event = {
+                    ...eventData,
+                    id: meta.id,
+                    updated
+                  }
+
                   return (
-                    <li key={e} className='text-gray-700'>
-                      <Link to={`/view/${meta.id}`}>{event.title}</Link>
-                      <small> {humanize(updated)}</small>
-                    </li>
+                      <EventCard event={event}/>
                   )
                 })}
-              </ul>
+</div>
             </div>
           </div>
         </div>

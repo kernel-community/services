@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useServices, Navbar, Footer, Alert } from '@kernel/common'
+import { useServices, Navbar, Footer } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import NavBar from 'components/NavBar'
