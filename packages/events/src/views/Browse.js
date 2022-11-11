@@ -8,10 +8,9 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { useServices, timeUtils } from '@kernel/common'
+import { useServices, timeUtils, Navbar, Footer, Alert } from '@kernel/common'
 
 import AppConfig from 'App.config'
-import NavBar from 'components/NavBar'
 
 const INITIAL_STATE = { items: {} }
 
@@ -52,13 +51,19 @@ const Page = () => {
       const events = await entityFactory({ resource })
       const items = await events.getAll()
       dispatch({ type: 'items', payload: items })
+
     })()
   }, [services])
 
   return (
-    <div className='md:container md:mx-auto'>
-      <NavBar />
-      <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
+    <div className='flex flex-col h-screen justify-between'>
+      <Navbar
+        title={AppConfig.appTitle}
+        logoUrl={AppConfig.logoUrl}
+        menuLinks={AppConfig.navbar?.links}
+        backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
+      />
+      <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
         <div className='md:basis-1/2 px-8'>
           <div className='grid grid-cols-1 gap-6'>
             <div className='block'>
@@ -79,6 +84,8 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <Footer />
+
     </div>
   )
 }
