@@ -66,10 +66,7 @@ const Page = () => {
       />
       <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
         <div className='md:basis-1/2 px-8'>
-          <div className='grid grid-cols-1 gap-6'>
-            <div className='block'>
-
-            <div class="flex flex-wrap -m-4">
+              <div class="flex flex-wrap -m-4">
                 {state && state.items && Object.keys(state.items).map((e) => {
                   const meta = state.items[e]
                   const eventData = state.items[e].data
@@ -81,12 +78,10 @@ const Page = () => {
                   }
 
                   return (
-                      <EventCard event={event}/>
+                    <EventCard event={event} />
                   )
                 })}
-</div>
-            </div>
-          </div>
+              </div>
         </div>
       </div>
       <Footer />
