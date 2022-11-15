@@ -7,11 +7,11 @@
  */
 
 import { useEffect, useReducer } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { useServices, timeUtils } from '@kernel/common'
+import { useNavigate } from 'react-router-dom'
+import { useServices, timeUtils, Navbar, Footer } from '@kernel/common'
+import EventCard from 'components/EventCard'
 
 import AppConfig from 'App.config'
-import NavBar from 'components/NavBar'
 
 const INITIAL_STATE = { items: {} }
 
@@ -56,29 +56,32 @@ const Page = () => {
   }, [services])
 
   return (
-    <div className='md:container md:mx-auto'>
-      <NavBar />
-      <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
-        <div className='md:basis-1/2 px-8'>
-          <div className='grid grid-cols-1 gap-6'>
-            <div className='block'>
-              <ul>
-                {state && state.items && Object.keys(state.items).map((e) => {
-                  const meta = state.items[e]
-                  const event = state.items[e].data
-                  const updated = Date.now() - meta.updated
-                  return (
-                    <li key={e} className='text-gray-700'>
-                      <Link to={`/view/${meta.id}`}>{event.title}</Link>
-                      <small> {humanize(updated)}</small>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          </div>
-        </div>
+    <div className='flex flex-col h-screen justify-between'>
+      <Navbar
+        title={AppConfig.appTitle}
+        logoUrl={AppConfig.logoUrl}
+        menuLinks={AppConfig.navbar?.links}
+        backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
+      />
+      <div className='grid gap-3 xl:grid-cols-3 mb-auto py-20 px-20 sm:px-40 lg:px-80'>
+        {state && state.items && Object.keys(state.items).map((e) => {
+          const meta = state.items[e]
+          const eventData = state.items[e].data
+          const updated = humanize(Date.now() - meta.updated)
+
+          const event = {
+            ...eventData,
+            id: meta.id,
+            updated
+          }
+
+          return (
+            <EventCard key={e} event={event} />
+          )
+        })}
       </div>
+      <Footer />
+
     </div>
   )
 }

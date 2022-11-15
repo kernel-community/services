@@ -8,11 +8,10 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useServices } from '@kernel/common'
+import { useServices, Navbar, Footer } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import Form from 'components/Form'
-import NavBar from 'components/NavBar'
 
 const KEYS = ['nickname', 'title', 'limit', 'location', 'start', 'end', 'description']
 const INITIAL_STATE = ['events'].concat(KEYS)
@@ -90,14 +89,20 @@ const Page = () => {
   }, [services])
 
   return (
-    <div className='md:container md:mx-auto'>
-      <NavBar />
-      <div className='flex md:flex-row flex-wrap py-4 justify-center justify-between'>
+    <div className='flex flex-col h-screen justify-between'>
+      <Navbar
+        title={AppConfig.appTitle}
+        logoUrl={AppConfig.logoUrl}
+        menuLinks={AppConfig.navbar?.links}
+        backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
+      />
+      <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
         <div className='md:basis-1/2 px-8'>
           <Form value={value} create={create} change={change} state={state} dispatch={dispatch} />
         </div>
         <div className='md:basis-1/2 grow px-8 rounded-md border-gray-800 shadow-lg' />
       </div>
+      <Footer />
     </div>
   )
 }

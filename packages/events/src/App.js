@@ -19,7 +19,9 @@ const View = lazy(() => import('views/View.js'))
 
 const App = () => {
   return (
+
     <BrowserRouter basename={process.env.PUBLIC_URL}>
+
       <ServicesProvider>
         <Suspense fallback={<Loading />}>
           <Routes>

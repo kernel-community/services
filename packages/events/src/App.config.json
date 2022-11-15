@@ -1,8 +1,11 @@
 {
-  "appTitle": "Kernel Convo",
+  "appTitle": "Kernel Events",
   "homeUrl": "/browse",
   "minRole": 1000,
   "navbar": {
-    "links": []
+    "links": [
+      {"url": "/browse", "title": "Browse"},
+      {"url": "/create", "title": "Host"}
+    ]
   }
 }
