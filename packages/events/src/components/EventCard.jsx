@@ -1,14 +1,23 @@
 import { Link } from 'react-router-dom'
-const EventCard = (props) => (
-    <div class="xl:w-1/4 md:w-1/2 p-4">
-      <Link to={`/view/${props.event.id}`}>
-        <div class="bg-gray-100 p-6 rounded-lg">
-          <h3 class="tracking-widest text-indigo-500 text-xs font-medium title-font">{props.event.nickname} hosting</h3>
-          <h2 class="text-lg text-gray-900 font-medium title-font mb-4">{props.event.title}</h2>
-          <p class="leading-relaxed text-base">{props.event.description}</p>
+const EventCard = (props) => {
+  const date = new Date(props.event.start)
+  const month = date.getMonth() || ''
+  const year = date.getFullYear() || ''
+
+  return (
+    <Link to={`/view/${props.event.id}`}>
+      <div class='flex p-4 border border-slate-200 rounded-lg m-6'>
+        <div class='flex-initial divide-y pr-8'>
+          <div class='text-gray-900 title-font font-medium'>{month}</div>
+          <div class='text-gray-500'>{year}</div>
         </div>
-      </Link>
-    </div>
-)
+        <div class='grow'>
+          <h2 class='text-2xl text-gray-900 title-font'>{props.event.title}</h2>
+          <h3 class='text-xs title-font text-gray-500'>hosted by <span class='font-medium text-indigo-300'>{props.event.nickname}</span></h3>
+        </div>
+      </div>
+    </Link>
+  )
+}
 
 export default EventCard

@@ -7,8 +7,8 @@
  */
 
 import { useEffect, useReducer } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { useServices, timeUtils, Navbar, Footer, Alert } from '@kernel/common'
+import { useNavigate } from 'react-router-dom'
+import { useServices, timeUtils, Navbar, Footer } from '@kernel/common'
 import EventCard from 'components/EventCard'
 
 import AppConfig from 'App.config'
@@ -52,7 +52,6 @@ const Page = () => {
       const events = await entityFactory({ resource })
       const items = await events.getAll()
       dispatch({ type: 'items', payload: items })
-
     })()
   }, [services])
 
@@ -64,25 +63,22 @@ const Page = () => {
         menuLinks={AppConfig.navbar?.links}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
-      <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
-        <div className='md:basis-1/2 px-8'>
-              <div class="flex flex-wrap -m-4">
-                {state && state.items && Object.keys(state.items).map((e) => {
-                  const meta = state.items[e]
-                  const eventData = state.items[e].data
-                  const updated = humanize(Date.now() - meta.updated)
-                  const event = {
-                    ...eventData,
-                    id: meta.id,
-                    updated
-                  }
+      <div className='grid gap-3 xl:grid-cols-3 mb-auto py-20 px-20 sm:px-40 lg:px-80'>
+        {state && state.items && Object.keys(state.items).map((e) => {
+          const meta = state.items[e]
+          const eventData = state.items[e].data
+          const updated = humanize(Date.now() - meta.updated)
 
-                  return (
-                    <EventCard event={event} />
-                  )
-                })}
-              </div>
-        </div>
+          const event = {
+            ...eventData,
+            id: meta.id,
+            updated
+          }
+
+          return (
+            <EventCard key={e} event={event} />
+          )
+        })}
       </div>
       <Footer />
 

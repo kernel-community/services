@@ -8,11 +8,10 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useServices, Navbar, Footer, Alert } from '@kernel/common'
+import { useServices, Navbar, Footer } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import Form from 'components/Form'
-import NavBar from 'components/NavBar'
 
 const KEYS = ['nickname', 'title', 'limit', 'location', 'start', 'end', 'description']
 const INITIAL_STATE = ['events'].concat(KEYS)
