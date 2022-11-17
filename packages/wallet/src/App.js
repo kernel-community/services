@@ -7,13 +7,16 @@
  */
 
 import React, { Suspense, lazy } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ServicesProvider, Loading, Login } from '@kernel/common'
 
 import 'App.css'
 
 const Wallet = lazy(() => import('views/Wallet'))
 const Portal = lazy(() => import('views/Portal'))
+
+const Us = lazy(() => import('views/Us'))
+const Overview = lazy(() => import('views/Overview'))
 
 const Claim = lazy(() => import('views/Claim'))
 const Deploy = lazy(() => import('views/Deploy'))
@@ -35,14 +38,13 @@ const App = () => {
             <Route path='/' element={<Wallet />} />
             <Route path='/portal' element={<Portal />} />
 
+            <Route path='/portal/overview' element={<Overview />} />
+            <Route path='/portal/us' element={<Us />} />
+
             <Route path='/portal/claim' element={<Claim />} />
             <Route path='/portal/deploy' element={<Deploy />} />
             <Route path='/portal/mint' element={<Mint />} />
             <Route path='/portal/transact' element={<Transact />} />
-
-            <Route path='/portal/nfts' element={<Navigate to='/portal' replace />} />
-            <Route path='/portal/tokens' element={<Navigate to='/portal' replace />} />
-            <Route path='/portal/contracts' element={<Navigate to='/portal' replace />} />
 
             <Route path='/register' element={<Register />} />
             <Route path='/register/create' element={<Create />} />

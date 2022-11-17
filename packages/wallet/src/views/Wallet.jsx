@@ -52,7 +52,7 @@ const Wallet = () => {
               <span className='pl-2 before:block before:absolute before:-inset-1 before:skew-y-3 before:bg-kernel-yellow-light relative inline-block cursor-pointer'>
                 <span className='relative text-primary'>
                   <span className='underline decoration-dotted'>
-                    log back in
+                    sign back in
                   </span>.
                 </span>
               </span>
@@ -63,20 +63,20 @@ const Wallet = () => {
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                 <h2 className='font-heading text-3xl text-primary pb-6'>Learn</h2>
                 <p>
-                  This is a <strong>non-custodial wallet</strong>. It's OK if you're not sure what that means. Kernel is an open source learning community, and we're here to help each other <strong>understand</strong> and use our own <strong>keys</strong> to unlock doors to ever richer, <strong>shared</strong> truths.
+                  This is a <strong>non-custodial wallet</strong>. It's OK if you're not sure what that means. Kernel is an open source learning community, and we're here to <strong>learn together</strong>.
                 </p>
               </div>
               <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                 <h2 className='font-heading text-3xl text-primary pb-6'>Play</h2>
                 <p>
-                  We call this a <strong>portal</strong> because it is about so much more than money. When we set out to learn together, rather than represent your "worth" with one number, we can discover much more <strong>wholesome</strong> ways of seeing and being.
+                  Your wallet is about so much more than money. When we set out to learn together, rather than represent your "worth" with one number, we can discover much more <strong>wholesome</strong> ways of seeing and being.
                 </p>
               </div>
             </div>
             <div className='pt-20'>
               <h1 className='font-heading text-5xl text-primary pb-6'>Help Us Help Each Other</h1>
               <p className='pb-10'>
-                Non-custodial means that you care for your keys, no-one else. Caring for our own keys empowers us, and it makes us <strong>responsible</strong>. That can be a lot to handle on your own, which is why we create open tools for communities of care. Our <strong>portal</strong> will help you:
+                Non-custodial means that you care for your keys, no-one else. Caring for our own keys empowers us, and it makes us <strong>responsible</strong>. That can be a lot to handle on your own, which is why we create open tools for communities of care. Our <strong>wallet</strong> will help you:
               </p>
               <ol className='list-decimal pl-10 pb-10 decoration-kernel-dark'>
                 <li className='p-2'>
@@ -100,13 +100,13 @@ const Wallet = () => {
                   <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                     <h2 className='font-heading text-3xl text-primary pb-6'>For Everyone</h2>
                     <p>
-                      Anyone may use and extend this <strong>portal</strong>: it is a public gift. We wish to help demonstrate that "wallets" need not compromise your security, limit you to one network at a time, or sell your data to JP Morgan and friends.
+                      Anyone may use and extend this <strong>wallet</strong>: it is a public gift. We wish to help demonstrate that wallets need not compromise your security, or limit you to one network at a time.
                     </p>
                   </div>
                   <div className='p-10 border rounded-md border-kernel-dark float-left mb-10 md:mb-0'>
                     <h2 className='font-heading text-3xl text-primary pb-6'>For Kernel</h2>
                     <p>
-                      If you're a Kernel Fellow, then this portal will take you to many more places. Your keys are used not just to sign transactions, but to grant you access to other Fellows, their adventures, and the various events <strong>unique</strong> to our community.
+                      If you're a Kernel Fellow, then this wallet will take you to even more places. Your keys will grant you access to other Fellows, their adventures, and the various events <strong>unique</strong> to our community.
                     </p>
                   </div>
                 </div>
@@ -116,19 +116,10 @@ const Wallet = () => {
               <h1 className='font-heading text-5xl text-primary pb-6'>A Community of Care</h1>
               <div className='font-secondary'>
                 <p className='pb-10'>
-                  At Kernel, we really care about
-                  <a className='px-2' href='https://www.kernel.community/en/conversation/reciprocity' target='_blank' rel='noreferrer'>
-                    <span className='before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-kernel-highlight relative inline-block cursor-pointer'>
-                      <span className='relative text-primary'>
-                        <span className='underline decoration-dotted'>
-                          reciprocity.
-                        </span>
-                      </span>
-                    </span>
-                  </a>
+                  At Kernel, we really care about reciprocity.
                 </p>
                 <p>
-                  Here are a few of the founding fun-ders who both make this work possible, and benefit from an open source, non-custodial portal that makes their contracts or technology accessible without relying on their own web interfaces.
+                  Here are a few of the fun-ders who both make this work possible, and benefit from an open source, non-custodial wallet that makes their contracts or technology accessible without relying on their own web interfaces.
                 </p>
                 <div className='columns-1 mb-20 sm:columns-2 md:columns-3 lg:columns-4'>
                   <div className='py-10 float-left sm:pr-2'>

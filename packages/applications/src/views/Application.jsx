@@ -8,7 +8,7 @@
 
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useServices, Navbar, Footer, Alert } from '@kernel/common'
+import { useServices, Navbar, Footer, Alert, getUrl } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import Intro from 'components/Intro'
@@ -161,6 +161,35 @@ const Input = ({ fieldName, label, tip, tag, state, dispatch }) => {
   )
 }
 
+const SuccessMessage = () => {
+  const walletLink = `${getUrl('wallet') + '/portal/overview'}`
+  return (
+    <div className='mb-auto mt-10 py-20 px-20 sm:px-40 lg:px-80'>
+      <h3 className='font-heading lg:text-5xl text-5xl text-primary lg:py-5'>
+        Success! You have submitted.
+      </h3>
+      <p className='my-8'>
+        Thank you so much for submitting an application. You should get an email from us shortly confirming receipt.
+      </p>
+      <p className='my-8'>
+        We do reviews on a rolling basis, and how long your review takes can therefore vary, depending on the time of year and how many
+        current fellows are available to review new applicants. We will communicate the status of your application both here and via email. Feel
+        free to log back into this app whenever you like to check your current status.
+      </p>
+      <p className='my-8'>
+        That said, you do not need to wait for a review in order to begin learning. All our tools are free and open source. You can
+        <a className='text-blue-600 visited:text-purple-600' href={walletLink}> return to the wallet</a> to begin learning by doing.
+        You can read<a className='text-blue-600 visited:text-purple-600' href='https://kernel.community/en/learn/' target='_blank' rel='noreferrer'> the syllabus</a>,
+        learn from <a className='text-blue-600 visited:text-purple-600' href='https://kernel.community/en/build' target='_blank' rel='noreferrer'>everything we build</a>,
+        watch <a className='text-blue-600 visited:text-purple-600' href='https://www.youtube.com/channel/UC2kUaSgR0L-uzGkNsOxSxzw' target='_blank' rel='noreferrer'>all our recordings</a>,
+        and use or adapt <a className='text-blue-600 visited:text-purple-600' href='https://github.com/kernel-community/' target='_blank' rel='noreferrer'>all our code </a>.
+        Even better: creating your own keys enables you to use many of our best tools right now. Your new account will help you learn how to mint tokens,
+        deploy your own contracts, decode transactions on a blockchain and much more. You do not need our permission to use it, and you can start right now...
+      </p>
+    </div>
+  )
+}
+
 const PageAlert = ({ formStatus, errorMessage }) => {
   switch (formStatus) {
     case 'saving':
@@ -169,8 +198,6 @@ const PageAlert = ({ formStatus, errorMessage }) => {
       return <Alert type='transparent'>Submitting your application...</Alert>
     case 'saved':
       return <Alert type='success'>Your application has been saved! Feel free to leave and come back later before submitting.</Alert>
-    case 'success':
-      return <Alert type='success'>Your application has been submitted! We will reach out with information about next steps.</Alert>
     case 'error':
       return <Alert type='danger'>{errorMessage}</Alert>
     default:
@@ -238,34 +265,39 @@ const Application = () => {
         menuLinks={AppConfig.navbar?.links}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
-      <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
-        <Intro />
-        <form className='form-control w-full'>
-          {Object.entries(FORM_INPUT).map(([fieldName, { label, tag, tip }]) => {
-            return (
-              <Input key={fieldName} fieldName={fieldName} label={label} tag={tag} tip={tip} state={state} dispatch={dispatch} />
-            )
-          })}
-          <button
-            disabled={state.formStatus === 'submitting' || !state.editable}
-            onClick={save.bind(null, user, state, dispatch)}
-            className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
-          >
-            Save
-          </button>
-          <button
-            disabled={state.formStatus === 'submitting'}
-            onClick={submit.bind(null, user, state, dispatch)}
-            className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
-          >
-            Submit
-          </button>
+      {state.formStatus === 'success' || user.role < AppConfig.minRole
+        ? <SuccessMessage />
+        : <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
+          <Intro />
+          <form className='form-control w-full'>
+            {Object.entries(FORM_INPUT).map(([fieldName, { label, tag, tip }]) => {
+              return (
+                <Input key={fieldName} fieldName={fieldName} label={label} tag={tag} tip={tip} state={state} dispatch={dispatch} />
+              )
+            })}
+            <button
+              disabled={state.formStatus === 'submitting' || !state.editable}
+              onClick={save.bind(null, user, state, dispatch)}
+              className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
+            >
+              Save
+            </button>
+            <button
+              disabled={state.formStatus === 'submitting'}
+              onClick={submit.bind(null, user, state, dispatch)}
+              className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
+            >
+              Submit
+            </button>
 
-          <PageAlert formStatus={state.formStatus} errorMessage={state.errorMessage} />
+            <PageAlert formStatus={state.formStatus} errorMessage={state.errorMessage} />
 
-        </form>
-      </div>
-      <Footer />
+          </form>
+          {/* eslint-disable-next-line */}
+          </div>}
+      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'>
+        built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
+      </Footer>
     </div>
   )
 }
