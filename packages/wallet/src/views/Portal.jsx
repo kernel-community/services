@@ -15,11 +15,14 @@ import { loadWallet } from 'common'
 import AppConfig from 'App.config'
 import Page from 'components/Page'
 
+const MEMBER_ROLE = 1000
+
 const Portal = () => {
   const navigate = useNavigate()
 
   const { currentUser } = useServices()
   const user = currentUser()
+  console.log('user', user)
 
   const applyLink = getUrl('apply')
 
@@ -71,7 +74,7 @@ const Portal = () => {
           <div>
             <h3 className='text-center font-heading text-center text-3xl text-primary py-5'>Help me find the others</h3>
             <div className='text-center m-8 p-5'>
-              {!user
+              {user.role > MEMBER_ROLE
                 ? <a href={applyLink} className='bg-kernel-dark text-kernel-white text-center w-full p-5 rounded shadow-md'>Apply to Kernel</a>
                 : <Link to='/portal/us' className='bg-kernel-dark text-kernel-white text-center w-full p-5 rounded shadow-md'>Explore Kernel</Link>}
             </div>
