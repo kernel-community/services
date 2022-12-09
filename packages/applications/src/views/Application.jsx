@@ -12,13 +12,14 @@ import { useServices, Navbar, Footer, Alert } from '@kernel/common'
 
 import AppConfig from 'App.config'
 import Intro from 'components/Intro'
+import SuccessMessage from 'components/SuccessMessage'
 
 const FORM_INPUT = {
   name: { label: 'Name', tip: 'What can we call you?', tag: 'input' },
   email: { label: 'Email', tip: 'So we can send you updates.', tag: 'input' },
   reason: { label: 'Reason', tip: 'Why do you want to be in Kernel?', tag: 'textarea' },
   interests: { label: 'Interests', tip: 'What are you, personally, passionate about? What do you love doing? What makes you grateful to be alive?', tag: 'textarea' },
-  urls: { label: 'Life', tip: 'Is a puzzle to be solved, a garden to be cultivated, a game to be played? All, none, or something else? Tell us why. How do you lead your life?', tag: 'textarea' }
+  life: { label: 'Life', tip: 'Is a puzzle to be solved, a garden to be cultivated, a game to be played? All, none, or something else? Tell us why. How do you lead your life?', tag: 'textarea' }
 }
 
 const INITIAL_FORM_KEYS = [].concat(Object.keys(FORM_INPUT))
@@ -169,8 +170,6 @@ const PageAlert = ({ formStatus, errorMessage }) => {
       return <Alert type='transparent'>Submitting your application...</Alert>
     case 'saved':
       return <Alert type='success'>Your application has been saved! Feel free to leave and come back later before submitting.</Alert>
-    case 'success':
-      return <Alert type='success'>Your application has been submitted! We will reach out with information about next steps.</Alert>
     case 'error':
       return <Alert type='danger'>{errorMessage}</Alert>
     default:
@@ -238,34 +237,39 @@ const Application = () => {
         menuLinks={AppConfig.navbar?.links}
         backgroundColor='bg-kernel-dark' textColor='text-kernel-white'
       />
-      <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
-        <Intro />
-        <form className='form-control w-full'>
-          {Object.entries(FORM_INPUT).map(([fieldName, { label, tag, tip }]) => {
-            return (
-              <Input key={fieldName} fieldName={fieldName} label={label} tag={tag} tip={tip} state={state} dispatch={dispatch} />
-            )
-          })}
-          <button
-            disabled={state.formStatus === 'submitting' || !state.editable}
-            onClick={save.bind(null, user, state, dispatch)}
-            className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
-          >
-            Save
-          </button>
-          <button
-            disabled={state.formStatus === 'submitting'}
-            onClick={submit.bind(null, user, state, dispatch)}
-            className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
-          >
-            Submit
-          </button>
+      {state.formStatus === 'success' || user.role < AppConfig.minRole
+        ? <SuccessMessage />
+        : <div className='mb-auto py-20 px-20 sm:px-40 lg:px-80'>
+          <Intro />
+          <form className='form-control w-full'>
+            {Object.entries(FORM_INPUT).map(([fieldName, { label, tag, tip }]) => {
+              return (
+                <Input key={fieldName} fieldName={fieldName} label={label} tag={tag} tip={tip} state={state} dispatch={dispatch} />
+              )
+            })}
+            <button
+              disabled={state.formStatus === 'submitting' || !state.editable}
+              onClick={save.bind(null, user, state, dispatch)}
+              className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
+            >
+              Save
+            </button>
+            <button
+              disabled={state.formStatus === 'submitting'}
+              onClick={submit.bind(null, user, state, dispatch)}
+              className={`mt-6 mb-4 px-6 py-4 ${state.formStatus === 'submitting' || !state.editable ? 'bg-gray-300' : 'bg-kernel-green-dark'} text-kernel-white w-full rounded font-bold`}
+            >
+              Submit
+            </button>
 
-          <PageAlert formStatus={state.formStatus} errorMessage={state.errorMessage} />
+            <PageAlert formStatus={state.formStatus} errorMessage={state.errorMessage} />
 
-        </form>
-      </div>
-      <Footer />
+          </form>
+          {/* eslint-disable-next-line */}
+          </div>}
+      <Footer backgroundColor='bg-kernel-dark' textColor='text-kernel-white'>
+        built at <a href='https://kernel.community/' className='text-kernel-green-light'>KERNEL</a>
+      </Footer>
     </div>
   )
 }

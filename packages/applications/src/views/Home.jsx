@@ -101,13 +101,11 @@ const Home = () => {
                             onClick={handleLogin}
                             type='button'
                           >
-                            Create your keys
+                            Apply Now
                           </button>
                       }
                     </div>
-
                   </div>
-
                 </div>
               </div>
             </div>
